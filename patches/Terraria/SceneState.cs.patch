@@ -1,0 +1,38 @@
+--- a/Terraria/SceneState.cs
++++ b/Terraria/SceneState.cs
+@@ -8,6 +8,7 @@
+ using Terraria.Graphics.Shaders;
+ using Terraria.ID;
+ using Terraria.Map;
++using IsaClient.Rendering;
+ 
+ namespace Terraria;
+ 
+@@ -106,14 +107,14 @@
+ 		ManageSpecialBiomeVisuals("Nebula", metrics.CloseEnoughToNebulaTower, metrics.ClosestNPCPosition[507] - new Vector2(0f, 10f));
+ 		ManageSpecialBiomeVisuals("Vortex", metrics.CloseEnoughToVortexTower, metrics.ClosestNPCPosition[422] - new Vector2(0f, 10f));
+ 		ManageSpecialBiomeVisuals("Solar", metrics.CloseEnoughToSolarTower, metrics.ClosestNPCPosition[517] - new Vector2(0f, 10f));
+-		ManageSpecialBiomeVisuals("MoonLord", metrics.ClosestNPCPosition[398] != Vector2.Zero);
++		ManageSpecialBiomeVisuals("MoonLord", metrics.ClosestNPCPosition[398] != Vector2.Zero && !WorldView.NoMoonLordShader);
+ 		bool flag4 = metrics.CloseEnoughToSolarTower || metrics.CloseEnoughToVortexTower || metrics.CloseEnoughToNebulaTower || metrics.CloseEnoughToStardustTower;
+ 		ManageSpecialBiomeVisuals("MonolithVortex", (!flag4 && metrics.ActiveMonolithType == 0) || perspectivePlayer.vortexMonolithShader);
+ 		ManageSpecialBiomeVisuals("MonolithNebula", (!flag4 && metrics.ActiveMonolithType == 1) || perspectivePlayer.nebulaMonolithShader);
+ 		ManageSpecialBiomeVisuals("MonolithStardust", (!flag4 && metrics.ActiveMonolithType == 2) || perspectivePlayer.stardustMonolithShader);
+ 		ManageSpecialBiomeVisuals("MonolithSolar", (!flag4 && metrics.ActiveMonolithType == 3) || perspectivePlayer.solarMonolithShader);
+ 		ManageSpecialBiomeVisuals("MonolithMoonLord", (!flag4 && metrics.ActiveMonolithType == 4) || perspectivePlayer.moonLordMonolithShader);
+-		ManageSpecialBiomeVisuals("BloodMoon", Main.bloodMoon || metrics.BloodMoonMonolith || perspectivePlayer.bloodMoonMonolithShader);
++		ManageSpecialBiomeVisuals("BloodMoon", (Main.bloodMoon && !WorldView.NoBloodMoonShader) || metrics.BloodMoonMonolith || perspectivePlayer.bloodMoonMonolithShader);
+ 		bool flag5 = Main.UseStormEffects && flag;
+ 		bool flag6 = !Main.dayTime && !flag5 && Main.GraveyardVisualIntensity < 0.5f;
+ 		ManageSpecialBiomeVisuals("Aurora", metrics.ZoneSnow && flag6);
+@@ -124,8 +125,8 @@
+ 		ManageSpecialBiomeVisuals("Graveyard", Main.GraveyardVisualIntensity > 0f);
+ 		ManageSpecialBiomeVisuals("Sepia", Main.onlyDontStarveWorld ^ (perspectivePlayer.dontStarveShader || metrics.RadioThingMonolith));
+ 		ManageSpecialBiomeVisuals("Noir", metrics.NoirMonolith || perspectivePlayer.noirShader);
+-		ManageSpecialBiomeVisuals("CRT", metrics.CRTMonolith || perspectivePlayer.CRTMonolithShader);
+-		ManageSpecialBiomeVisuals("Test2", metrics.RetroMonolith || perspectivePlayer.retroMonolithShader);
++		ManageSpecialBiomeVisuals("CRT", metrics.CRTMonolith || perspectivePlayer.CRTMonolithShader || WorldView.UseCrt);
++		ManageSpecialBiomeVisuals("Test2", metrics.RetroMonolith || perspectivePlayer.retroMonolithShader || WorldView.UseGameBoy);
+ 		ManageSpecialBiomeVisuals("WaterDistortion", Main.WaveQuality > 0);
+ 		bool flag8 = metrics.TownNPCCount > 0 || metrics.PartyMonolithCount > 0;
+ 		MoveTowards(ref SkyManager.Instance["Party"].Opacity, flag8 ? 1 : 0, 0.01f);

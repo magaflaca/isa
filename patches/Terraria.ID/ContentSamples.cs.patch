@@ -1,0 +1,25 @@
+--- a/Terraria.ID/ContentSamples.cs
++++ b/Terraria.ID/ContentSamples.cs
+@@ -86,13 +86,19 @@
+ 			EverythingElse = 11000
+ 		}
+ 
+-		public struct ItemGroupAndOrderInGroup(Item item)
++		public struct ItemGroupAndOrderInGroup
+ 		{
+-			public int ItemType = item.type;
++			public int ItemType;
+ 
+-			public ItemGroup Group = GetItemGroup(item, out OrderInGroup);
++			public ItemGroup Group;
+ 
+ 			public int OrderInGroup;
++
++			public ItemGroupAndOrderInGroup(Item item)
++			{
++				ItemType = item.type;
++				Group = GetItemGroup(item, out OrderInGroup);
++			}
+ 		}
+ 
+ 		private static List<int> _manualEventItemsOrder = new List<int> { 361, 1315, 2767, 602, 1844, 1958 };

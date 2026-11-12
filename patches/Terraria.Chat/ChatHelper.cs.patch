@@ -1,0 +1,43 @@
+--- a/Terraria.Chat/ChatHelper.cs
++++ b/Terraria.Chat/ChatHelper.cs
+@@ -73,6 +73,11 @@
+ 	{
+ 		if (!message.IsConsumed)
+ 		{
++			// Characters the font lacks (‑, —, curly quotes...) go out plain, or everyone sees *.
++			message.Text = IsaClient.Core.ChatText.Plain(message.Text);
++			IsaClient.Items.ItemShare.OnSend(message.Text);
++			IsaClient.Sharing.ShareChat.OnSend(message.Text);
++			IsaClient.Networking.SscSync.OnChatSent(message.Text);
+ 			NetPacket packet = NetTextModule.SerializeClientMessage(message);
+ 			NetManager.Instance.SendToServer(packet);
+ 		}
+@@ -80,7 +85,10 @@
+ 
+ 	public static void DisplayMessage(NetworkText text, Color color, byte messageAuthor)
+ 	{
+-		string text2 = text.ToString();
++		string text2 = IsaClient.Core.ChatText.Plain(text.ToString());
++		IsaClient.Assistant.AiAssistant.OnChatMessage(text2, messageAuthor);
++		IsaClient.MultiClient.MultiClientManager.NoteGameChat(text2);
++		string received = text2;
+ 		if (messageAuthor < byte.MaxValue)
+ 		{
+ 			Main.player[messageAuthor].chatOverhead.NewMessage(text2, Main.PlayerOverheadChatMessageDisplayTime);
+@@ -93,7 +101,15 @@
+ 		}
+ 		else
+ 		{
+-			Main.NewTextMultiline(text2, force: false, color);
++			IsaClient.Community.IncomingTranslation.BeginMessage(received, messageAuthor);
++			try
++			{
++				Main.NewTextMultiline(text2, force: false, color);
++			}
++			finally
++			{
++				IsaClient.Community.IncomingTranslation.EndMessage();
++			}
+ 		}
+ 	}
+ 

@@ -1,0 +1,59 @@
+--- a/Terraria/WindowsLaunch.cs
++++ b/Terraria/WindowsLaunch.cs
+@@ -53,18 +53,48 @@
+ 	[STAThread]
+ 	private static void Main(string[] args)
+ 	{
++		// the PSP emulator's own process: this executable, without the game
++		if (args.Length >= 3 && args[0] == IsaClient.Psp.PspHost.Argument)
++		{
++			IsaClient.Psp.PspHost.Run(args);
++			return;
++		}
++		// Each embedded library is loaded once: plugins asking for ImGui.NET (or Newtonsoft...) get the same copy as the
++		// client, so their types match. Plugins built against Terraria get this executable whatever its file name.
++		var loaded = new System.Collections.Generic.Dictionary<string, Assembly>(StringComparer.OrdinalIgnoreCase);
+ 		AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs sargs)
+ 		{
+-			string resourceName = new AssemblyName(sargs.Name).Name + ".dll";
+-			string text = Array.Find(typeof(Program).Assembly.GetManifestResourceNames(), (string element) => element.EndsWith(resourceName));
+-			if (text == null)
++			AssemblyName requested = new AssemblyName(sargs.Name);
++			string name = requested.Name;
++			if (string.Equals(name, "Terraria", StringComparison.OrdinalIgnoreCase))
+ 			{
+-				return (Assembly)null;
++				return typeof(Program).Assembly;
+ 			}
+-			using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(text);
+-			byte[] array = new byte[stream.Length];
+-			stream.Read(array, 0, array.Length);
+-			return Assembly.Load(array);
++			lock (loaded)
++			{
++				if (loaded.TryGetValue(name, out Assembly cached))
++				{
++					// An older copy than the one asked for is refused by .NET, which would then ask again forever: give up
++					// instead (another resolver, like the plugins' libraries folder, may have the right one).
++					if (requested.Version != null && cached.GetName().Version < requested.Version)
++					{
++						return (Assembly)null;
++					}
++					return cached;
++				}
++				string resourceName = name + ".dll";
++				string text = Array.Find(typeof(Program).Assembly.GetManifestResourceNames(), (string element) => element.EndsWith(resourceName));
++				if (text == null)
++				{
++					return (Assembly)null;
++				}
++				using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(text);
++				byte[] array = new byte[stream.Length];
++				stream.Read(array, 0, array.Length);
++				Assembly assembly = Assembly.Load(array);
++				loaded[name] = assembly;
++				return assembly;
++			}
+ 		};
+ 		Program.LaunchGame(args);
+ 	}

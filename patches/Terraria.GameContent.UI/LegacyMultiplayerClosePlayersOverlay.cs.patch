@@ -1,0 +1,19 @@
+--- a/Terraria.GameContent.UI/LegacyMultiplayerClosePlayersOverlay.cs
++++ b/Terraria.GameContent.UI/LegacyMultiplayerClosePlayersOverlay.cs
+@@ -7,6 +7,7 @@
+ using Terraria.Graphics.Renderers;
+ using Terraria.Localization;
+ using Terraria.UI.Chat;
++using IsaClient.Community;
+ 
+ namespace Terraria.GameContent.UI;
+ 
+@@ -39,7 +40,7 @@
+ 		Vector2 screenPosition2 = Main.screenPosition;
+ 		for (int i = 0; i < 255; i++)
+ 		{
+-			if (!player[i].active || myPlayer == i || (player[i].dead && !player[i].ghost) || player[myPlayer].team <= 0 || player[myPlayer].team != player[i].team)
++			if (!player[i].active || myPlayer == i || (player[i].dead && !player[i].ghost) || ((player[myPlayer].team <= 0 || player[myPlayer].team != player[i].team) && !PlayerListPanel.PlayerTracker))
+ 			{
+ 				continue;
+ 			}

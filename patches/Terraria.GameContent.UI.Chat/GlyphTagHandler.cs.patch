@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.UI.Chat/GlyphTagHandler.cs
++++ b/Terraria.GameContent.UI.Chat/GlyphTagHandler.cs
+@@ -100,7 +100,7 @@
+ 			if (controllerForGamepadIndex.m_InputHandle != 0L)
+ 			{
+ 				ESteamInputType inputTypeForHandle = SteamInput.GetInputTypeForHandle(controllerForGamepadIndex);
+-				switch (inputTypeForHandle - 5)
++				switch ((int)inputTypeForHandle - 5)
+ 				{
+ 				case 0:
+ 				case 7:

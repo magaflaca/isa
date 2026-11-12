@@ -1,0 +1,23 @@
+--- a/Terraria.GameContent.Biomes/DitherSnakePass.cs
++++ b/Terraria.GameContent.Biomes/DitherSnakePass.cs
+@@ -112,9 +112,9 @@
+ 		double num11 = num7 + num5 / 2.0 * num10;
+ 		double num12 = num7;
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)outerPotentialDungeonBounds.X + num11, (double)outerPotentialDungeonBounds.Y + num12);
++		val = new Vector2D((double)outerPotentialDungeonBounds.X + num11, (double)outerPotentialDungeonBounds.Y + num12);
+ 		Vector2D val2 = default(Vector2D);
+-		((Vector2D)(ref val2))._002Ector((double)outerPotentialDungeonBounds.Width - num11 * 2.0, (double)outerPotentialDungeonBounds.Height - num12 * 2.0);
++		val2 = new Vector2D((double)outerPotentialDungeonBounds.Width - num11 * 2.0, (double)outerPotentialDungeonBounds.Height - num12 * 2.0);
+ 		double num13 = Math.Min(num7 - num8, val2.X * num3 / 2.0);
+ 		_ = dungeonGenerationStyles[0];
+ 		double startRadius = num7;
+@@ -147,7 +147,7 @@
+ 			}
+ 			if (num19 == 0 && (val3.X - (double)GenVars.CurrentDungeonGenVars.dungeonLocation) * (double)num22 < 0.0)
+ 			{
+-				((Vector2D)(ref start))._002Ector((double)GenVars.CurrentDungeonGenVars.dungeonLocation, val3.Y);
++				start = new Vector2D((double)GenVars.CurrentDungeonGenVars.dungeonLocation, val3.Y);
+ 				continue;
+ 			}
+ 			num16 = Utils.Lerp(Math.Max(num8, num16 - num13), Math.Min(num7, num16 + num13), genRand.NextDouble());

@@ -1,0 +1,5 @@
+IsaClient.Movement.Noclip.Noclip => Enabled
+IsaClient.Movement.Noclip.NoclipSpeed => Speed
+IsaClient.Movement.Noclip.NoclipKeyName => KeyName
+IsaClient.Movement.Noclip.NoclipSpeedKeyName => SpeedKeyName
+IsaClient.Movement.Noclip.CycleNoclipSpeed => CycleSpeed

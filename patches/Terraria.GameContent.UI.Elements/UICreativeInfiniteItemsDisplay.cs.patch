@@ -1,0 +1,48 @@
+--- a/Terraria.GameContent.UI.Elements/UICreativeInfiniteItemsDisplay.cs
++++ b/Terraria.GameContent.UI.Elements/UICreativeInfiniteItemsDisplay.cs
+@@ -12,7 +12,7 @@
+ 
+ namespace Terraria.GameContent.UI.Elements;
+ 
+-public class UICreativeInfiniteItemsDisplay : UIElement
++public partial class UICreativeInfiniteItemsDisplay : UIElement
+ {
+ 	public enum InfiniteItemsDisplayPage
+ 	{
+@@ -91,6 +91,8 @@
+ 		List<IItemEntryFilter> list2 = new List<IItemEntryFilter>();
+ 		list2.AddRange(list);
+ 		list2.Add(new ItemFilters.MiscFallback(list));
++		// IsaClient: a tab with your saved IsaClient items (My Items).
++		list2.Add(new IsaClient.Items.JourneyFilter());
+ 		_filterer.AddFilters(list2);
+ 		_filterer.SetSearchFilterObject(new ItemFilters.BySearch());
+ 		_sorter = new EntrySorter<Item, ICreativeItemSortStep>();
+@@ -520,6 +522,10 @@
+ 			_lastCheckedVersionForEdits = -1;
+ 		}
+ 		int lastEditId = localPlayerCreativeTracker.ItemSacrifices.LastEditId;
++		if (_isaLibraryVersion != IsaClient.Items.ItemLibrary.Version)
++		{
++			_lastCheckedVersionForEdits = -1;
++		}
+ 		if (_lastCheckedVersionForEdits != lastEditId)
+ 		{
+ 			_lastCheckedVersionForEdits = lastEditId;
+@@ -553,6 +559,16 @@
+ 			}
+ 		});
+ 		_itemList.Sort(_sorter);
++		// IsaClient: your saved IsaClient items, first.
++		_isaLibraryVersion = IsaClient.Items.ItemLibrary.Version;
++		int at = 0;
++		foreach (Item isaItem in IsaClient.Items.ItemLibrary.JourneyItems())
++		{
++			if (_filterer.FitsFilter(isaItem))
++			{
++				_itemList.Insert(at++, isaItem);
++			}
++		}
+ 		_itemGrid.SetContentsToShow(_itemList);
+ 	}
+ 

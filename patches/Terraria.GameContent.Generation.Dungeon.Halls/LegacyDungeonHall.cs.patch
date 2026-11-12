@@ -1,0 +1,20 @@
+--- a/Terraria.GameContent.Generation.Dungeon.Halls/LegacyDungeonHall.cs
++++ b/Terraria.GameContent.Generation.Dungeon.Halls/LegacyDungeonHall.cs
+@@ -196,7 +196,7 @@
+ 		byte? b = ((settings.OverridePaintTile > -1) ? new byte?((byte)settings.OverridePaintTile) : settings.StyleData.TilePaintColor);
+ 		byte? b2 = ((settings.OverridePaintWall > -1) ? new byte?((byte)settings.OverridePaintWall) : settings.StyleData.WallPaintColor);
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)i, (double)j);
++		val = new Vector2D((double)i, (double)j);
+ 		Vector2D startPosition = val;
+ 		Vector2D val2 = Vector2D.Zero;
+ 		int num = (int)(4.0 * dungeonData.hallStrengthScalar) + unifiedRandom.Next(2);
+@@ -264,7 +264,7 @@
+ 			Vector2D overrideStartPosition = OverrideStartPosition;
+ 			Vector2D v = OverrideEndPosition - overrideStartPosition;
+ 			Vector2D val3 = v.SafeNormalize(Vector2D.UnitX);
+-			num3 = (steps = (int)Math.Ceiling(((Vector2D)(ref v)).Length() / ((Vector2D)(ref val3)).Length()));
++			num3 = (steps = (int)Math.Ceiling(v.Length() / val3.Length()));
+ 			val = overrideStartPosition;
+ 			startPosition = val;
+ 			zero.X = val3.X;

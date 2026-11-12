@@ -1,0 +1,47 @@
+--- a/Terraria.Social.WeGame/AchievementsSocialModule.cs
++++ b/Terraria.Social.WeGame/AchievementsSocialModule.cs
+@@ -113,7 +113,7 @@
+ 		IRailPlayerAchievement myPlayerAchievement = GetMyPlayerAchievement();
+ 		if (myPlayerAchievement != null)
+ 		{
+-			val = myPlayerAchievement.HasAchieved(name, ref flag);
++			val = myPlayerAchievement.HasAchieved(name, out flag);
+ 		}
+ 		if (flag)
+ 		{
+@@ -144,7 +144,7 @@
+ 		IRailPlayerStats myPlayerStats = GetMyPlayerStats();
+ 		if (myPlayerStats != null)
+ 		{
+-			myPlayerStats.GetStatValue(name, ref result);
++			myPlayerStats.GetStatValue(name, out result);
+ 		}
+ 		return result;
+ 	}
+@@ -156,7 +156,7 @@
+ 		IRailPlayerStats myPlayerStats = GetMyPlayerStats();
+ 		if (myPlayerStats != null)
+ 		{
+-			myPlayerStats.GetStatValue(name, ref num);
++			myPlayerStats.GetStatValue(name, out num);
+ 		}
+ 		return (float)num;
+ 	}
+@@ -185,7 +185,7 @@
+ 		if (myPlayerStats != null)
+ 		{
+ 			int num = 0;
+-			if ((int)myPlayerStats.GetStatValue(name, ref num) == 0 && num < value)
++			if ((int)myPlayerStats.GetStatValue(name, out num) == 0 && num < value)
+ 			{
+ 				myPlayerStats.SetStatValue(name, value);
+ 			}
+@@ -216,7 +216,7 @@
+ 		if (myPlayerStats != null)
+ 		{
+ 			double num = 0.0;
+-			if ((int)myPlayerStats.GetStatValue(name, ref num) == 0 && (float)num < value)
++			if ((int)myPlayerStats.GetStatValue(name, out num) == 0 && (float)num < value)
+ 			{
+ 				myPlayerStats.SetStatValue(name, (double)value);
+ 			}

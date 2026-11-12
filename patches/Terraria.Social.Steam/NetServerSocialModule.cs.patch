@@ -1,0 +1,20 @@
+--- a/Terraria.Social.Steam/NetServerSocialModule.cs
++++ b/Terraria.Social.Steam/NetServerSocialModule.cs
+@@ -54,7 +54,7 @@
+ 	{
+ 		base.Initialize();
+ 		_reader.SetReadEvent(OnPacketRead);
+-		_p2pSessionRequest = Callback<P2PSessionRequest_t>.Create((DispatchDelegate<P2PSessionRequest_t>)OnP2PSessionRequest);
++		_p2pSessionRequest = Callback<P2PSessionRequest_t>.Create((Callback<P2PSessionRequest_t>.DispatchDelegate)OnP2PSessionRequest);
+ 		if (Program.LaunchParameters.ContainsKey("-lobby"))
+ 		{
+ 			_mode |= ServerMode.Lobby;
+@@ -259,7 +259,7 @@
+ 		{
+ 			SteamNetworking.AcceptP2PSessionWithUser(steamIDRemote);
+ 			P2PSessionState_t val = default(P2PSessionState_t);
+-			while (SteamNetworking.GetP2PSessionState(steamIDRemote, ref val) && val.m_bConnecting == 1)
++			while (SteamNetworking.GetP2PSessionState(steamIDRemote, out val) && val.m_bConnecting == 1)
+ 			{
+ 			}
+ 			if (val.m_bConnectionActive == 0)

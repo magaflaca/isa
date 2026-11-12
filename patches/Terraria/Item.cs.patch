@@ -1,0 +1,78 @@
+--- a/Terraria/Item.cs
++++ b/Terraria/Item.cs
+@@ -12,10 +12,12 @@
+ using Terraria.ID;
+ using Terraria.UI;
+ using Terraria.Utilities;
++using IsaClient.Gameplay;
++using IsaClient.Rendering;
+ 
+ namespace Terraria;
+ 
+-public class Item : IEntitySourceTarget
++public partial class Item : IEntitySourceTarget
+ {
+ 	private class DefaultAssignNewItemsToPlayer_OverrideHandle : IDisposable
+ 	{
+@@ -335,7 +337,7 @@
+ 
+ 	public static readonly int SlotsRemainingBeforeEmergencyStackingInMultiplayer = 40;
+ 
+-	public string Name => _nameOverride ?? Lang.GetItemNameValue(type);
++	public string Name => (_nameOverride ?? Lang.GetItemNameValue(type)) + ((InfoOverlays.ShowIDs && type != 0 && this != Main.MouseTextFakeItem) ? (" (ID: " + type + ")") : "");
+ 
+ 	public string HoverName
+ 	{
+@@ -1198,7 +1200,7 @@
+ 		{
+ 			return Name;
+ 		}
+-		return Lang.GetPrefixedItemName(type, prefix);
++		return Lang.GetPrefixedItemName(type, prefix) + (InfoOverlays.ShowIDs ? (" (ID: " + type + ", Prefix ID: " + prefix + ")") : "");
+ 	}
+ 
+ 	public void RebuildTooltip()
+@@ -48709,6 +48711,10 @@
+ 		{
+ 			SetDefaults4(type);
+ 		}
++		else if (IsaClient.Gameplay.LegacyItems.IsCustom(type))
++		{
++			IsaClient.Gameplay.LegacyItems.SetDefaults(this);
++		}
+ 		else
+ 		{
+ 			SetDefaults5(type);
+@@ -48922,7 +48928,7 @@
+ 			SetDefaults(1533 + type - 1803);
+ 		}
+ 		RebuildTooltip();
+-		if (type > 0 && type < ItemID.Count && ItemID.Sets.Deprecated[type])
++		if (type > 0 && type < ItemID.Count && ItemID.Sets.Deprecated[type] && !ItemTools.KeepDeprecatedItems)
+ 		{
+ 			TurnToAir();
+ 		}
+@@ -49051,6 +49057,13 @@
+ 		shootsEveryUse = false;
+ 		Variant = null;
+ 		type = Type;
++		itemShootBehavior = IsaClient.Gameplay.ShootBehaviors.DefaultFor(Type);
++		timesToShoot = 1;
++		hitsInvincibleNpc = false;
++		modifiedByServer = false;
++		modifiedByItemMods = false;
++		itemModPresetName = null;
++		isaMark = null;
+ 	}
+ 
+ 	public static Color GetPhaseColor(int projectileType, bool drawColor = false)
+@@ -49513,7 +49526,8 @@
+ 		{
+ 			5324 => FlexibleTileWand.RubblePlacementSmall, 
+ 			5329 => FlexibleTileWand.RubblePlacementMedium, 
+-			5330 => FlexibleTileWand.RubblePlacementLarge, 
++			5330 => FlexibleTileWand.RubblePlacementLarge,
++			6200 => IsaClient.Gameplay.LegacyItems.PotsWand, 
+ 			5464 => FlexibleTileWand.MiteyTitey, 
+ 			4460 => FlexibleTileWand.SandCastleBucket, 
+ 			4609 => FlexibleTileWand.GardenGnome, 

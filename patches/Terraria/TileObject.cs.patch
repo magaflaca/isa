@@ -1,0 +1,159 @@
+--- a/Terraria/TileObject.cs
++++ b/Terraria/TileObject.cs
+@@ -8,7 +8,7 @@
+ 
+ namespace Terraria;
+ 
+-public struct TileObject
++public partial struct TileObject
+ {
+ 	public int xCoord;
+ 
+@@ -47,7 +47,7 @@
+ 				x = toBePlaced.xCoord + tileData.Origin.X;
+ 				y = toBePlaced.yCoord + tileData.Origin.Y;
+ 			}
+-			if (tileData.HookPlaceOverride.hook(x, y, toBePlaced.type, toBePlaced.style, 1, toBePlaced.alternate) == tileData.HookPlaceOverride.badReturn)
++			if (tileData.HookPlaceOverride.hook(x, y, toBePlaced.type, toBePlaced.style, 1, toBePlaced.alternate) == tileData.HookPlaceOverride.badReturn && !LocalForcePlace)
+ 			{
+ 				return false;
+ 			}
+@@ -81,12 +81,12 @@
+ 				for (int j = 0; j < tileData.Height; j++)
+ 				{
+ 					Tile tileSafely = Framing.GetTileSafely(num6 + i, num7 + j);
+-					if (tileSafely.active() && tileSafely.type != 484 && (Main.tileCut[tileSafely.type] || TileID.Sets.BreakableWhenPlacing[tileSafely.type]))
++					if ((tileSafely.active() && tileSafely.type != 484 && (Main.tileCut[tileSafely.type] || TileID.Sets.BreakableWhenPlacing[tileSafely.type])) || (LocalForcePlace && tileSafely.active()))
+ 					{
+-						WorldGen.KillTile(num6 + i, num7 + j);
++						WorldGen.KillTile(num6 + i, num7 + j, fail: false, effectOnly: false, LocalForcePlace);
+ 						if (!Main.tile[num6 + i, num7 + j].active() && Main.netMode != 0)
+ 						{
+-							NetMessage.SendData(17, -1, -1, null, 0, num6 + i, num7 + j);
++							NetMessage.SendData(17, -1, -1, null, LocalForcePlace ? 4 : 0, num6 + i, num7 + j);
+ 						}
+ 					}
+ 				}
+@@ -172,6 +172,12 @@
+ 	}
+ 
+ 	public static bool CanPlace(int x, int y, int type, int style, int dir, out TileObject objectData, bool onlyCheck = false, int? forcedRandom = null)
++	{
++		return CanPlace(x, y, type, style, dir, out objectData, onlyCheck, forcedRandom, forcePlace: false);
++	}
++
++	/// <param name="forcePlace">Place Anywhere: ignore anchors, walls, liquids, blocking tiles and the placement hooks.</param>
++	public static bool CanPlace(int x, int y, int type, int style, int dir, out TileObject objectData, bool onlyCheck, int? forcedRandom, bool forcePlace)
+ 	{
+ 		TileObjectData tileData = TileObjectData.GetTileData(type, style);
+ 		objectData = Empty;
+@@ -344,7 +350,7 @@
+ 					if (tileData2.AnchorWall)
+ 					{
+ 						num25 += 1f;
+-						if (!tileData2.isValidWallAnchor(tileSafely.wall))
++						if (!tileData2.isValidWallAnchor(tileSafely.wall) && !forcePlace)
+ 						{
+ 							flag4 = true;
+ 						}
+@@ -354,11 +360,11 @@
+ 						}
+ 					}
+ 					bool flag5 = false;
+-					if (tileSafely.active() && (!Main.tileCut[tileSafely.type] || tileSafely.type == 484 || tileSafely.type == 654) && !TileID.Sets.BreakableWhenPlacing[tileSafely.type])
++					if (tileSafely.active() && (!Main.tileCut[tileSafely.type] || tileSafely.type == 484 || tileSafely.type == 654) && !TileID.Sets.BreakableWhenPlacing[tileSafely.type] && !forcePlace)
+ 					{
+ 						flag5 = true;
+ 					}
+-					if (flag5 || flag3 || flag4)
++					if ((flag5 || flag3 || flag4) && !forcePlace)
+ 					{
+ 						if (onlyCheck)
+ 						{
+@@ -425,7 +431,7 @@
+ 					{
+ 						flag6 = true;
+ 					}
+-					if (!flag6)
++					if (!flag6 && !forcePlace)
+ 					{
+ 						if (onlyCheck)
+ 						{
+@@ -531,7 +537,7 @@
+ 							flag7 = false;
+ 						}
+ 					}
+-					if (!flag7)
++					if (!flag7 && !forcePlace)
+ 					{
+ 						if (onlyCheck)
+ 						{
+@@ -577,7 +583,7 @@
+ 							{
+ 								num25 += 1f;
+ 								Tile tileSafely2 = Framing.GetTileSafely(num8 + width, num9 + num32 - 1);
+-								if (tileSafely2.nactive() && TileID.Sets.IsATreeTrunk[tileSafely2.type])
++								if ((tileSafely2.nactive() && TileID.Sets.IsATreeTrunk[tileSafely2.type]) || forcePlace)
+ 								{
+ 									num24 += 1f;
+ 									if (onlyCheck)
+@@ -594,7 +600,7 @@
+ 							{
+ 								num25 += 1f;
+ 								Tile tileSafely3 = Framing.GetTileSafely(num8 + width, num9 + num32 + 1);
+-								if (tileSafely3.nactive() && TileID.Sets.IsATreeTrunk[tileSafely3.type])
++								if ((tileSafely3.nactive() && TileID.Sets.IsATreeTrunk[tileSafely3.type]) || forcePlace)
+ 								{
+ 									num24 += 1f;
+ 									if (onlyCheck)
+@@ -617,7 +623,7 @@
+ 					{
+ 						flag8 = true;
+ 					}
+-					if (!flag8)
++					if (!flag8 && !forcePlace)
+ 					{
+ 						if (onlyCheck)
+ 						{
+@@ -663,7 +669,7 @@
+ 							{
+ 								num25 += 1f;
+ 								Tile tileSafely4 = Framing.GetTileSafely(num8 + num33, num9 + num34 - 1);
+-								if (tileSafely4.nactive() && TileID.Sets.IsATreeTrunk[tileSafely4.type])
++								if ((tileSafely4.nactive() && TileID.Sets.IsATreeTrunk[tileSafely4.type]) || forcePlace)
+ 								{
+ 									num24 += 1f;
+ 									if (onlyCheck)
+@@ -680,7 +686,7 @@
+ 							{
+ 								num25 += 1f;
+ 								Tile tileSafely5 = Framing.GetTileSafely(num8 + num33, num9 + num34 + 1);
+-								if (tileSafely5.nactive() && TileID.Sets.IsATreeTrunk[tileSafely5.type])
++								if ((tileSafely5.nactive() && TileID.Sets.IsATreeTrunk[tileSafely5.type]) || forcePlace)
+ 								{
+ 									num24 += 1f;
+ 									if (onlyCheck)
+@@ -703,7 +709,7 @@
+ 					{
+ 						flag9 = true;
+ 					}
+-					if (!flag9)
++					if (!flag9 && !forcePlace)
+ 					{
+ 						if (onlyCheck)
+ 						{
+@@ -720,12 +726,12 @@
+ 			}
+ 			if (tileData2.HookCheckIfCanPlace.hook != null)
+ 			{
+-				if (tileData2.HookCheckIfCanPlace.processedCoordinates)
++				if (tileData2.HookCheckIfCanPlace.processedCoordinates || forcePlace)
+ 				{
+ 					_ = tileData2.Origin;
+ 					_ = tileData2.Origin;
+ 				}
+-				if (tileData2.HookCheckIfCanPlace.hook(x, y, type, style, dir, num7) == tileData2.HookCheckIfCanPlace.badReturn && tileData2.HookCheckIfCanPlace.badResponse == 0)
++				if (tileData2.HookCheckIfCanPlace.hook(x, y, type, style, dir, num7) == tileData2.HookCheckIfCanPlace.badReturn && tileData2.HookCheckIfCanPlace.badResponse == 0 && !forcePlace)
+ 				{
+ 					num24 = 0f;
+ 					num22 = 0f;

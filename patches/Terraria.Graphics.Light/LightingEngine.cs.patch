@@ -1,0 +1,33 @@
+--- a/Terraria.Graphics.Light/LightingEngine.cs
++++ b/Terraria.Graphics.Light/LightingEngine.cs
+@@ -50,6 +50,10 @@
+ 
+ 	public void AddLight(int x, int y, Vector3 color)
+ 	{
++		if (IsaClient.Rendering.FullbrightLighting.Full)
++		{
++			return;
++		}
+ 		_perFrameLights.Add(new PerFrameLight(new Point(x, y), color));
+ 	}
+ 
+@@ -64,6 +68,10 @@
+ 
+ 	public Vector3 GetColor(int x, int y)
+ 	{
++		if (IsaClient.Rendering.FullbrightLighting.Full)
++		{
++			return Vector3.One;
++		}
+ 		if (!_activeProcessedArea.Contains(x, y))
+ 		{
+ 			return Vector3.Zero;
+@@ -253,7 +261,7 @@
+ 		}
+ 		Rectangle area = new Rectangle(_activeProcessedArea.X + 28, _activeProcessedArea.Y + 28, _activeProcessedArea.Width - 56, _activeProcessedArea.Height - 56);
+ 		Rectangle value = new Rectangle(0, 0, Main.maxTilesX, Main.maxTilesY);
+-		value.Inflate(-40, -40);
++		value.Inflate(-IsaClient.Rendering.WorldView.MapEdgeTiles(), -IsaClient.Rendering.WorldView.MapEdgeTiles());
+ 		area = Rectangle.Intersect(area, value);
+ 		area = Rectangle.Intersect(area, MapHelper.sceneArea);
+ 		FastParallel.For(area.Left, area.Right, (ParallelForAction)delegate(int start, int end, object context)

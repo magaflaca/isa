@@ -1,0 +1,19 @@
+--- a/Terraria.GameContent.Tile_Entities/TETeleportationPylon.cs
++++ b/Terraria.GameContent.Tile_Entities/TETeleportationPylon.cs
+@@ -1,4 +1,5 @@
+ using Terraria.DataStructures;
++using IsaClient.Movement;
+ 
+ namespace Terraria.GameContent.Tile_Entities;
+ 
+@@ -153,6 +154,10 @@
+ 
+ 	public static int PlacementPreviewHook_CheckIfCanPlace(int x, int y, int type = 597, int style = 0, int direction = 1, int alternate = 0)
+ 	{
++		if (TeleportTools.BypassTeleportRequests)
++		{
++			return 0;
++		}
+ 		TeleportPylonType pylonTypeFromPylonTileStyle = GetPylonTypeFromPylonTileStyle(style);
+ 		if (Main.PylonSystem.HasPylonOfType(pylonTypeFromPylonTileStyle))
+ 		{

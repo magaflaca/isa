@@ -1,0 +1,22 @@
+--- a/Terraria/FocusHelper.cs
++++ b/Terraria/FocusHelper.cs
+@@ -1,6 +1,7 @@
+ using System.Windows.Forms;
+ using ReLogic.OS;
+ using Terraria.Testing;
++using IsaClient.Menu;
+ 
+ namespace Terraria;
+ 
+@@ -160,9 +161,9 @@
+ 		}
+ 		if (!Platform.IsOSX)
+ 		{
+-			Main.instance.IsMouseVisible = false;
++			Main.instance.IsMouseVisible = InputState.NativeCursor;
+ 		}
+-		if (Platform.IsWindows && Main.instance.ReHideCursor)
++		if (Platform.IsWindows && Main.instance.ReHideCursor && !InputState.NativeCursor)
+ 		{
+ 			Main.instance.IsMouseVisible = false;
+ 			Main.instance.ReHideCursor = false;

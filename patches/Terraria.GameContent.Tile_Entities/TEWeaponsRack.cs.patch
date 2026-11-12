@@ -1,0 +1,21 @@
+--- a/Terraria.GameContent.Tile_Entities/TEWeaponsRack.cs
++++ b/Terraria.GameContent.Tile_Entities/TEWeaponsRack.cs
+@@ -1,6 +1,7 @@
+ using System.IO;
+ using Terraria.DataStructures;
+ using Terraria.ID;
++using IsaClient.WorldTools;
+ 
+ namespace Terraria.GameContent.Tile_Entities;
+ 
+@@ -177,6 +178,10 @@
+ 
+ 	public static bool FitsWeaponFrame(Item i)
+ 	{
++		if (!i.IsAir && i.stack > 0 && WorldCommands.AnythingOnPlates)
++		{
++			return true;
++		}
+ 		if (!i.IsAir && (i.fishingPole > 0 || ItemID.Sets.CanBePlacedOnWeaponRacks[i.type]))
+ 		{
+ 			return true;

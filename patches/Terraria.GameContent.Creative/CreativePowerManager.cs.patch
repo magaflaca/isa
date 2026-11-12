@@ -1,0 +1,19 @@
+--- a/Terraria.GameContent.Creative/CreativePowerManager.cs
++++ b/Terraria.GameContent.Creative/CreativePowerManager.cs
+@@ -2,6 +2,7 @@
+ using System.IO;
+ using Terraria.GameContent.NetModules;
+ using Terraria.Net;
++using IsaClient.Gameplay;
+ 
+ namespace Terraria.GameContent.Creative;
+ 
+@@ -208,7 +209,7 @@
+ 				persistentPerPlayerContent.Load(player, reader, versionGameWasLastSavedOn);
+ 			}
+ 		}
+-		if (player.difficulty != 3)
++		if (player.difficulty != 3 && !PlayerCheats.JourneyMenu)
+ 		{
+ 			ResetPowersForPlayer(player);
+ 		}

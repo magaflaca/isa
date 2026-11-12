@@ -1,0 +1,11 @@
+--- a/Terraria.Audio/SoundEngine.cs
++++ b/Terraria.Audio/SoundEngine.cs
+@@ -101,7 +101,7 @@
+ 
+ 	public static SoundEffectInstance PlaySound(int type, int x = -1, int y = -1, int Style = 1, float volumeScale = 1f, float pitchOffset = 0f)
+ 	{
+-		if (Main.dedServ || !IsAudioSupported)
++		if (Main.dedServ || !IsAudioSupported || IsaClient.Items.ShotPreview.Busy)
+ 		{
+ 			return null;
+ 		}

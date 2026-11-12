@@ -1,0 +1,11 @@
+--- a/Terraria.Testing/ScenarioTestLoadout.cs
++++ b/Terraria.Testing/ScenarioTestLoadout.cs
+@@ -187,7 +187,7 @@
+ 		int type = default(int);
+ 		foreach (ItemRecord record in records)
+ 		{
+-			if (ItemID.Search.TryGetId(record.Type, ref type))
++			if (ItemID.Search.TryGetId(record.Type, out type))
+ 			{
+ 				Item item = new Item(type);
+ 				item.Prefix(record.Prefix);

@@ -1,0 +1,23 @@
+--- a/Terraria.Social.Steam/SteamP2PReader.cs
++++ b/Terraria.Social.Steam/SteamP2PReader.cs
+@@ -79,9 +79,10 @@
+ 
+ 	private bool IsPacketAvailable(out uint size)
+ 	{
++		size = 0u;
+ 		lock (SteamLock)
+ 		{
+-			return SteamNetworking.IsP2PPacketAvailable(ref size, _channel);
++			return SteamNetworking.IsP2PPacketAvailable(out size, _channel);
+ 		}
+ 	}
+ 
+@@ -108,7 +109,7 @@
+ 				bool flag;
+ 				lock (SteamLock)
+ 				{
+-					flag = SteamNetworking.ReadP2PPacket(array, (uint)array.Length, ref num, ref val, _channel);
++					flag = SteamNetworking.ReadP2PPacket(array, (uint)array.Length, out num, out val, _channel);
+ 				}
+ 				if (!flag)
+ 				{

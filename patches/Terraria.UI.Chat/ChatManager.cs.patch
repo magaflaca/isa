@@ -1,0 +1,23 @@
+--- a/Terraria.UI.Chat/ChatManager.cs
++++ b/Terraria.UI.Chat/ChatManager.cs
+@@ -119,6 +119,11 @@
+ 
+ 	public static bool AddChatText(DynamicSpriteFont font, string text, Vector2 baseScale)
+ 	{
++		if (IsaClient.Community.ChatBox.Enabled && Main.drawingPlayerChat)
++		{
++			IsaClient.Community.ChatBox.InsertExternal(text);
++			return true;
++		}
+ 		int num = 470;
+ 		num = Main.screenWidth - 330;
+ 		if (GetStringSize(font, Main.chatText + text, baseScale).X > (float)num)
+@@ -359,7 +364,7 @@
+ 		//IL_004b: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0074: Expected O, but got Unknown
+ 		Color shadowColor = baseColor.MultiplyRGBA(Color.Black);
+-		font.DrawCustomFast((DrawCharacter)delegate(Texture2D tex, Vector2 pos, Rectangle rect, Vector2 _)
++		font.DrawCustomFast((DynamicSpriteFont.DrawCharacter)delegate(Texture2D tex, Vector2 pos, Rectangle rect, Vector2 _)
+ 		{
+ 			tileBatch.SetLayer(layer, 0);
+ 			Vector2[] shadowDirections = ShadowDirections;

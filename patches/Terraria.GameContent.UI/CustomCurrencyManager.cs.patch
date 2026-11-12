@@ -1,0 +1,21 @@
+--- a/Terraria.GameContent.UI/CustomCurrencyManager.cs
++++ b/Terraria.GameContent.UI/CustomCurrencyManager.cs
+@@ -2,6 +2,7 @@
+ using Microsoft.Xna.Framework;
+ using Microsoft.Xna.Framework.Graphics;
+ using Terraria.ID;
++using IsaClient.Gameplay;
+ 
+ namespace Terraria.GameContent.UI;
+ 
+@@ -69,6 +70,10 @@
+ 
+ 	public static bool BuyItem(Player player, long price, int currencyIndex)
+ 	{
++		if (PlayerCheats.FreeShops)
++		{
++			return true;
++		}
+ 		CustomCurrencySystem customCurrencySystem = _currencies[currencyIndex];
+ 		bool overFlowing;
+ 		long num = customCurrencySystem.CountCurrency(out overFlowing, player.inventory, 58, 57, 56, 55, 54);

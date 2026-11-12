@@ -1,0 +1,11 @@
+--- a/Terraria.Social.Steam/CloudSocialModule.cs
++++ b/Terraria.Social.Steam/CloudSocialModule.cs
+@@ -31,7 +31,7 @@
+ 			int num = default(int);
+ 			for (int i = 0; i < fileCount; i++)
+ 			{
+-				list.Add(SteamRemoteStorage.GetFileNameAndSize(i, ref num));
++				list.Add(SteamRemoteStorage.GetFileNameAndSize(i, out num));
+ 			}
+ 			return list;
+ 		}

@@ -1,0 +1,10 @@
+--- a/Terraria.Utilities.FileBrowser/FileBrowser.cs
++++ b/Terraria.Utilities.FileBrowser/FileBrowser.cs
+@@ -1,6 +1,6 @@
+ namespace Terraria.Utilities.FileBrowser;
+ 
+-public class FileBrowser
++public partial class FileBrowser
+ {
+ 	private static IFileBrowser _platformWrapper;
+ 

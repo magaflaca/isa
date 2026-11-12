@@ -1,0 +1,44 @@
+--- a/Terraria.Social.Steam/NetClientSocialModule.cs
++++ b/Terraria.Social.Steam/NetClientSocialModule.cs
+@@ -33,9 +33,9 @@
+ 	public override void Initialize()
+ 	{
+ 		base.Initialize();
+-		_gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create((DispatchDelegate<GameLobbyJoinRequested_t>)OnLobbyJoinRequest);
+-		_p2pSessionRequest = Callback<P2PSessionRequest_t>.Create((DispatchDelegate<P2PSessionRequest_t>)OnP2PSessionRequest);
+-		_p2pSessionConnectfail = Callback<P2PSessionConnectFail_t>.Create((DispatchDelegate<P2PSessionConnectFail_t>)OnSessionConnectFail);
++		_gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create((Callback<GameLobbyJoinRequested_t>.DispatchDelegate)OnLobbyJoinRequest);
++		_p2pSessionRequest = Callback<P2PSessionRequest_t>.Create((Callback<P2PSessionRequest_t>.DispatchDelegate)OnP2PSessionRequest);
++		_p2pSessionConnectfail = Callback<P2PSessionConnectFail_t>.Create((Callback<P2PSessionConnectFail_t>.DispatchDelegate)OnSessionConnectFail);
+ 		Main.OnEngineLoad += CheckParameters;
+ 	}
+ 
+@@ -52,7 +52,7 @@
+ 		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0014: Unknown result type (might be due to invalid IL or missing references)
+ 		CSteamID lobbySteamId = new CSteamID(lobbyId);
+-		if (((CSteamID)(ref lobbySteamId)).IsValid())
++		if (lobbySteamId.IsValid())
+ 		{
+ 			Main.OpenPlayerSelectFromNet(delegate
+ 			{
+@@ -197,7 +197,7 @@
+ 		SendAuthTicket(_lobby.Owner);
+ 		int num = 0;
+ 		P2PSessionState_t val = default(P2PSessionState_t);
+-		while (SteamNetworking.GetP2PSessionState(_lobby.Owner, ref val) && val.m_bConnectionActive != 1)
++		while (SteamNetworking.GetP2PSessionState(_lobby.Owner, out val) && val.m_bConnectionActive != 1)
+ 		{
+ 			switch (val.m_eP2PSessionError)
+ 			{
+@@ -247,8 +247,8 @@
+ 		if (_authTicket == HAuthTicket.Invalid)
+ 		{
+ 			SteamNetworkingIdentity val = default(SteamNetworkingIdentity);
+-			((SteamNetworkingIdentity)(ref val)).SetSteamID(address);
+-			_authTicket = SteamUser.GetAuthSessionTicket(_authData, _authData.Length, ref _authDataLength, ref val);
++			val.SetSteamID(address);
++			_authTicket = SteamUser.GetAuthSessionTicket(_authData, _authData.Length, out _authDataLength, ref val);
+ 		}
+ 		int num = (int)(_authDataLength + 3);
+ 		byte[] array = new byte[num];

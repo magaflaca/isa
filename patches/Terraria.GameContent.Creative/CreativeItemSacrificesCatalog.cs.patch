@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Creative/CreativeItemSacrificesCatalog.cs
++++ b/Terraria.GameContent.Creative/CreativeItemSacrificesCatalog.cs
+@@ -25,7 +25,7 @@
+ 				continue;
+ 			}
+ 			string[] array2 = text.Split('\t');
+-			if (array2.Length >= 3 && ItemID.Search.TryGetId(array2[0], ref key))
++			if (array2.Length >= 3 && ItemID.Search.TryGetId(array2[0], out key))
+ 			{
+ 				int value = 0;
+ 				bool flag = false;

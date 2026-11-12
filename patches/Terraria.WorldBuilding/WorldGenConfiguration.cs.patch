@@ -1,0 +1,39 @@
+--- a/Terraria.WorldBuilding/WorldGenConfiguration.cs
++++ b/Terraria.WorldBuilding/WorldGenConfiguration.cs
+@@ -23,14 +23,14 @@
+ 		//IL_001c: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0045: Expected O, but got Unknown
+ 		//IL_003b: Unknown result type (might be due to invalid IL or missing references)
+-		_003F val = (JObject)configurationRoot["Biomes"];
+-		if ((int)val == 0)
++		JObject val = (JObject)configurationRoot["Biomes"];
++		if (val == null)
+ 		{
+ 			val = new JObject();
+ 		}
+ 		_biomeRoot = (JObject)val;
+-		_003F val2 = (JObject)configurationRoot["Passes"];
+-		if ((int)val2 == 0)
++		JObject val2 = (JObject)configurationRoot["Passes"];
++		if (val2 == null)
+ 		{
+ 			val2 = new JObject();
+ 		}
+@@ -45,7 +45,7 @@
+ 	public T CreateBiome<T>(string name) where T : MicroBiome, new()
+ 	{
+ 		JToken val = default(JToken);
+-		if (_biomeRoot.TryGetValue(name, ref val))
++		if (_biomeRoot.TryGetValue(name, out val))
+ 		{
+ 			return val.ToObject<T>();
+ 		}
+@@ -59,7 +59,7 @@
+ 		//IL_0011: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_001b: Expected O, but got Unknown
+ 		JToken val = default(JToken);
+-		if (_passRoot.TryGetValue(name, ref val))
++		if (_passRoot.TryGetValue(name, out val))
+ 		{
+ 			return new GameConfiguration((JObject)val);
+ 		}

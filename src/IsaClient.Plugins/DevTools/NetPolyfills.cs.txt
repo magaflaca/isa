@@ -1,0 +1,113 @@
+// Types .NET 6-10 code uses that .NET Framework does not have. Added (as internal types) to every plugin the client
+// compiles: converted TerraAngel builds and plugin sources.
+namespace System
+{
+    internal readonly struct Index
+    {
+        private readonly int _value;
+        public Index(int value, bool fromEnd = false) { _value = fromEnd ? ~value : value; }
+        public static Index Start => new Index(0);
+        public static Index End => new Index(~0);
+        public static Index FromStart(int value) => new Index(value);
+        public static Index FromEnd(int value) => new Index(value, true);
+        public int Value => _value < 0 ? ~_value : _value;
+        public bool IsFromEnd => _value < 0;
+        public int GetOffset(int length) => IsFromEnd ? length + _value + 1 : _value;
+        public static implicit operator Index(int value) => FromStart(value);
+    }
+
+    internal readonly struct Range
+    {
+        public Index Start { get; }
+        public Index End { get; }
+        public Range(Index start, Index end) { Start = start; End = end; }
+        public static Range StartAt(Index start) => new Range(start, Index.End);
+        public static Range EndAt(Index end) => new Range(Index.Start, end);
+        public static Range All => new Range(Index.Start, Index.End);
+        public (int Offset, int Length) GetOffsetAndLength(int length)
+        {
+            int start = Start.GetOffset(length);
+            int end = End.GetOffset(length);
+            return (start, end - start);
+        }
+    }
+}
+
+namespace System.Runtime.InteropServices
+{
+    internal static class CollectionsMarshal
+    {
+        private static class ListAccess<T>
+        {
+            public static readonly System.Reflection.FieldInfo Items = typeof(System.Collections.Generic.List<T>).GetField("_items", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            public static readonly System.Reflection.FieldInfo Size = typeof(System.Collections.Generic.List<T>).GetField("_size", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        }
+
+        public static void SetCount<T>(System.Collections.Generic.List<T> list, int count)
+        {
+            if (list.Capacity < count) list.Capacity = count;
+            ListAccess<T>.Size.SetValue(list, count);
+        }
+
+        public static System.Span<T> AsSpan<T>(System.Collections.Generic.List<T> list)
+        {
+            return list == null ? default : new System.Span<T>((T[])ListAccess<T>.Items.GetValue(list), 0, list.Count);
+        }
+    }
+}
+
+namespace System.Runtime.CompilerServices
+{
+    /// <summary>What .NET 6+ compilers turn $"..." into.</summary>
+    internal struct DefaultInterpolatedStringHandler
+    {
+        private System.Text.StringBuilder _builder;
+        private readonly IFormatProvider _provider;
+
+        public DefaultInterpolatedStringHandler(int literalLength, int formattedCount)
+        {
+            _builder = new System.Text.StringBuilder(literalLength + formattedCount * 11);
+            _provider = null;
+        }
+
+        public DefaultInterpolatedStringHandler(int literalLength, int formattedCount, IFormatProvider provider)
+        {
+            _builder = new System.Text.StringBuilder(literalLength + formattedCount * 11);
+            _provider = provider;
+        }
+
+        private System.Text.StringBuilder Builder => _builder ??= new System.Text.StringBuilder();
+
+        public void AppendLiteral(string value) => Builder.Append(value);
+
+        public void AppendFormatted<T>(T value) => AppendFormatted(value, 0, null);
+
+        public void AppendFormatted<T>(T value, string format) => AppendFormatted(value, 0, format);
+
+        public void AppendFormatted<T>(T value, int alignment) => AppendFormatted(value, alignment, null);
+
+        public void AppendFormatted<T>(T value, int alignment, string format)
+        {
+            string text = value is IFormattable formattable ? formattable.ToString(format, _provider) : value?.ToString();
+            text ??= "";
+            if (alignment > 0 && text.Length < alignment) text = text.PadLeft(alignment);
+            else if (alignment < 0 && text.Length < -alignment) text = text.PadRight(-alignment);
+            Builder.Append(text);
+        }
+
+        public void AppendFormatted(string value) => Builder.Append(value);
+
+        public void AppendFormatted(string value, int alignment = 0, string format = null) => AppendFormatted<string>(value, alignment, format);
+
+        public void AppendFormatted(object value, int alignment = 0, string format = null) => AppendFormatted<object>(value, alignment, format);
+
+        public override string ToString() => Builder.ToString();
+
+        public string ToStringAndClear()
+        {
+            string text = Builder.ToString();
+            _builder = null;
+            return text;
+        }
+    }
+}

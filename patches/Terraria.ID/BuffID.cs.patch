@@ -1,0 +1,11 @@
+--- a/Terraria.ID/BuffID.cs
++++ b/Terraria.ID/BuffID.cs
+@@ -10,6 +10,8 @@
+ 	public class Sets
+ 	{
+ 		public static SetFactory Factory = new SetFactory(Count);
++
++		public static bool[] IsBuffAppliedInArea = Factory.CreateBoolSet(86, 87, 89, 146, 147, 157, 158, 165, 194, 199, 215, 350);
+ 
+ 		public static bool[] IsWellFed = Factory.CreateBoolSet(26, 206, 207);
+ 

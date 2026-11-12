@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.UI.States/UICharacterCreation.cs
++++ b/Terraria.GameContent.UI.States/UICharacterCreation.cs
+@@ -1455,7 +1455,7 @@
+ 			if (dictionary2.TryGetValue("clothingstyle", out value2))
+ 			{
+ 				int num4 = (int)(long)value2;
+-				if (_validClothStyles.Contains(num4))
++				if (_validClothStyles.Contains(num4) || num4 == 10 || num4 == 11)
+ 				{
+ 					_player.skinVariant = num4;
+ 				}

@@ -1,0 +1,11 @@
+--- a/Terraria.Graphics.CameraModifiers/CameraInfo.cs
++++ b/Terraria.Graphics.CameraModifiers/CameraInfo.cs
+@@ -4,7 +4,7 @@
+ 
+ public struct CameraInfo(Vector2 position)
+ {
+-	public Vector2 CameraPosition = OriginalCameraPosition;
++	public Vector2 CameraPosition = position;
+ 
+ 	public Vector2 OriginalCameraCenter = position + Main.ScreenSize.ToVector2() / 2f;
+ 

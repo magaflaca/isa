@@ -1,0 +1,32 @@
+--- a/Terraria/Dust.cs
++++ b/Terraria/Dust.cs
+@@ -4,6 +4,7 @@
+ using Terraria.GameContent.Events;
+ using Terraria.Graphics.Shaders;
+ using Terraria.Utilities;
++using IsaClient.Rendering;
+ 
+ namespace Terraria;
+ 
+@@ -82,6 +83,10 @@
+ 		{
+ 			Main.rand = new UnifiedRandom((int)DateTime.Now.Ticks);
+ 		}
++		if (AntiLag.DustLevel < 100 && (AntiLag.DustLevel <= 0 || Main.rand.Next(0, 101) > AntiLag.DustLevel))
++		{
++			return 6000;
++		}
+ 		if (Main.gamePaused)
+ 		{
+ 			return 6000;
+@@ -91,6 +96,10 @@
+ 			return 6000;
+ 		}
+ 		if (Main.netMode == 2)
++		{
++			return 6000;
++		}
++		if (AntiLag.BlockNewDust())
+ 		{
+ 			return 6000;
+ 		}

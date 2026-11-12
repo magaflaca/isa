@@ -1,0 +1,135 @@
+--- a/Terraria/Program.cs
++++ b/Terraria/Program.cs
+@@ -15,7 +15,7 @@
+ 
+ namespace Terraria;
+ 
+-public static class Program
++public static partial class Program
+ {
+ 	public static bool IsXna = true;
+ 
+@@ -71,22 +71,38 @@
+ 
+ 	private static void ForceJITOnAssembly(Assembly assembly)
+ 	{
+-		Type[] types = assembly.GetTypes();
++		Type[] types = LoadableTypes(assembly);
+ 		foreach (Type type in types)
+ 		{
+-			MethodInfo[] array = (IsMono ? type.GetMethods() : type.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic));
++			MethodInfo[] array;
++			try
++			{
++				array = (IsMono ? type.GetMethods() : type.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic));
++			}
++			catch
++			{
++				ThingsLoaded++;
++				continue;
++			}
+ 			foreach (MethodInfo methodInfo in array)
+ 			{
+-				if (!methodInfo.IsAbstract && !methodInfo.ContainsGenericParameters && methodInfo.GetMethodBody() != null)
++				try
+ 				{
+-					if (IsMono)
++					if (!methodInfo.IsAbstract && !methodInfo.ContainsGenericParameters && methodInfo.GetMethodBody() != null)
+ 					{
+-						JitForcedMethodCache = methodInfo.MethodHandle.GetFunctionPointer();
++						if (IsMono)
++						{
++							JitForcedMethodCache = methodInfo.MethodHandle.GetFunctionPointer();
++						}
++						else
++						{
++							RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
++						}
+ 					}
+-					else
+-					{
+-						RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+-					}
++				}
++				catch
++				{
++					// Uses a library that is not there yet: it is compiled when it runs.
+ 				}
+ 			}
+ 			ThingsLoaded++;
+@@ -95,19 +111,26 @@
+ 
+ 	private static void ForceStaticInitializers(Assembly assembly)
+ 	{
+-		Type[] types = assembly.GetTypes();
++		Type[] types = LoadableTypes(assembly);
+ 		foreach (Type type in types)
+ 		{
+ 			if (!type.IsGenericType)
+ 			{
+-				RuntimeHelpers.RunClassConstructor(type.TypeHandle);
++				try
++				{
++					RuntimeHelpers.RunClassConstructor(type.TypeHandle);
++				}
++				catch (Exception ex) when (ex is System.IO.FileNotFoundException || ex is TypeLoadException || ex is TypeInitializationException)
++				{
++					// A type that needs a library that is not there yet initializes when it is first used.
++				}
+ 			}
+ 		}
+ 	}
+ 
+ 	private static void ForceLoadAssembly(Assembly assembly, bool initializeStaticMembers)
+ 	{
+-		ThingsToLoad = assembly.GetTypes().Length;
++		ThingsToLoad = LoadableTypes(assembly).Length;
+ 		ForceJITOnAssembly(assembly);
+ 		if (initializeStaticMembers)
+ 		{
+@@ -178,6 +201,10 @@
+ 	public static void LaunchGame(string[] args, bool monoArgs = false)
+ 	{
+ 		Thread.CurrentThread.Name = "Main Thread";
++		if (IsaClient.Core.StartupHelp.RelocateIfOutside(args))
++		{
++			return;
++		}
+ 		if (monoArgs)
+ 		{
+ 			args = Utils.ConvertMonoArgsToDotNet(args);
+@@ -185,6 +212,8 @@
+ 		LogFNANativeLibVersions();
+ 		LaunchParameters = Utils.ParseArguements(args);
+ 		SavePath = (LaunchParameters.ContainsKey("-savedirectory") ? LaunchParameters["-savedirectory"] : Platform.Get<IPathService>().GetStoragePath("Terraria"));
++		// IsaClient: "Sharp Display" must be set before the window exists.
++		IsaClient.Core.DisplayScaling.ApplyAtStart(SavePath);
+ 		ThreadPool.SetMinThreads(8, 8);
+ 		InitializeConsoleOutput();
+ 		SetupLogging();
+@@ -235,6 +264,10 @@
+ 		}
+ 		catch (Exception e)
+ 		{
++			if (!Main.dedServ)
++			{
++				IsaClient.Feedback.FeedbackReports.OnCrash(e, "Main Thread");
++			}
+ 			DisplayException(e);
+ 		}
+ 	}
+@@ -268,7 +301,13 @@
+ 			{
+ 				Console.WriteLine(Language.GetTextValue("Error.ServerCrash"), DateTime.Now, text);
+ 			}
+-			MessageBox.Show(text, "Terraria: Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
++			if (!Main.dedServ && IsaClient.Core.StartupHelp.TryExplain(e))
++			{
++				// A known setup problem (Steam can't start the game): explained in the player's language instead.
++				return;
++			}
++			string note = Main.dedServ ? null : IsaClient.Feedback.FeedbackReports.CrashNote(e);
++			MessageBox.Show((note != null) ? (note + Environment.NewLine + Environment.NewLine + text) : text, "Terraria: Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+ 		}
+ 		catch
+ 		{

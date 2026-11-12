@@ -1,0 +1,10 @@
+--- a/Terraria.Utilities.FileBrowser/IFileBrowser.cs
++++ b/Terraria.Utilities.FileBrowser/IFileBrowser.cs
+@@ -1,6 +1,6 @@
+ namespace Terraria.Utilities.FileBrowser;
+ 
+-public interface IFileBrowser
++public partial interface IFileBrowser
+ {
+ 	string OpenFilePanel(string title, ExtensionFilter[] extensions);
+ }

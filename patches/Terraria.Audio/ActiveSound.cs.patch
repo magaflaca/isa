@@ -1,0 +1,15 @@
+--- a/Terraria.Audio/ActiveSound.cs
++++ b/Terraria.Audio/ActiveSound.cs
+@@ -152,10 +152,10 @@
+ 		switch (Style.Type)
+ 		{
+ 		case SoundType.Sound:
+-			num *= Main.soundVolume;
++			num *= Main.soundVolume * IsaClient.Music.MediaFocus.GameSoundScale;
+ 			break;
+ 		case SoundType.Ambient:
+-			num *= Main.ambientVolume;
++			num *= Main.ambientVolume * IsaClient.Music.MediaFocus.GameSoundScale;
+ 			break;
+ 		case SoundType.Music:
+ 			num *= Main.musicVolume;

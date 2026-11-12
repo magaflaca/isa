@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Biomes/GraniteBiome.cs
++++ b/Terraria.GameContent.Biomes/GraniteBiome.cs
+@@ -173,7 +173,7 @@
+ 					num7 /= 8.0;
+ 					if (num7 > magma.Resistance)
+ 					{
+-						double num8 = ((Vector2D)(ref val)).Length() / 8.0;
++						double num8 = val.Length() / 8.0;
+ 						double val3 = Math.Max(num7 - num8 - magma.Pressure, 0.0) + num8 + magma.Pressure * 0.875 - magma.Resistance;
+ 						val3 = Math.Max(0.0, val3);
+ 						_targetMagmaMap[j, k] = Magma.CreateFlow(val3, Math.Max(0.0, magma.Resistance - val3 * 0.02));

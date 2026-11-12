@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Generation.Dungeon.Halls/LegacyEntranceDungeonHall.cs
++++ b/Terraria.GameContent.Generation.Dungeon.Halls/LegacyEntranceDungeonHall.cs
+@@ -214,7 +214,7 @@
+ 			Vector2D overrideStartPosition = OverrideStartPosition;
+ 			Vector2D v = OverrideEndPosition - overrideStartPosition;
+ 			Vector2D val3 = v.SafeNormalize(Vector2D.UnitX);
+-			num4 = (steps = (int)Math.Ceiling(((Vector2D)(ref v)).Length() / ((Vector2D)(ref val3)).Length()));
++			num4 = (steps = (int)Math.Ceiling(v.Length() / val3.Length()));
+ 			val = (startPosition = overrideStartPosition);
+ 			val2 = val3;
+ 			num3 = ((val3.X > 0.0) ? 1 : (-1));

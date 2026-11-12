@@ -1,0 +1,17 @@
+--- a/Terraria.Testing/DebugUtils.cs
++++ b/Terraria.Testing/DebugUtils.cs
+@@ -18,12 +18,12 @@
+ 		}
+ 		Point point = (Main.LocalPlayer.Bottom + new Vector2(-8f, 8f)).ToTileCoordinates();
+ 		string text = default(string);
+-		if (!TileID.Search.TryGetName((int)tile.type, ref text))
++		if (!TileID.Search.TryGetName((int)tile.type, out text))
+ 		{
+ 			text = "Unknown";
+ 		}
+ 		string text2 = default(string);
+-		if (!WallID.Search.TryGetName((int)tile.wall, ref text2))
++		if (!WallID.Search.TryGetName((int)tile.wall, out text2))
+ 		{
+ 			text2 = "Unknown";
+ 		}

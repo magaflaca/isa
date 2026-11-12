@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\IsaClient.Plugin.props" />
+  <PropertyGroup>
+    <!-- The name must end in .IsaPlugin: the game only loads *.IsaPlugin.dll and *.TAPlugin.dll. -->
+    <AssemblyName>HelloImGui.IsaPlugin</AssemblyName>
+    <RootNamespace>HelloImGui</RootNamespace>
+  </PropertyGroup>
+</Project>

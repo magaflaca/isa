@@ -1,0 +1,11 @@
+--- a/Terraria.WorldBuilding/Modifiers.cs
++++ b/Terraria.WorldBuilding/Modifiers.cs
+@@ -78,7 +78,7 @@
+ 			//IL_0019: Unknown result type (might be due to invalid IL or missing references)
+ 			//IL_001e: Unknown result type (might be due to invalid IL or missing references)
+ 			Vector2D val = default(Vector2D);
+-			((Vector2D)(ref val))._002Ector((double)origin.X, (double)origin.Y);
++			val = new Vector2D((double)origin.X, (double)origin.Y);
+ 			double num = Vector2D.Distance(new Vector2D((double)x, (double)y), val);
+ 			double num2 = Math.Max(0.0, Math.Min(1.0, (num - _innerRadius) / (_outerRadius - _innerRadius)));
+ 			if (GenBase._random.NextDouble() > num2)

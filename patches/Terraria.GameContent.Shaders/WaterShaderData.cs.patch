@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Shaders/WaterShaderData.cs
++++ b/Terraria.GameContent.Shaders/WaterShaderData.cs
+@@ -156,7 +156,7 @@
+ 		RenderTarget2D distortionTarget = _distortionTarget;
+ 		_distortionTarget = _distortionTargetSwap;
+ 		_distortionTargetSwap = distortionTarget;
+-		if (_useViscosityFilter)
++		if (_useViscosityFilter && LiquidRenderer.Instance.GetCachedDrawArea().Width > 0 && LiquidRenderer.Instance.GetCachedDrawArea().Height > 0)
+ 		{
+ 			LiquidRenderer.Instance.SetWaveMaskData(ref _viscosityMaskChain[_activeViscosityMask]);
+ 			tileBatch.Begin();

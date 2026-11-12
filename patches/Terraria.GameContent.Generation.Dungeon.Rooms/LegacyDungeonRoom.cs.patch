@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Generation.Dungeon.Rooms/LegacyDungeonRoom.cs
++++ b/Terraria.GameContent.Generation.Dungeon.Rooms/LegacyDungeonRoom.cs
+@@ -209,7 +209,7 @@
+ 			val2 = (val3 = legacyDungeonRoomSettings.OverrideStartPosition);
+ 			Vector2D v = legacyDungeonRoomSettings.OverrideEndPosition - val2;
+ 			val = v.SafeNormalize(Vector2D.UnitX);
+-			num4 = (int)Math.Ceiling(((Vector2D)(ref v)).Length() / ((Vector2D)(ref val)).Length());
++			num4 = (int)Math.Ceiling(v.Length() / val.Length());
+ 		}
+ 		else if (legacyDungeonRoomSettings.OverrideVelocity != default(Vector2D))
+ 		{

@@ -1,0 +1,14 @@
+--- a/Terraria.DataStructures/PlayerDeathReason.cs
++++ b/Terraria.DataStructures/PlayerDeathReason.cs
+@@ -1,9 +1,9 @@
+-using System.IO;
++﻿using System.IO;
+ using Terraria.Localization;
+ 
+ namespace Terraria.DataStructures;
+ 
+-public class PlayerDeathReason
++public partial class PlayerDeathReason
+ {
+ 	private int _sourcePlayerIndex = -1;
+ 

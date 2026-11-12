@@ -1,0 +1,38 @@
+// The same global usings as the TerraAngel pack: fork code was written inside TerraAngel.
+// (Vector2/3/4 come from IsaClient.Plugin.props for .TAPlugin projects: the bridge vectors.)
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using ImGuiNET;
+global using Microsoft.Xna.Framework;
+global using Microsoft.Xna.Framework.Graphics;
+global using TerraAngel;
+global using TerraAngel.Tools;
+global using TerraAngel.Tools.Automation;
+global using TerraAngel.Tools.Developer;
+global using TerraAngel.Tools.Map;
+global using TerraAngel.Tools.Visuals;
+global using TerraAngel.Tools.Builder;
+global using TerraAngel.UI;
+global using TerraAngel.UI.ClientWindows;
+global using TerraAngel.Config;
+global using TerraAngel.Graphics;
+global using TerraAngel.Hooks;
+global using TerraAngel.Input;
+global using TerraAngel.Utility;
+global using TerraAngel.Timing;
+global using TerraAngel.Vectors;
+global using TerraAngel.Assets;
+global using Terraria;
+global using Terraria.ID;
+global using static TerraAngel.I18n;
+global using NRectangle = System.Drawing.Rectangle;
+global using Rectangle = Microsoft.Xna.Framework.Rectangle;
+global using Color = Microsoft.Xna.Framework.Color;
+global using Matrix = Microsoft.Xna.Framework.Matrix;
+global using NVector2 = System.Numerics.Vector2;
+global using NVector3 = System.Numerics.Vector3;
+global using NVector4 = System.Numerics.Vector4;
+global using Matrix3x2 = System.Numerics.Matrix3x2;
+global using Matrix4x4 = System.Numerics.Matrix4x4;
+global using Quaternion = System.Numerics.Quaternion;

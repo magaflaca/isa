@@ -1,0 +1,11 @@
+--- a/Terraria.Audio/LegacyAudioSystem.cs
++++ b/Terraria.Audio/LegacyAudioSystem.cs
+@@ -32,6 +32,8 @@
+ 
+ 	public void LoadFromSources()
+ 	{
++		// IsaClient: Terraria's title theme back in its track first (the IsaClient title music returns next tick)
++		IsaClient.Music.TitleMusic.BeforeSources(this);
+ 		List<IContentSource> fileSources = FileSources;
+ 		for (int i = 0; i < AudioTracks.Length; i++)
+ 		{

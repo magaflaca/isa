@@ -1,0 +1,11 @@
+--- a/Terraria.Social.WeGame/FriendsSocialModule.cs
++++ b/Terraria.Social.WeGame/FriendsSocialModule.cs
+@@ -17,7 +17,7 @@
+ 	{
+ 		//IL_000c: Unknown result type (might be due to invalid IL or missing references)
+ 		string text = default(string);
+-		rail_api.RailFactory().RailPlayer().GetPlayerName(ref text);
++		rail_api.RailFactory().RailPlayer().GetPlayerName(out text);
+ 		WeGameHelper.WriteDebugString("GetUsername by wegame" + text);
+ 		return text;
+ 	}

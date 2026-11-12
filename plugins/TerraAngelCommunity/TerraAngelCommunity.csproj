@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Additions from TerraAngel forks (code shared by the community), on top of the TerraAngel pack: Source/ is their
+       code as it came, Port/ makes their changes to the game work here (Harmony) and adds what they did not share. -->
+  <Import Project="..\IsaClient.Plugin.props" />
+  <PropertyGroup>
+    <AssemblyName>TerraAngelCommunity.TAPlugin</AssemblyName>
+    <RootNamespace>TerraAngel</RootNamespace>
+    <NoWarn>$(NoWarn);CS0618;CS0162;CS0168;CS0219;CS0414;CS0649;CS8632;CS0108;CS0436</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="all" />
+    <Reference Include="TerraAngel.IsaPlugin"><HintPath>..\TerraAngel\bin\Release\TerraAngel.IsaPlugin.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

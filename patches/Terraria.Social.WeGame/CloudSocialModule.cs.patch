@@ -1,0 +1,11 @@
+--- a/Terraria.Social.WeGame/CloudSocialModule.cs
++++ b/Terraria.Social.WeGame/CloudSocialModule.cs
+@@ -28,7 +28,7 @@
+ 			string item = default(string);
+ 			for (uint num2 = 0u; num2 < fileCount; num2++)
+ 			{
+-				rail_api.RailFactory().RailStorageHelper().GetFileNameAndSize(num2, ref item, ref num);
++				rail_api.RailFactory().RailStorageHelper().GetFileNameAndSize(num2, out item, out num);
+ 				list.Add(item);
+ 			}
+ 			return list;

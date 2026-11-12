@@ -1,0 +1,67 @@
+--- a/Terraria.Social.Steam/Lobby.cs
++++ b/Terraria.Social.Steam/Lobby.cs
+@@ -18,11 +18,11 @@
+ 
+ 	private CallResult<LobbyEnter_t> _lobbyEnter;
+ 
+-	private APIDispatchDelegate<LobbyEnter_t> _lobbyEnterExternalCallback;
++	private CallResult<LobbyEnter_t>.APIDispatchDelegate _lobbyEnterExternalCallback;
+ 
+ 	private CallResult<LobbyCreated_t> _lobbyCreated;
+ 
+-	private APIDispatchDelegate<LobbyCreated_t> _lobbyCreatedExternalCallback;
++	private CallResult<LobbyCreated_t>.APIDispatchDelegate _lobbyCreatedExternalCallback;
+ 
+ 	public Lobby()
+ 	{
+@@ -30,18 +30,18 @@
+ 		//IL_0021: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0027: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_002c: Unknown result type (might be due to invalid IL or missing references)
+-		_lobbyEnter = CallResult<LobbyEnter_t>.Create((APIDispatchDelegate<LobbyEnter_t>)OnLobbyEntered);
+-		_lobbyCreated = CallResult<LobbyCreated_t>.Create((APIDispatchDelegate<LobbyCreated_t>)OnLobbyCreated);
++		_lobbyEnter = CallResult<LobbyEnter_t>.Create((CallResult<LobbyEnter_t>.APIDispatchDelegate)OnLobbyEntered);
++		_lobbyCreated = CallResult<LobbyCreated_t>.Create((CallResult<LobbyCreated_t>.APIDispatchDelegate)OnLobbyCreated);
+ 	}
+ 
+-	public void Create(bool inviteOnly, APIDispatchDelegate<LobbyCreated_t> callResult)
++	public void Create(bool inviteOnly, CallResult<LobbyCreated_t>.APIDispatchDelegate callResult)
+ 	{
+ 		//IL_000c: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0011: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_001f: Unknown result type (might be due to invalid IL or missing references)
+-		SteamAPICall_t val = SteamMatchmaking.CreateLobby((ELobbyType)(!inviteOnly), 256);
++		SteamAPICall_t val = SteamMatchmaking.CreateLobby((inviteOnly ? ELobbyType.k_ELobbyTypePrivate : ELobbyType.k_ELobbyTypeFriendsOnly), 256);
+ 		_lobbyCreatedExternalCallback = callResult;
+-		_lobbyCreated.Set(val, (APIDispatchDelegate<LobbyCreated_t>)null);
++		_lobbyCreated.Set(val, (CallResult<LobbyCreated_t>.APIDispatchDelegate)null);
+ 		State = LobbyState.Creating;
+ 	}
+ 
+@@ -59,7 +59,7 @@
+ 		}
+ 	}
+ 
+-	public void Join(CSteamID lobbyId, APIDispatchDelegate<LobbyEnter_t> callResult)
++	public void Join(CSteamID lobbyId, CallResult<LobbyEnter_t>.APIDispatchDelegate callResult)
+ 	{
+ 		//IL_0017: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0018: Unknown result type (might be due to invalid IL or missing references)
+@@ -70,7 +70,7 @@
+ 			State = LobbyState.Connecting;
+ 			_lobbyEnterExternalCallback = callResult;
+ 			SteamAPICall_t val = SteamMatchmaking.JoinLobby(lobbyId);
+-			_lobbyEnter.Set(val, (APIDispatchDelegate<LobbyEnter_t>)null);
++			_lobbyEnter.Set(val, (CallResult<LobbyEnter_t>.APIDispatchDelegate)null);
+ 		}
+ 	}
+ 
+@@ -79,7 +79,7 @@
+ 		//IL_0001: Unknown result type (might be due to invalid IL or missing references)
+ 		CSteamID val = default(CSteamID);
+ 		EChatEntryType val2 = default(EChatEntryType);
+-		int lobbyChatEntry = SteamMatchmaking.GetLobbyChatEntry(Id, index, ref val, _messageBuffer, _messageBuffer.Length, ref val2);
++		int lobbyChatEntry = SteamMatchmaking.GetLobbyChatEntry(Id, index, out val, _messageBuffer, _messageBuffer.Length, out val2);
+ 		byte[] array = new byte[lobbyChatEntry];
+ 		Array.Copy(_messageBuffer, array, lobbyChatEntry);
+ 		return array;

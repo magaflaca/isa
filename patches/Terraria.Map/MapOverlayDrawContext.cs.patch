@@ -1,0 +1,11 @@
+--- a/Terraria.Map/MapOverlayDrawContext.cs
++++ b/Terraria.Map/MapOverlayDrawContext.cs
+@@ -5,7 +5,7 @@
+ 
+ namespace Terraria.Map;
+ 
+-public struct MapOverlayDrawContext(Vector2 mapPosition, Vector2 mapOffset, Rectangle? clippingRect, float mapScale, float drawScale, float opacity)
++public partial struct MapOverlayDrawContext(Vector2 mapPosition, Vector2 mapOffset, Rectangle? clippingRect, float mapScale, float drawScale, float opacity)
+ {
+ 	public struct DrawResult(bool isMouseOver)
+ 	{

@@ -1,0 +1,19 @@
+--- a/Terraria.DataStructures/TileEntity.cs
++++ b/Terraria.DataStructures/TileEntity.cs
+@@ -5,6 +5,7 @@
+ using Terraria.Audio;
+ using Terraria.GameInput;
+ using Terraria.UI;
++using IsaClient.WorldTools;
+ 
+ namespace Terraria.DataStructures;
+ 
+@@ -251,7 +252,7 @@
+ 	{
+ 		player.CloseSign();
+ 		int interactingPlayer;
+-		if (Main.netMode != 1)
++		if (Main.netMode != 1 || Chests.LocalChests)
+ 		{
+ 			Main.stackSplit = 600;
+ 			player.GamepadEnableGrappleCooldown();

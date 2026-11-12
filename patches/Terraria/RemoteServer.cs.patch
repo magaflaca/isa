@@ -1,0 +1,18 @@
+--- a/Terraria/RemoteServer.cs
++++ b/Terraria/RemoteServer.cs
+@@ -1,6 +1,7 @@
+ using System;
+ using System.IO;
+ using Terraria.Net.Sockets;
++using IsaClient.Networking;
+ 
+ namespace Terraria;
+ 
+@@ -50,6 +51,7 @@
+ 
+ 	public void ClientWriteCallBack(object state)
+ 	{
++		PacketPacing.QueuedPackets = 0;
+ 		NetMessage.buffer[256].spamCount--;
+ 	}
+ 

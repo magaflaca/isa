@@ -1,0 +1,15 @@
+--- a/Terraria.GameContent/LeashedEntity.cs
++++ b/Terraria.GameContent/LeashedEntity.cs
+@@ -34,10 +34,10 @@
+ 				HandleRemove(slot);
+ 				break;
+ 			case MessageType.FullSync:
+-				HandleFullSync(slot, reader.Read7BitEncodedInt(), new Point16(reader.ReadInt16(), reader.ReadInt16()), reader);
++				HandleFullSync(slot, IsaClient.Networking.ProtocolCompat.LeashedTypeFromLegacy(reader.Read7BitEncodedInt()), new Point16(reader.ReadInt16(), reader.ReadInt16()), reader);
+ 				break;
+ 			case MessageType.PartialSync:
+-				HandlePartialSync(slot, reader.Read7BitEncodedInt(), reader);
++				HandlePartialSync(slot, IsaClient.Networking.ProtocolCompat.LeashedTypeFromLegacy(reader.Read7BitEncodedInt()), reader);
+ 				break;
+ 			default:
+ 				return false;

@@ -1,0 +1,37 @@
+--- a/Terraria.GameContent.UI.Elements/UICreativeItemGrid.cs
++++ b/Terraria.GameContent.UI.Elements/UICreativeItemGrid.cs
+@@ -3,6 +3,7 @@
+ using Terraria.GameContent.Creative;
+ using Terraria.UI;
+ using Terraria.UI.Gamepad;
++using IsaClient.Menu;
+ 
+ namespace Terraria.GameContent.UI.Elements;
+ 
+@@ -21,8 +22,16 @@
+ 		int context = (itemSacrifices.IsFullyResearched(item.type) ? 29 : 34);
+ 		if (hovering)
+ 		{
+-			_item.SetDefaults(item.type);
+-			item = _item;
++			// IsaClient: My Items in the list stay themselves (SetDefaults would turn them into the plain item).
++			if (item.isaMark != null)
++			{
++				item = item.Clone();
++			}
++			else
++			{
++				_item.SetDefaults(item.type);
++				item = _item;
++			}
+ 			Main.LocalPlayer.mouseInterface = true;
+ 			ItemSlot.Handle(ref item, context);
+ 			itemSacrifices.ClearNewlyResearchedStatus(item.type);
+@@ -30,6 +39,7 @@
+ 		UILinkPointNavigator.Shortcuts.ItemSlotShouldHighlightAsSelected = hovering;
+ 		ItemSlot.DrawNewAndShinyHighlightOverride = itemSacrifices.IsNewlyResearched(item.type);
+ 		ItemSlot.Draw(spriteBatch, ref item, context, pos);
++		InputState.DrawJourneyExtraItemMarker(spriteBatch, item.type, pos);
+ 		ItemSlot.DrawNewAndShinyHighlightOverride = false;
+ 	}
+ }

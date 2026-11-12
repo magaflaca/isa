@@ -1,0 +1,21 @@
+--- a/Terraria.Graphics/FinalFractalHelper.cs
++++ b/Terraria.Graphics/FinalFractalHelper.cs
+@@ -4,6 +4,7 @@
+ using Microsoft.Xna.Framework;
+ using Microsoft.Xna.Framework.Graphics;
+ using Terraria.Graphics.Shaders;
++using IsaClient.Gameplay;
+ 
+ namespace Terraria.Graphics;
+ 
+@@ -163,6 +164,10 @@
+ 
+ 	public static int GetRandomProfileIndex()
+ 	{
++		if (ItemTools.ZenithItem != -1)
++		{
++			return ItemTools.ZenithItem;
++		}
+ 		List<int> list = _fractalProfiles.Keys.ToList();
+ 		int index = Main.rand.Next(list.Count);
+ 		if (list[index] == 4956)

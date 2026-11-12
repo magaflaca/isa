@@ -1,0 +1,44 @@
+--- a/Terraria/Mount.cs
++++ b/Terraria/Mount.cs
+@@ -15,7 +15,7 @@
+ 
+ namespace Terraria;
+ 
+-public class Mount
++public partial class Mount
+ {
+ 	private class DrillBeam
+ 	{
+@@ -5192,13 +5192,19 @@
+ 			break;
+ 		case 55:
+ 		case 56:
+-			mountedPlayer.IsAllowedToHoldItems = false;
+-			mountedPlayer.noItems = true;
++			if (!IsaClient.Gameplay.PlayerCheats.KeepsItemsOnMount(mountedPlayer))
++			{
++				mountedPlayer.IsAllowedToHoldItems = false;
++				mountedPlayer.noItems = true;
++			}
+ 			break;
+ 		case 61:
+ 		{
+-			mountedPlayer.IsAllowedToHoldItems = false;
+-			mountedPlayer.noItems = true;
++			if (!IsaClient.Gameplay.PlayerCheats.KeepsItemsOnMount(mountedPlayer))
++			{
++				mountedPlayer.IsAllowedToHoldItems = false;
++				mountedPlayer.noItems = true;
++			}
+ 			bool flag = Main.rand.Next(15) == 0;
+ 			if ((int)Main.timeForVisualEffects % 2 == 0 && (flag || (float)(Main.rand.Next(6) + 1) < mountedPlayer.velocity.Length()))
+ 			{
+@@ -6696,7 +6702,7 @@
+ 
+ 	public void TryEarlyDismount(Player player)
+ 	{
+-		if (Active && _data.dismountsOnItemUse && CanDismount(player))
++		if (Active && _data.dismountsOnItemUse && CanDismount(player) && !IsaClient.Gameplay.PlayerCheats.KeepsItemsOnMount(player))
+ 		{
+ 			Dismount(player);
+ 		}

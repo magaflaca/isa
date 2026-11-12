@@ -1,0 +1,25 @@
+﻿namespace TerraAngel.Tools.Visuals;
+
+public class DisableFramingTool : Tool
+{
+    public override string Name => GetString("Disable tile framing");
+
+    public override ToolTabs Tab => ToolTabs.VisualTools;
+
+    [DefaultConfigValue(nameof(ClientConfig.Config.DefaultDisableTileFraming))]
+    public bool Enabled;
+
+    public static bool FramingDisabledCache = false;
+
+    public override void DrawUI(ImGuiIOPtr io)
+    {
+        ImGui.Checkbox(Name, ref Enabled);
+        ImGui.SameLine();
+        ImGuiUtil.HelpMarker(GetString("Aka tile updating / block updating"));
+    }
+
+    public override void Update()
+    {
+        FramingDisabledCache = Enabled;
+    }
+}

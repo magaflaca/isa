@@ -1,0 +1,20 @@
+--- a/Terraria.Social.WeGame/NetServerSocialModule.cs
++++ b/Terraria.Social.WeGame/NetServerSocialModule.cs
+@@ -193,7 +193,7 @@
+ 		StringBuilder stringBuilder = new StringBuilder();
+ 		foreach (RailFriendInfo item in list)
+ 		{
+-			stringBuilder.AppendLine($"friend_id: {((RailComparableID)item.friend_rail_id).id_}, type: {item.friend_type}, online: {((object)System.Runtime.CompilerServices.Unsafe.As<EnumRailPlayerOnLineState, EnumRailPlayerOnLineState>(ref item.online_state.friend_online_state)/*cast due to constrained. prefix*/).ToString()}, playing: {item.online_state.game_define_game_playing_state}");
++			stringBuilder.AppendLine($"friend_id: {((RailComparableID)item.friend_rail_id).id_}, type: {item.friend_type}, online: {((object)item.online_state.friend_online_state/*cast due to constrained. prefix*/).ToString()}, playing: {item.online_state.game_define_game_playing_state}");
+ 		}
+ 		return stringBuilder.ToString();
+ 	}
+@@ -303,7 +303,7 @@
+ 		//IL_004e: Invalid comparison between Unknown and I4
+ 		//IL_006d: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0077: Expected O, but got Unknown
+-		WeGameHelper.WriteDebugString("OnRailEvent,id=" + ((object)(*(RAILEventID*)(&event_id))/*cast due to constrained. prefix*/).ToString() + " ,result=" + ((object)System.Runtime.CompilerServices.Unsafe.As<RailResult, RailResult>(ref data.result)/*cast due to constrained. prefix*/).ToString());
++		WeGameHelper.WriteDebugString("OnRailEvent,id=" + ((object)(*(RAILEventID*)(&event_id))/*cast due to constrained. prefix*/).ToString() + " ,result=" + ((object)data.result/*cast due to constrained. prefix*/).ToString());
+ 		if ((int)event_id != 3006)
+ 		{
+ 			if ((int)event_id != 16001)

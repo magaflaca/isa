@@ -1,0 +1,11 @@
+--- a/Terraria.UI/UIElement.cs
++++ b/Terraria.UI/UIElement.cs
+@@ -8,7 +8,7 @@
+ 
+ namespace Terraria.UI;
+ 
+-public class UIElement : IComparable
++public partial class UIElement : IComparable
+ {
+ 	public delegate void MouseEvent(UIMouseEvent evt, UIElement listeningElement);
+ 

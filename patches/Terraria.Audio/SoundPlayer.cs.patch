@@ -1,0 +1,56 @@
+--- a/Terraria.Audio/SoundPlayer.cs
++++ b/Terraria.Audio/SoundPlayer.cs
+@@ -73,7 +73,7 @@
+ 	public void PauseAll()
+ 	{
+ 		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
+-		foreach (ItemPair<ActiveSound> item in (IEnumerable<ItemPair<ActiveSound>>)_trackedSounds)
++		foreach (SlotVector<ActiveSound>.ItemPair item in (IEnumerable<SlotVector<ActiveSound>.ItemPair>)_trackedSounds)
+ 		{
+ 			item.Value.Pause();
+ 		}
+@@ -82,7 +82,7 @@
+ 	public void ResumeAll()
+ 	{
+ 		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
+-		foreach (ItemPair<ActiveSound> item in (IEnumerable<ItemPair<ActiveSound>>)_trackedSounds)
++		foreach (SlotVector<ActiveSound>.ItemPair item in (IEnumerable<SlotVector<ActiveSound>.ItemPair>)_trackedSounds)
+ 		{
+ 			item.Value.Resume();
+ 		}
+@@ -91,7 +91,7 @@
+ 	public void StopAll()
+ 	{
+ 		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
+-		foreach (ItemPair<ActiveSound> item in (IEnumerable<ItemPair<ActiveSound>>)_trackedSounds)
++		foreach (SlotVector<ActiveSound>.ItemPair item in (IEnumerable<SlotVector<ActiveSound>.ItemPair>)_trackedSounds)
+ 		{
+ 			item.Value.Stop();
+ 		}
+@@ -108,7 +108,7 @@
+ 		//IL_0020: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0033: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0034: Unknown result type (might be due to invalid IL or missing references)
+-		foreach (ItemPair<ActiveSound> item in (IEnumerable<ItemPair<ActiveSound>>)_trackedSounds)
++		foreach (SlotVector<ActiveSound>.ItemPair item in (IEnumerable<SlotVector<ActiveSound>.ItemPair>)_trackedSounds)
+ 		{
+ 			try
+ 			{
+@@ -129,7 +129,7 @@
+ 	{
+ 		//IL_0011: Unknown result type (might be due to invalid IL or missing references)
+ 		int num = 0;
+-		foreach (ItemPair<ActiveSound> item in (IEnumerable<ItemPair<ActiveSound>>)_trackedSounds)
++		foreach (SlotVector<ActiveSound>.ItemPair item in (IEnumerable<SlotVector<ActiveSound>.ItemPair>)_trackedSounds)
+ 		{
+ 			ActiveSound value = item.Value;
+ 			if (value.Style == style && value.IsPlaying)
+@@ -146,7 +146,7 @@
+ 		//IL_0014: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0015: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0023: Unknown result type (might be due to invalid IL or missing references)
+-		foreach (ItemPair<ActiveSound> item in (IEnumerable<ItemPair<ActiveSound>>)_trackedSounds)
++		foreach (SlotVector<ActiveSound>.ItemPair item in (IEnumerable<SlotVector<ActiveSound>.ItemPair>)_trackedSounds)
+ 		{
+ 			if (item.Value.Style == style)
+ 			{

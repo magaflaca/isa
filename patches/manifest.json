@@ -1,0 +1,14 @@
+{
+  "game": "Terraria 1.4.5.8 (Steam, Windows)",
+  "exe_sha256": "960a03bff6050cf7be16dfc1a7b19e10fc2c4f8f835a6a3b135a50dd9e6ba2f3",
+  "decompiler": "ilspycmd",
+  "decompiler_version": "10.1.1.8388",
+  "added": [
+    "NuGet.offline.config"
+  ],
+  "removed": [],
+  "replaced": [
+    "Terraria.csproj",
+    "app.ico"
+  ]
+}

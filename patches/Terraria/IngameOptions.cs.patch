@@ -1,0 +1,19 @@
+--- a/Terraria/IngameOptions.cs
++++ b/Terraria/IngameOptions.cs
+@@ -537,13 +537,14 @@
+ 			}
+ 			valuePosition.X = vector3.X + vector2.X - (float)(num4 / 2) - 20f;
+ 			valuePosition.Y -= 3f;
+-			float num15 = DrawValueBar(sb, scale, Main.GameZoomTarget - 1f);
++			float zoomMin = IsaClient.Rendering.Zoom.Min;
++			float num15 = DrawValueBar(sb, scale, (Main.GameZoomTarget - zoomMin) / (2f - zoomMin));
+ 			if ((inBar || rightLock == num14) && !notBar)
+ 			{
+ 				rightHover = num14;
+ 				if (Main.mouseLeft && rightLock == num14)
+ 				{
+-					Main.GameZoomTarget = num15 + 1f;
++					Main.GameZoomTarget = zoomMin + num15 * (2f - zoomMin);
+ 				}
+ 			}
+ 			if ((float)Main.mouseX > vector3.X + vector2.X * 2f / 3f + (float)num4 && (float)Main.mouseX < valuePosition.X + 3.75f && (float)Main.mouseY > valuePosition.Y - 10f && (float)Main.mouseY <= valuePosition.Y + 10f)

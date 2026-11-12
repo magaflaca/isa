@@ -1,0 +1,39 @@
+--- a/Terraria.GameContent.Tile_Entities/TEDisplayDoll.cs
++++ b/Terraria.GameContent.Tile_Entities/TEDisplayDoll.cs
+@@ -115,10 +115,23 @@
+ 		{
+ 			_misc[k] = new Item();
+ 		}
+-		_dollPlayer = new Player();
+-		_dollPlayer.hair = 15;
+-		_dollPlayer.skinColor = Color.White;
+-		_dollPlayer.skinVariant = 10;
++		// IsaClient: the doll's Player (hundreds of items) is made the first time it's drawn, not with the doll: a world
++		// with thousands of mannequins doesn't fit in a 32-bit game otherwise (loading it or revealing its map).
++	}
++
++	private Player DollPlayer
++	{
++		get
++		{
++			if (_dollPlayer == null)
++			{
++				_dollPlayer = new Player();
++				_dollPlayer.hair = 15;
++				_dollPlayer.skinColor = Color.White;
++				_dollPlayer.skinVariant = 10;
++			}
++			return _dollPlayer;
++		}
+ 	}
+ 
+ 	public static int Hook_AfterPlacement(int x, int y, int type = 470, int style = 0, int direction = 1, int alternate = 0)
+@@ -338,7 +351,7 @@
+ 
+ 	public void Draw(int tileLeftX, int tileTopY)
+ 	{
+-		Player dollPlayer = _dollPlayer;
++		Player dollPlayer = DollPlayer;
+ 		for (int i = 0; i < 8; i++)
+ 		{
+ 			dollPlayer.armor[i] = _equip[i];

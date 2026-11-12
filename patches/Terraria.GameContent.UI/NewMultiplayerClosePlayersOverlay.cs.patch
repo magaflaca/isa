@@ -1,0 +1,24 @@
+--- a/Terraria.GameContent.UI/NewMultiplayerClosePlayersOverlay.cs
++++ b/Terraria.GameContent.UI/NewMultiplayerClosePlayersOverlay.cs
+@@ -4,6 +4,7 @@
+ using ReLogic.Graphics;
+ using Terraria.Localization;
+ using Terraria.UI.Chat;
++using IsaClient.Community;
+ 
+ namespace Terraria.GameContent.UI;
+ 
+@@ -124,11 +125,11 @@
+ 			}
+ 			Player player3 = player[i];
+ 			bool flag = player3.spectating == myPlayer;
+-			if (!player3.active || (player3.dead && !flag && !player3.ghost) || player3.team != player2.team)
++			if (!player3.active || (player3.dead && !flag && !player3.ghost) || (player3.team != player2.team && !PlayerListPanel.PlayerTracker))
+ 			{
+ 				continue;
+ 			}
+-			if (player3.team == 0 && !flag)
++			if (player3.team == 0 && !flag && !PlayerListPanel.PlayerTracker)
+ 			{
+ 				return;
+ 			}

@@ -1,0 +1,19 @@
+--- a/Terraria.GameInput/PlayerInputProfile.cs
++++ b/Terraria.GameInput/PlayerInputProfile.cs
+@@ -138,6 +138,16 @@
+ 			foreach (string key in array)
+ 			{
+ 				InputModes[InputMode.Keyboard].KeyStatus[key] = new List<string>(PlayerInput.OriginalProfiles["Redigit's Pick"].InputModes[InputMode.Keyboard].KeyStatus[key]);
++			}
++		}
++		foreach (string customKey in Terraria.GameContent.UI.States.UIManageControls.customKeybindList)
++		{
++			foreach (InputMode mode in new InputMode[2] { InputMode.Keyboard, InputMode.KeyboardUI })
++			{
++				if (InputModes[mode].KeyStatus.TryGetValue(customKey, out var customList) && customList.Count == 0 && PlayerInput.OriginalProfiles.TryGetValue("Redigit's Pick", out var defaults) && defaults.InputModes[mode].KeyStatus.TryGetValue(customKey, out var defaultList))
++				{
++					customList.AddRange(defaultList);
++				}
+ 			}
+ 		}
+ 		if (dict.TryGetValue("Settings", out value))

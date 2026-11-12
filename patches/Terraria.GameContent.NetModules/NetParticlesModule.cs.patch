@@ -1,0 +1,19 @@
+--- a/Terraria.GameContent.NetModules/NetParticlesModule.cs
++++ b/Terraria.GameContent.NetModules/NetParticlesModule.cs
+@@ -1,6 +1,7 @@
+ using System.IO;
+ using Terraria.GameContent.Drawing;
+ using Terraria.Net;
++using IsaClient.Rendering;
+ 
+ namespace Terraria.GameContent.NetModules;
+ 
+@@ -23,7 +24,7 @@
+ 		{
+ 			NetManager.Instance.Broadcast(Serialize(particleOrchestraType, settings), userId);
+ 		}
+-		else
++		else if (!AntiLag.ShouldBlockIncomingParticle(particleOrchestraType, settings.IndexOfPlayerWhoInvokedThis))
+ 		{
+ 			ParticleOrchestrator.SpawnParticlesDirect(particleOrchestraType, settings);
+ 		}

@@ -1,0 +1,433 @@
+--- a/Terraria/Projectile.cs
++++ b/Terraria/Projectile.cs
+@@ -28,10 +28,13 @@
+ using Terraria.Testing.Cloning;
+ using Terraria.Utilities;
+ using Terraria.WorldBuilding;
++using IsaClient.Gameplay;
++using IsaClient.Movement;
++using IsaClient.Rendering;
+ 
+ namespace Terraria;
+ 
+-public class Projectile : Entity
++public partial class Projectile : Entity
+ {
+ 	public struct GemStaffFeatures
+ 	{
+@@ -633,6 +636,12 @@
+ 
+ 	public static bool TryLookup(ProjectileKey key, out Projectile proj)
+ 	{
++		if (key.Index > 1000)
++		{
++			// Only possible with a value that never was a key (e.g. an ai field from a 1.4.5.6 server).
++			proj = null;
++			return false;
++		}
+ 		proj = Main.projectile[keyToIndex[key.Spawner, key.Index]];
+ 		if ((int)proj.key == (int)key)
+ 		{
+@@ -698,6 +707,7 @@
+ 
+ 	public void SetDefaults(int Type)
+ 	{
++		hitsInvincibleNpc = false;
+ 		ownerHitCheckDistance = 1000f;
+ 		counterweight = false;
+ 		sentry = false;
+@@ -10863,6 +10873,11 @@
+ 
+ 	public static int NewProjectile(IEntitySource spawnSource, float X, float Y, float SpeedX, float SpeedY, int Type, int Damage, float KnockBack, int Owner = -1, float ai0 = 0f, float ai1 = 0f, float ai2 = 0f, NewProjectileModifier modifer = null)
+ 	{
++		if (IsaClient.Movement.NpcBrain.SuppressingShots)
++		{
++			// IsaClient: an NPC's AI running on you (NPC brain) shoots nothing; "no room", as when all slots are taken.
++			return 1000;
++		}
+ 		if (Owner == -1)
+ 		{
+ 			Owner = 255;
+@@ -10875,6 +10890,7 @@
+ 		}
+ 		Projectile projectile = NewProjectileSetup();
+ 		projectile.SetDefaults(Type);
++		projectile.hitsInvincibleNpc = IsaSpawnHitsInvincible && Owner == Main.myPlayer;
+ 		projectile.position.X = X - (float)projectile.width * 0.5f;
+ 		projectile.position.Y = Y - (float)projectile.height * 0.5f;
+ 		projectile.owner = Owner;
+@@ -11099,6 +11115,11 @@
+ 		if (Owner == Main.myPlayer)
+ 		{
+ 			Main.player[Owner].TryUpdateChannel(projectile);
++		}
++		if (IsaClient.Items.ShotPreview.Busy)
++		{
++			// IsaClient Item Editor preview: this projectile is taken out of the game for the preview.
++			IsaClient.Items.ShotPreview.Made(projectile.whoAmI);
+ 		}
+ 		return projectile.whoAmI;
+ 	}
+@@ -12020,7 +12041,7 @@
+ 
+ 	public void ghostHurt(int dmg, Vector2 Position, Entity victim)
+ 	{
+-		if (!magic || damage <= 0)
++		if ((!magic && (owner != Main.myPlayer || !PlayerCheats.AlwaysGhostHurt)) || damage <= 0)
+ 		{
+ 			return;
+ 		}
+@@ -12088,7 +12109,7 @@
+ 			return;
+ 		}
+ 		Main.player[Main.myPlayer].lifeSteal -= num2;
+-		if (!magic)
++		if (!magic && (owner != Main.myPlayer || !PlayerCheats.AlwaysGhostHeal))
+ 		{
+ 			return;
+ 		}
+@@ -12501,6 +12522,10 @@
+ 
+ 	public void Damage()
+ 	{
++		if (IsaClient.Items.ShotPreview.Busy)
++		{
++			return;
++		}
+ 		if (DebugOptions.DrawHitboxes)
+ 		{
+ 			Projectile clone = DeepCloning.Clone(this);
+@@ -12590,14 +12615,14 @@
+ 		for (int i = 0; i < Main.maxNPCs && keepIterating; i++)
+ 		{
+ 			NPC nPC = Main.npc[i];
+-			if (nPC.active)
++			if (nPC.active && (nPC != NpcControl.ControlledNpc || hitsInvincibleNpc))
+ 			{
+ 				bool flag2 = (!usesLocalNPCImmunity && !usesIDStaticNPCImmunity) || (usesLocalNPCImmunity && array[i] == 0) || (usesIDStaticNPCImmunity && IsNPCIndexImmuneToProjectileType(immunityIdentity, i));
+ 				if (flag && !Main.player[owner].CanHitNPCWithMeleeHit(i))
+ 				{
+ 					flag2 = false;
+ 				}
+-				if (flag2 && (!nPC.dontTakeDamage || NPCID.Sets.ZappingJellyfish[nPC.type]) && (nPC.aiStyle != 112 || !(nPC.ai[2] > 1f)))
++				if (flag2 && (!nPC.dontTakeDamage || hitsInvincibleNpc || NPCID.Sets.ZappingJellyfish[nPC.type]) && (nPC.aiStyle != 112 || !(nPC.ai[2] > 1f)))
+ 				{
+ 					Damage_StartIteratingNPC(nPC);
+ 					Damage_PVE_Inner(i, nPC, projRectangle, projectileSpecificDamageMultiplier, array, ref keepIterating);
+@@ -12683,7 +12708,7 @@
+ 			{
+ 				Main.player[owner].TakeDamageFromJellyfish(victimIndex);
+ 			}
+-			if (targetNPC.dontTakeDamage || !flag)
++			if ((targetNPC.dontTakeDamage && !hitsInvincibleNpc) || !flag)
+ 			{
+ 				return;
+ 			}
+@@ -13883,7 +13908,7 @@
+ 					{
+ 						ghostHurt(num41, new Vector2(targetNPC.Center.X, targetNPC.Center.Y), targetNPC);
+ 					}
+-					if (magic && Main.player[owner].setNebula && Main.player[owner].nebulaCD == 0 && Main.rand.Next(3) == 0)
++					if (((magic && Main.player[owner].setNebula) || (owner == Main.myPlayer && PlayerCheats.AlwaysNebulaSet)) && Main.player[owner].nebulaCD == 0 && Main.rand.Next(3) == 0)
+ 					{
+ 						Main.player[owner].nebulaCD = 30;
+ 						int num59 = Utils.SelectRandom<int>(Main.rand, 3453, 3454, 3455);
+@@ -14870,7 +14895,7 @@
+ 			break;
+ 		}
+ 		int myPlayer = Main.myPlayer;
+-		bool flag = Main.player[myPlayer].active && !Main.player[myPlayer].dead && (!Main.player[myPlayer].immune || num != ImmunityCooldownID.General);
++		bool flag = Main.player[myPlayer].active && !Main.player[myPlayer].dead && !Main.player[myPlayer].ghost && (!Main.player[myPlayer].immune || num != ImmunityCooldownID.General);
+ 		if (flag && type == 281)
+ 		{
+ 			flag = ai[1] - 1f == (float)myPlayer;
+@@ -15276,6 +15301,10 @@
+ 
+ 	private void CutTiles()
+ 	{
++		if (IsaClient.Items.ShotPreview.Busy)
++		{
++			return;
++		}
+ 		if (!CanCutTiles())
+ 		{
+ 			return;
+@@ -15420,6 +15449,7 @@
+ 
+ 	public bool Colliding(Rectangle myRect, Rectangle targetRect)
+ 	{
++		Hitboxes.RecordExtraProjectileHitbox(myRect);
+ 		if (aiStyle == 15)
+ 		{
+ 			if (ai[0] == 0f)
+@@ -16246,7 +16276,7 @@
+ 
+ 	public void ProjLight()
+ 	{
+-		if (!(light > 0f))
++		if (AntiLag.DisableProjLightTime > 0 || !(light > 0f))
+ 		{
+ 			return;
+ 		}
+@@ -26015,12 +26045,21 @@
+ 				}
+ 				int num176 = (int)base.position.X / 16;
+ 				int num177 = (int)base.position.Y / 16;
+-				if (Main.tile[num176, num177] == null || !Main.tile[num176, num177].active())
++				if (Main.tile[num176, num177] == null || (!Main.tile[num176, num177].active() && !ItemTools.UnlimitedIce))
+ 				{
+ 					Kill();
+ 				}
+ 				this.ai[0] -= 1f;
+-				if (this.ai[0] <= -900f && (Main.myPlayer == owner || Main.netMode == 2) && Main.tile[num176, num177].active() && Main.tile[num176, num177].type == 127)
++				if (this.ai[0] <= -15f && Main.myPlayer == owner && ItemTools.UnlimitedIce)
++				{
++					base.position = new Vector2(16f, 16f);
++					netUpdate = true;
++				}
++				if (this.ai[0] <= -20f && Main.myPlayer == owner && ItemTools.UnlimitedIce)
++				{
++					Kill();
++				}
++				else if (this.ai[0] <= -900f && (Main.myPlayer == owner || Main.netMode == 2) && Main.tile[num176, num177].active() && Main.tile[num176, num177].type == 127)
+ 				{
+ 					WorldGen.KillTile(num176, num177);
+ 					if (Main.netMode == 1)
+@@ -31201,7 +31240,7 @@
+ 					activeSound.Stop();
+ 					float[] array2 = localAI;
+ 					invalid = SlotId.Invalid;
+-					array2[0] = ((SlotId)(ref invalid)).ToFloat();
++					array2[0] = invalid.ToFloat();
+ 				}
+ 				activeSound.Volume = Math.Max(0f, activeSound.Volume - 0.05f);
+ 			}
+@@ -31209,7 +31248,7 @@
+ 			{
+ 				float[] array3 = localAI;
+ 				invalid = SlotId.Invalid;
+-				array3[0] = ((SlotId)(ref invalid)).ToFloat();
++				array3[0] = invalid.ToFloat();
+ 			}
+ 			if (this.ai[1] == 1f)
+ 			{
+@@ -38959,7 +38998,7 @@
+ 			{
+ 				float[] array = localAI;
+ 				val = SoundEngine.PlayTrackedLoopedSound(SoundID.RCCar, base.Center, new ProjectileAudioTracker(this).IsActiveAndInGame);
+-				array[2] = ((SlotId)(ref val)).ToFloat();
++				array[2] = val.ToFloat();
+ 				activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[2]));
+ 			}
+ 			if (activeSound != null)
+@@ -38993,7 +39032,7 @@
+ 			{
+ 				float[] array2 = localAI;
+ 				val = SoundEngine.PlayTrackedLoopedSound(SoundID.RCCar, base.Center, new ProjectileAudioTracker(this).IsActiveAndInGame);
+-				array2[2] = ((SlotId)(ref val)).ToFloat();
++				array2[2] = val.ToFloat();
+ 				activeSound2 = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[2]));
+ 			}
+ 			if (activeSound2 != null)
+@@ -41722,7 +41761,7 @@
+ 		{
+ 			float[] array = localAI;
+ 			SlotId val = SoundEngine.PlayTrackedLoopedSound(SoundID.JimsDrone, base.Center, new ProjectileAudioTracker(this).IsActiveAndInGame);
+-			array[2] = ((SlotId)(ref val)).ToFloat();
++			array[2] = val.ToFloat();
+ 			activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[2]));
+ 		}
+ 		if (activeSound != null)
+@@ -43285,14 +43324,14 @@
+ 		{
+ 			float[] array = localAI;
+ 			val = SoundEngine.PlayTrackedSound(SoundID.DD2_GhastlyGlaiveImpactGhost, base.Center);
+-			array[1] = ((SlotId)(ref val)).ToFloat();
++			array[1] = val.ToFloat();
+ 		}
+ 		ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[1]));
+ 		if (activeSound == null)
+ 		{
+ 			float[] array2 = localAI;
+ 			val = SlotId.Invalid;
+-			array2[1] = ((SlotId)(ref val)).ToFloat();
++			array2[1] = val.ToFloat();
+ 		}
+ 		else
+ 		{
+@@ -45962,7 +46001,7 @@
+ 				soundDelay = -1;
+ 				float[] array = localAI;
+ 				val = SoundEngine.PlayTrackedSound(SoundID.DD2_BookStaffTwisterLoop, base.Center);
+-				array[1] = ((SlotId)(ref val)).ToFloat();
++				array[1] = val.ToFloat();
+ 			}
+ 			ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[1]));
+ 			if (activeSound != null)
+@@ -45974,7 +46013,7 @@
+ 			{
+ 				float[] array2 = localAI;
+ 				val = SlotId.Invalid;
+-				array2[1] = ((SlotId)(ref val)).ToFloat();
++				array2[1] = val.ToFloat();
+ 			}
+ 			ai[1] += 1f;
+ 			if (ai[1] > 560f)
+@@ -45990,7 +46029,10 @@
+ 			{
+ 				if (i != whoAmI && Main.projectile[i].active && Main.projectile[i].owner == owner && Main.projectile[i].type == type && timeLeft > Main.projectile[i].timeLeft && Main.projectile[i].ai[1] < num)
+ 				{
+-					Main.projectile[i].ai[1] = num;
++					if (!Travel.UnlimitedWinds)
++					{
++						Main.projectile[i].ai[1] = num;
++					}
+ 					Main.projectile[i].netUpdate = true;
+ 				}
+ 			}
+@@ -47782,7 +47824,7 @@
+ 		{
+ 			float[] array = localAI;
+ 			SlotId val = SoundEngine.PlayTrackedLoopedSound(SoundID.BombFuse, base.Center, new ProjectileAudioTracker(this).IsActiveAndInGame);
+-			array[2] = ((SlotId)(ref val)).ToFloat();
++			array[2] = val.ToFloat();
+ 			SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[2]));
+ 		}
+ 		if (type == 102)
+@@ -52866,6 +52908,14 @@
+ 		}
+ 		int num2 = 100;
+ 		int num3 = 1800;
++		if (ItemTools.RopeSnakeHeightOverride)
++		{
++			num2 = ItemTools.CustomRopeSnakeHeight;
++		}
++		if (ItemTools.UnlimitedRopeSnakes)
++		{
++			num3 = 60;
++		}
+ 		if (ai[1] == 0f)
+ 		{
+ 			spriteDirection = ((!(Main.player[owner].Center.X > base.Center.X)) ? 1 : (-1));
+@@ -52933,7 +52983,7 @@
+ 				{
+ 					for (int num7 = point4.Y; num7 >= point3.Y; num7--)
+ 					{
+-						if (Main.tile[x, num7].active() && !Main.tileCut[Main.tile[x, num7].type] && Main.tile[x, num7].type != 504)
++						if (Main.tile[x, num7].active() && !Main.tileCut[Main.tile[x, num7].type] && (Main.tile[x, num7].type != 504 || ItemTools.UnlimitedRopeSnakes))
+ 						{
+ 							flag2 = true;
+ 							break;
+@@ -53012,7 +53062,7 @@
+ 				}
+ 			}
+ 		}
+-		if (timeLeft > 4)
++		if (timeLeft > 4 || ItemTools.UnlimitedRopeSnakes)
+ 		{
+ 			return;
+ 		}
+@@ -56749,7 +56799,7 @@
+ 			{
+ 				float[] array = localAI;
+ 				val = SoundEngine.PlayTrackedSound(SoundID.DD2_PhantomPhoenixShot, base.Center);
+-				array[0] = ((SlotId)(ref val)).ToFloat();
++				array[0] = val.ToFloat();
+ 				localAI[1] += 1f;
+ 				for (int num123 = 0; num123 < 15; num123++)
+ 				{
+@@ -56772,7 +56822,7 @@
+ 			{
+ 				float[] array2 = localAI;
+ 				val = SlotId.Invalid;
+-				array2[0] = ((SlotId)(ref val)).ToFloat();
++				array2[0] = val.ToFloat();
+ 			}
+ 			if (alpha <= 0)
+ 			{
+@@ -69527,14 +69577,14 @@
+ 			localAI[0] = 1f;
+ 			float[] array = localAI;
+ 			val = SoundEngine.PlayTrackedSound(SoundID.DD2_FlameburstTowerShot, base.Center);
+-			array[1] = ((SlotId)(ref val)).ToFloat();
++			array[1] = val.ToFloat();
+ 		}
+ 		ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[1]));
+ 		if (activeSound == null)
+ 		{
+ 			float[] array2 = localAI;
+ 			val = SlotId.Invalid;
+-			array2[1] = ((SlotId)(ref val)).ToFloat();
++			array2[1] = val.ToFloat();
+ 		}
+ 		else
+ 		{
+@@ -71064,14 +71114,14 @@
+ 		{
+ 			float[] array = localAI;
+ 			val = SoundEngine.PlayTrackedSound(SoundID.DD2_GhastlyGlaiveImpactGhost, base.Center);
+-			array[1] = ((SlotId)(ref val)).ToFloat();
++			array[1] = val.ToFloat();
+ 		}
+ 		ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[1]));
+ 		if (activeSound == null)
+ 		{
+ 			float[] array2 = localAI;
+ 			val = SlotId.Invalid;
+-			array2[1] = ((SlotId)(ref val)).ToFloat();
++			array2[1] = val.ToFloat();
+ 		}
+ 		else
+ 		{
+@@ -71432,7 +71482,7 @@
+ 			soundDelay = -1;
+ 			float[] array = localAI;
+ 			val = SoundEngine.PlayTrackedSound(SoundID.DD2_BookStaffTwisterLoop, base.Center);
+-			array[1] = ((SlotId)(ref val)).ToFloat();
++			array[1] = val.ToFloat();
+ 		}
+ 		ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[1]));
+ 		if (activeSound != null)
+@@ -71444,7 +71494,7 @@
+ 		{
+ 			float[] array2 = localAI;
+ 			val = SlotId.Invalid;
+-			array2[1] = ((SlotId)(ref val)).ToFloat();
++			array2[1] = val.ToFloat();
+ 		}
+ 		if (localAI[0] >= 16f && ai[0] < num - 15f)
+ 		{
+@@ -71752,6 +71802,15 @@
+ 
+ 	public void Kill()
+ 	{
++		if (IsaClient.Items.ShotPreview.Busy)
++		{
++			// IsaClient preview: real projectiles are left alone; a preview one just ends, without its effects.
++			if (IsaClient.Items.ShotPreview.Simulating && this == IsaClient.Items.ShotPreview.Current)
++			{
++				active = false;
++			}
++			return;
++		}
+ 		//IL_011a: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0873: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_407b: Unknown result type (might be due to invalid IL or missing references)
+@@ -74764,7 +74823,7 @@
+ 				projectile2.timeLeft = 30 * Main.rand.Next(2, 6);
+ 				float[] array2 = projectile2.localAI;
+ 				SlotId val = SoundEngine.PlayTrackedSound(SoundID.DD2_SkyDragonsFuryCircle, base.Center);
+-				array2[0] = ((SlotId)(ref val)).ToFloat();
++				array2[0] = val.ToFloat();
+ 			}
+ 		}
+ 		if (owner != Main.myPlayer && type == 453 && Main.player[owner].mount.AbilityActive)
+@@ -77120,7 +77179,7 @@
+ 				{
+ 					Main.tile[num726, num727] = new Tile();
+ 				}
+-				if (Main.tile[num726, num727].type == 127 && Main.tile[num726, num727].active())
++				if (!ItemTools.UnlimitedIce && Main.tile[num726, num727].type == 127 && Main.tile[num726, num727].active())
+ 				{
+ 					WorldGen.KillTile(num726, num727);
+ 				}

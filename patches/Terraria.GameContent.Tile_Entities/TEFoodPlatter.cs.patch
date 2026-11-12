@@ -1,0 +1,21 @@
+--- a/Terraria.GameContent.Tile_Entities/TEFoodPlatter.cs
++++ b/Terraria.GameContent.Tile_Entities/TEFoodPlatter.cs
+@@ -1,6 +1,7 @@
+ using System.IO;
+ using Terraria.DataStructures;
+ using Terraria.ID;
++using IsaClient.WorldTools;
+ 
+ namespace Terraria.GameContent.Tile_Entities;
+ 
+@@ -107,6 +108,10 @@
+ 
+ 	public static bool FitsFoodPlatter(Item i)
+ 	{
++		if (!i.IsAir && i.stack > 0 && WorldCommands.AnythingOnPlates)
++		{
++			return true;
++		}
+ 		if (i.stack > 0)
+ 		{
+ 			return ItemID.Sets.IsFood[i.type];

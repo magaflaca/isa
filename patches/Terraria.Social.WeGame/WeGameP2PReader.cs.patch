@@ -1,0 +1,19 @@
+--- a/Terraria.Social.WeGame/WeGameP2PReader.cs
++++ b/Terraria.Social.WeGame/WeGameP2PReader.cs
+@@ -71,6 +71,7 @@
+ 
+ 	private bool IsPacketAvailable(out uint size)
+ 	{
++		size = 0u;
+ 		//IL_001b: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0021: Expected O, but got Unknown
+ 		lock (RailLock)
+@@ -78,7 +79,7 @@
+ 			IRailNetwork obj = rail_api.RailFactory().RailNetworkHelper();
+ 			RailID val = new RailID();
+ 			((RailComparableID)val).id_ = ((RailComparableID)GetLocalPeer()).id_;
+-			return obj.IsDataReady(val, ref size);
++			return obj.IsDataReady(val, out size);
+ 		}
+ 	}
+ 

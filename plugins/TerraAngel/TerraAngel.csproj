@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- TerraAngel (MIT, CEO-Chair and contributors, see LICENSE-TerraAngel.txt) as an IsaClient plugin: its tools,
+       windows, world edit and helper library. Source/ is TerraAngel's TerraAngel folder, adapted to XNA and .NET 4.8;
+       Port/ has what replaces its patches to the game (Harmony) and its renderer/loader. -->
+  <Import Project="..\IsaClient.Plugin.props" />
+  <PropertyGroup>
+    <AssemblyName>TerraAngel.IsaPlugin</AssemblyName>
+    <RootNamespace>TerraAngel</RootNamespace>
+    <NoWarn>$(NoWarn);CS0618;CS0162;CS0168;CS0219;CS0414;CS0649;CS8632;CS0108</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Compile-time only: attributes and types newer C# needs on .NET Framework (nothing is added at run time). -->
+    <PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="all" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Windows.Forms" />
+    <Compile Remove="Excluded/**" />
+    <EmbeddedResource Include="Assets\*.ttf" LogicalName="TerraAngel.Assets.%(Filename)%(Extension)" />
+    <!-- TerraAngel forks (Plugins/Forks): the pack carries its own source and what a fork build needs (the original
+         TerraAngel files' fingerprints and the originals the pack changed, as the merge base; PolySharp's polyfills),
+         read by IsaClient's ForkBuilder. ForkSupport is made by tools/make_upstream.py. -->
+    <Compile Remove="ForkSupport/**" />
+    <EmbeddedResource Include="Source\**\*.cs" LogicalName="PackSource/Source/%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Port\**\*.cs" LogicalName="PackSource/Port/%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="GlobalUsings.cs" LogicalName="PackSource/GlobalUsings.cs" />
+    <EmbeddedResource Include="ForkSupport\index.txt" LogicalName="ForkSupport/index.txt" />
+    <EmbeddedResource Include="ForkSupport\originals\**\*.cs" LogicalName="ForkSupport/originals/%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="ForkSupport\polyfills\*.cs" LogicalName="ForkSupport/polyfills/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

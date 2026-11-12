@@ -1,0 +1,241 @@
+--- a/Terraria.GameInput/LockOnHelper.cs
++++ b/Terraria.GameInput/LockOnHelper.cs
+@@ -5,10 +5,11 @@
+ using Terraria.GameContent;
+ using Terraria.ID;
+ using Terraria.Testing;
++using IsaClient.Core;
+ 
+ namespace Terraria.GameInput;
+ 
+-public class LockOnHelper
++public partial class LockOnHelper
+ {
+ 	public enum LockOnMode
+ 	{
+@@ -39,19 +40,20 @@
+ 
+ 	private static int _targetClosestTarget = -1;
+ 
++	[Setting("ForceLockOn", Remembered = true)]
+ 	public static bool ForceUsability = false;
+ 
+-	private static float[,] _drawProgress = new float[Main.maxNPCs, 2];
++	private static float[,] _drawProgress = new float[Main.maxNPCs + 256, 2];
+ 
+-	public static NPC AimedTarget
++	public static Entity AimedTarget
+ 	{
+ 		get
+ 		{
+-			if (_pickedTarget == -1 || _targets.Count < 1)
++			if (_pickedTarget == -1 || _targets.Count < 1 || _pickedTarget >= _targets.Count)
+ 			{
+ 				return null;
+ 			}
+-			return Main.npc[_targets[_pickedTarget]];
++			return TargetEntity(_targets[_pickedTarget]);
+ 		}
+ 	}
+ 
+@@ -59,13 +61,21 @@
+ 	{
+ 		get
+ 		{
+-			NPC aimedTarget = AimedTarget;
++			Entity aimedTarget = AimedTarget;
+ 			if (aimedTarget == null)
+ 			{
+ 				return Vector2.Zero;
+ 			}
++			if (IsaClient.Gameplay.SmartAim.TryAim(aimedTarget, out Vector2 smart))
++			{
++				return smart;
++			}
+ 			Vector2 vector = aimedTarget.Center;
+-			if (NPC.GetNPCLocation(_targets[_pickedTarget], seekHead: true, averageDirection: false, out var index, out var pos))
++			if (aimedTarget is Player)
++			{
++				vector += aimedTarget.Distance(Main.player[Main.myPlayer].Center) / 2000f * aimedTarget.velocity * 45f;
++			}
++			else if (NPC.GetNPCLocation(_targets[_pickedTarget], seekHead: true, averageDirection: false, out var index, out var pos))
+ 			{
+ 				vector = pos;
+ 				vector += Main.npc[index].Distance(Main.player[Main.myPlayer].Center) / 2000f * Main.npc[index].velocity * 45f;
+@@ -120,28 +130,41 @@
+ 	public static void Update()
+ 	{
+ 		_canLockOn = false;
++		if (IsaClient.Gameplay.SmartAim.Enabled)
++		{
++			IsaClient.Gameplay.SmartAim.Learn();
++		}
+ 		if (!CanUseLockonSystem())
+ 		{
+ 			SetActive(on: false);
++			IsaClient.Gameplay.SmartAim.Track(null);
+ 			return;
+ 		}
+ 		if (--_lifeTimeArrowDisplay < 0)
+ 		{
+ 			_lifeTimeArrowDisplay = 0;
+ 		}
+-		FindMostViableTarget(LockOnMode.ThreeDS, ref _threeDSTarget);
+-		FindMostViableTarget(LockOnMode.TargetClosest, ref _targetClosestTarget);
+-		if (PlayerInput.Triggers.JustPressed.LockOn && !PlayerInput.WritingText)
++		if (IsaClient.Gameplay.SmartAim.AutoAim)
+ 		{
+-			_lifeTimeCounter = 40;
+-			_lifeTimeArrowDisplay = 30;
+-			HandlePressing();
++			AutoTarget();
+ 		}
++		else
++		{
++			FindMostViableTarget(LockOnMode.ThreeDS, ref _threeDSTarget);
++			FindMostViableTarget(LockOnMode.TargetClosest, ref _targetClosestTarget);
++			if (PlayerInput.Triggers.JustPressed.LockOn && !PlayerInput.WritingText)
++			{
++				_lifeTimeCounter = 40;
++				_lifeTimeArrowDisplay = 30;
++				HandlePressing();
++			}
++		}
++		IsaClient.Gameplay.SmartAim.Track(_enabled ? AimedTarget : null);
+ 		if (!_enabled)
+ 		{
+ 			return;
+ 		}
+-		if (UseMode == LockOnMode.FocusTarget && PlayerInput.Triggers.Current.LockOn)
++		if (UseMode == LockOnMode.FocusTarget && PlayerInput.Triggers.Current.LockOn && !IsaClient.Gameplay.SmartAim.AutoAim)
+ 		{
+ 			if (_lifeTimeCounter <= 0)
+ 			{
+@@ -150,12 +173,12 @@
+ 			}
+ 			_lifeTimeCounter--;
+ 		}
+-		NPC aimedTarget = AimedTarget;
++		Entity aimedTarget = AimedTarget;
+ 		if (!ValidTarget(aimedTarget))
+ 		{
+ 			SetActive(on: false);
+ 		}
+-		if (UseMode == LockOnMode.TargetClosest)
++		if (UseMode == LockOnMode.TargetClosest && !IsaClient.Gameplay.SmartAim.AutoAim)
+ 		{
+ 			SetActive(on: false);
+ 			SetActive(CanEnable());
+@@ -178,7 +201,7 @@
+ 
+ 	public static bool CanUseLockonSystem()
+ 	{
+-		if (!ForceUsability)
++		if (!ForceUsability && !IsaClient.Gameplay.SmartAim.AutoAim)
+ 		{
+ 			return PlayerInput.UsingGamepad;
+ 		}
+@@ -205,6 +228,10 @@
+ 	private static bool ShouldLockOn(Player p)
+ 	{
+ 		if (ItemID.Sets.NeverLocksOn[p.inventory[p.selectedItem].type])
++		{
++			return false;
++		}
++		if (IsaClient.Gameplay.SmartAim.AutoAim && !IsaClient.Gameplay.SmartAim.IsWeapon(p.inventory[p.selectedItem]))
+ 		{
+ 			return false;
+ 		}
+@@ -348,6 +375,19 @@
+ 				_targets.Add(i);
+ 			}
+ 		}
++		if (!targetPlayers)
++		{
++			return;
++		}
++		for (int j = 0; j < Main.maxPlayers; j++)
++		{
++			Player player = Main.player[j];
++			// Players count even in the dark (their name shows anyway), unlike NPCs.
++			if (ValidTarget(player) && !(player.Distance(position) > radius) && rectangle.Intersects(player.Hitbox))
++			{
++				_targets.Add(Main.maxNPCs + j);
++			}
++		}
+ 	}
+ 
+ 	private static void GetClosestTarget(Vector2 position)
+@@ -361,7 +401,7 @@
+ 			for (int i = 0; i < _targets.Count; i++)
+ 			{
+ 				int num2 = _targets[i];
+-				NPC obj = Main.npc[num2];
++				Entity obj = TargetEntity(num2);
+ 				float num3 = Vector2.Dot(obj.DirectionFrom(center), value);
+ 				if (ValidTarget(obj) && (_pickedTarget == -1 || !(num3 <= num)))
+ 				{
+@@ -374,26 +414,13 @@
+ 		for (int j = 0; j < _targets.Count; j++)
+ 		{
+ 			int num4 = _targets[j];
+-			NPC nPC = Main.npc[num4];
++			Entity nPC = TargetEntity(num4);
+ 			if (ValidTarget(nPC) && (_pickedTarget == -1 || !(nPC.Distance(position) >= num)))
+ 			{
+ 				_pickedTarget = j;
+ 				num = nPC.Distance(position);
+ 			}
+ 		}
+-	}
+-
+-	private static bool ValidTarget(NPC n)
+-	{
+-		if (n == null || !n.active || n.dontTakeDamage || n.friendly || n.isLikeATownNPC || n.life < 1 || n.immortal)
+-		{
+-			return false;
+-		}
+-		if (n.aiStyle == 25 && n.ai[0] == 0f)
+-		{
+-			return false;
+-		}
+-		return true;
+ 	}
+ 
+ 	private static void SetLockPosition(Vector2 position)
+@@ -454,18 +481,19 @@
+ 			if (num9 > 0f)
+ 			{
+ 				float num10 = 1f - num9 * num9;
+-				Vector2 pos = Main.npc[i].Top + new Vector2(0f, 0f - num7 - num10 * num6) * gravDir - Main.screenPosition;
+-				pos = Main.ReverseGravitySupport(pos, Main.npc[i].height);
++				Vector2 pos = TargetEntity(i).Top + new Vector2(0f, 0f - num7 - num10 * num6) * gravDir - Main.screenPosition;
++				pos = Main.ReverseGravitySupport(pos, TargetEntity(i).height);
+ 				spriteBatch.Draw(value, pos, rectangle, color * num9, 0f, rectangle.Size() / 2f, new Vector2(0.58f, 1f) * num2 * num4 * (1f + num9) / 2f, SpriteEffects.None, 0f);
+ 				spriteBatch.Draw(value, pos, rectangle2, color2 * num9 * num9, 0f, rectangle2.Size() / 2f, new Vector2(0.58f, 1f) * num2 * num4 * (1f + num9) / 2f, SpriteEffects.None, 0f);
+ 			}
+ 			float num11 = _drawProgress[i, 1];
+ 			if (num11 > 0f)
+ 			{
+-				int num12 = Main.npc[i].width;
+-				if (Main.npc[i].height > num12)
++				Entity targetEntity = TargetEntity(i);
++				int num12 = targetEntity.width;
++				if (targetEntity.height > num12)
+ 				{
+-					num12 = Main.npc[i].height;
++					num12 = targetEntity.height;
+ 				}
+ 				num12 += 20;
+ 				if ((float)num12 < 70f)
+@@ -473,8 +501,8 @@
+ 					num5 *= (float)num12 / 70f;
+ 				}
+ 				float num13 = 3f;
+-				Vector2 vector = Main.npc[i].Center;
+-				if (_targets.Count >= 0 && _pickedTarget >= 0 && _pickedTarget < _targets.Count && i == _targets[_pickedTarget] && NPC.GetNPCLocation(i, seekHead: true, averageDirection: false, out var _, out var pos2))
++				Vector2 vector = targetEntity.Center;
++				if (i < Main.maxNPCs && _targets.Count >= 0 && _pickedTarget >= 0 && _pickedTarget < _targets.Count && i == _targets[_pickedTarget] && NPC.GetNPCLocation(i, seekHead: true, averageDirection: false, out var _, out var pos2))
+ 				{
+ 					vector = pos2;
+ 				}

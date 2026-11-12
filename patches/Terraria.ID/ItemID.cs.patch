@@ -1,0 +1,52 @@
+--- a/Terraria.ID/ItemID.cs
++++ b/Terraria.ID/ItemID.cs
+@@ -70,6 +70,9 @@
+ 		public static bool[] RapidAttackBonusDamage = Factory.CreateBoolSet(false, 2608, 3349, 672);
+ 
+ 		public static bool[] ItemsThatShouldNotBeInInventory = Factory.CreateBoolSet(false, 58, 184, 1734, 1735, 1867, 1868, 3453, 3454, 3455, 4143, 5013, 6135, 6136);
++
++		/// <summary>IsaClient: client-only items (drawn with a small wire mark, sent to servers as their vanilla item).</summary>
++		public static bool[] CustomClientItem = Factory.CreateBoolSet(6196, 6197, 6198, 6199, 6200);
+ 
+ 		public static bool[] DrawUnsafeIndicator = Factory.CreateBoolSet(false, 5363, 5365, 5366, 5367, 5368, 5369, 5370, 5371, 5372, 5373, 5376, 5375, 5374, 3988, 5384, 5532, 5533, 5545, 5546);
+ 
+@@ -258,6 +261,10 @@
+ 		public static bool[] IsChainsaw = Factory.CreateBoolSet(387, 3098, 1232, 383, 384, 2778, 1197, 1190, 2783, 3463, 1204, 2773, 2342, 579);
+ 
+ 		public static bool[] IsPaintScraper = Factory.CreateBoolSet(1100, 1545);
++
++		public static bool[] LiquidBuckets = Factory.CreateBoolSet(206, 207, 1128, 3031, 4820, 5302, 5364);
++
++		public static bool[] LiquidRemoval = Factory.CreateBoolSet(205, 3032, 4872, 5303, 5304);
+ 
+ 		public static bool[] SummonerWeaponThatScalesWithAttackSpeed = Factory.CreateBoolSet(4672, 4679, 4680, 4678, 4913, 4912, 4911, 4914, 5074, 5473, 5474, 5475, 5476, 5477, 5478, 5479, 5480, 5688);
+ 
+@@ -1093,7 +1100,7 @@
+ 
+ 		public static bool[] IsQuestFish = Factory.CreateBoolSet(2475, 2476, 2450, 2477, 2478, 2451, 2479, 2480, 2452, 2453, 2481, 2454, 2482, 2483, 2455, 2456, 2457, 2458, 2459, 2460, 2484, 2472, 2461, 2462, 2463, 2485, 2464, 2465, 2486, 2466, 2467, 2468, 2487, 2469, 2488, 2470, 2471, 2473, 2474, 4393, 4394);
+ 
+-		public static int[] TextureCopyLoad = Factory.CreateIntSet(-1, 3665, 48, 3666, 306, 3667, 328, 3668, 625, 3669, 626, 3670, 627, 3671, 680, 3672, 681, 3673, 831, 3674, 838, 3675, 914, 3676, 952, 3677, 1142, 3678, 1298, 3679, 1528, 3680, 1529, 3681, 1530, 3682, 1531, 3683, 1532, 3684, 2230, 3685, 2249, 3686, 2250, 3687, 2526, 3688, 2544, 3689, 2559, 3690, 2574, 3691, 2612, 3692, 2613, 3693, 2614, 3694, 2615, 3695, 2616, 3696, 2617, 3697, 2618, 3698, 2619, 3699, 2620, 3700, 2748, 3701, 2814, 3703, 3125, 3702, 3180, 3704, 3181, 3705, 3665, 3706, 3665, 4713, 4712, 5167, 5156, 5188, 5177, 5209, 5198, 5567, 5556, 5620, 5609, 5708, 5697, 5731, 5720, 5754, 5745, 5776, 5763, 5797, 5784, 5818, 5805, 5839, 5826, 5857, 5846, 5878, 5865, 5897, 5886, 5918, 5905, 5952, 5939, 5974, 5962, 5995, 5982, 6018, 6005, 6041, 6028, 6064, 6051, 6087, 6074, 6131, 6118);
++		public static int[] TextureCopyLoad = Factory.CreateIntSet(-1, 3665, 48, 3666, 306, 3667, 328, 3668, 625, 3669, 626, 3670, 627, 3671, 680, 3672, 681, 3673, 831, 3674, 838, 3675, 914, 3676, 952, 3677, 1142, 3678, 1298, 3679, 1528, 3680, 1529, 3681, 1530, 3682, 1531, 3683, 1532, 3684, 2230, 3685, 2249, 3686, 2250, 3687, 2526, 3688, 2544, 3689, 2559, 3690, 2574, 3691, 2612, 3692, 2613, 3693, 2614, 3694, 2615, 3695, 2616, 3696, 2617, 3697, 2618, 3698, 2619, 3699, 2620, 3700, 2748, 3701, 2814, 3703, 3125, 3702, 3180, 3704, 3181, 3705, 3665, 3706, 3665, 4713, 4712, 5167, 5156, 5188, 5177, 5209, 5198, 5567, 5556, 5620, 5609, 5708, 5697, 5731, 5720, 5754, 5745, 5776, 5763, 5797, 5784, 5818, 5805, 5839, 5826, 5857, 5846, 5878, 5865, 5897, 5886, 5918, 5905, 5952, 5939, 5974, 5962, 5995, 5982, 6018, 6005, 6041, 6028, 6064, 6051, 6087, 6074, 6131, 6118, 6196, 5069, 6197, 674, 6198, 675, 6199, 757, 6200, 5329);
+ 
+ 		public static bool[] TrapSigned = Factory.CreateBoolSet(false, 3665, 3666, 3667, 3668, 3669, 3670, 3671, 3672, 3673, 3674, 3675, 3676, 3677, 3678, 3679, 3680, 3681, 3682, 3683, 3684, 3685, 3686, 3687, 3688, 3689, 3690, 3691, 3692, 3693, 3694, 3695, 3696, 3697, 3698, 3699, 3700, 3701, 3703, 3702, 3704, 3705, 3706, 3886, 3887, 3950, 3976, 4164, 4185, 4206, 4227, 4266, 4268, 4585, 4713, 5167, 5188, 5209, 5567, 5620, 5708, 5731, 5754, 5776, 5797, 5818, 5839, 5857, 5878, 5897, 5918, 5952, 5974, 5995, 6018, 6041, 6064, 6087, 6131);
+ 
+@@ -13935,7 +13942,18 @@
+ 
+ 	public const short OldStyleParkourBookInactive = 6195;
+ 
+-	public static readonly short Count = 6196;
++	// IsaClient: client-only items (LegacyItems), after the last 1.4.5.8 item.
++	public const short FlinxinatorStaff = 6196;
++
++	public const short LegacyTrueExcalibur = 6197;
++
++	public const short LegacyTrueNightsEdge = 6198;
++
++	public const short LegacyTerraBlade = 6199;
++
++	public const short RubblemakerPots = 6200;
++
++	public static readonly short Count = 6201;
+ 
+ 	public static readonly IdDictionary Search = IdDictionary.Create<ItemID, short>();
+ 

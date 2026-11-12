@@ -1,0 +1,19 @@
+--- a/Terraria.WorldBuilding/WorldUtils.cs
++++ b/Terraria.WorldBuilding/WorldUtils.cs
+@@ -1,6 +1,7 @@
+ using System;
+ using Microsoft.Xna.Framework;
+ using Terraria.Testing;
++using IsaClient.Rendering;
+ 
+ namespace Terraria.WorldBuilding;
+ 
+@@ -17,7 +18,7 @@
+ 
+ 	public static Rectangle GetWorldPlayArea()
+ 	{
+-		int num = 640;
++		int num = WorldView.WorldBorderPixels();
+ 		Point point = new Point((int)Main.leftWorld + num, (int)Main.topWorld + num);
+ 		Point point2 = new Point((int)Main.rightWorld - num, (int)Main.bottomWorld - num);
+ 		return new Rectangle(point.X, point.Y, point2.X - point.X, point2.Y - point.Y);

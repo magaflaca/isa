@@ -1,0 +1,35 @@
+--- a/Terraria.GameContent/TeleportPylonsSystem.cs
++++ b/Terraria.GameContent/TeleportPylonsSystem.cs
+@@ -7,6 +7,7 @@
+ using Terraria.GameContent.Tile_Entities;
+ using Terraria.Localization;
+ using Terraria.Net;
++using IsaClient.Movement;
+ 
+ namespace Terraria.GameContent;
+ 
+@@ -186,6 +187,10 @@
+ 				};
+ 			}
+ 		}
++		if (TeleportTools.BypassTeleportRequests && Main.netMode != 2)
++		{
++			flag = true;
++		}
+ 		if (flag)
+ 		{
+ 			Vector2 newPos = info.PositionInTiles.ToWorldCoordinates() - new Vector2(0f, player.HeightOffsetBoost);
+@@ -248,6 +253,13 @@
+ 
+ 	public void RequestTeleportation(TeleportPylonInfo info, Player player)
+ 	{
++		if (TeleportTools.BypassTeleportRequests && Main.netMode == 1)
++		{
++			// Bypass Teleport Requests: teleport locally and sync the new position instead of asking the server.
++			HandleTeleportRequest(info, player.whoAmI);
++			TeleportTools.AfterBypassedTeleport();
++			return;
++		}
+ 		NetManager.Instance.SendToServerOrLoopback(NetTeleportPylonModule.SerializeUseRequest(info));
+ 	}
+ 

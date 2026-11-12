@@ -1,0 +1,32 @@
+--- a/Terraria/Recipe.cs
++++ b/Terraria/Recipe.cs
+@@ -7,6 +7,7 @@
+ using Terraria.Map;
+ using Terraria.Testing;
+ using Terraria.UI;
++using IsaClient.Gameplay;
+ 
+ namespace Terraria;
+ 
+@@ -289,6 +290,10 @@
+ 
+ 	public static int HowManyTimesCanRecipeBeCrafted(RequiredItemEntry[] requiredItems)
+ 	{
++		if (PlayerCheats.FreeCraft)
++		{
++			return 9999;
++		}
+ 		int num = int.MaxValue;
+ 		for (int i = 0; i < requiredItems.Length; i++)
+ 		{
+@@ -321,6 +326,10 @@
+ 
+ 	public bool PlayerMeetsEnvironmentConditions(Player player, List<string> missingObjects = null)
+ 	{
++		if (player.whoAmI == Main.myPlayer && PlayerCheats.CraftAnywhere)
++		{
++			return true;
++		}
+ 		bool flag = true;
+ 		if (requiredTile >= 0 && !player.adjTile[requiredTile])
+ 		{

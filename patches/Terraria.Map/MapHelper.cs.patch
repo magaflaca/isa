@@ -1,0 +1,38 @@
+--- a/Terraria.Map/MapHelper.cs
++++ b/Terraria.Map/MapHelper.cs
+@@ -9,6 +9,7 @@
+ using Terraria.Social;
+ using Terraria.Testing;
+ using Terraria.Utilities;
++using IsaClient.Building;
+ 
+ namespace Terraria.Map;
+ 
+@@ -188,7 +189,7 @@
+ 
+ 	private static ushort hellPosition;
+ 
+-	private static Color[] colorLookup;
++	public static Color[] colorLookup;
+ 
+ 	private static ushort[] snowTypes;
+ 
+@@ -1787,6 +1788,7 @@
+ 		snowTypes[4] = tileLookup[164];
+ 		snowTypes[5] = tileLookup[200];
+ 		Lang.BuildMapAtlas();
++		ColorMatching.SetupWallColors();
+ 	}
+ 
+ 	public static Color MultiplyMapColor(Color color, float multiplier)
+@@ -1903,7 +1905,9 @@
+ 		Tile tile = Main.tile[i, j];
+ 		if (tile == null)
+ 		{
+-			return default(MapTile);
++			int airLight = Light;
++			int airType = (backgroundOverride == 0) ? GetBackgroundType(i, j, ref airLight) : backgroundOverride;
++			return MapTile.Create((ushort)airType, (byte)airLight, 0);
+ 		}
+ 		int newColor = 0;
+ 		int newLight = Light;

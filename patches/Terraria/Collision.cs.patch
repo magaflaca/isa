@@ -1,0 +1,21 @@
+--- a/Terraria/Collision.cs
++++ b/Terraria/Collision.cs
+@@ -3,6 +3,7 @@
+ using Microsoft.Xna.Framework;
+ using Terraria.DataStructures;
+ using Terraria.ID;
++using IsaClient.Movement;
+ 
+ namespace Terraria;
+ 
+@@ -4255,6 +4256,10 @@
+ 				continue;
+ 			}
+ 			int num4 = TileID.Sets.ConveyorDirection[tile.type];
++			if (player != null && player.whoAmI == Main.myPlayer && Travel.ConveyerBeltMode != 0)
++			{
++				num4 = Travel.ConveyorDirectionOverride(player, tile, num4);
++			}
+ 			if (num4 == 0)
+ 			{
+ 				continue;

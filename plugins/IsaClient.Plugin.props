@@ -1,0 +1,68 @@
+<!--
+  Shared build settings for IsaClient plugins. Import it from a plugin project:
+    <Import Project="path\to\IsaClient.Plugin.props" />
+  and name the assembly <Something>.IsaPlugin (or .TAPlugin for TerraAngel style plugins).
+
+  Where things are (override any of them with -p:Name=value):
+    IsaClientExe      IsaClient's executable (it is the "Terraria" assembly plugins reference)
+    IsaClientLib      folder with ReLogic.dll and Newtonsoft.Json.dll (the SDK's lib folder)
+    IsaClientPlugins  where the built plugin is copied (the game loads it from there)
+-->
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateBindingRedirectsOutputType>false</GenerateBindingRedirectsOutputType>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+
+    <IsaClientLib Condition="'$(IsaClientLib)' == '' and Exists('$(MSBuildThisFileDirectory)lib')">$(MSBuildThisFileDirectory)lib\</IsaClientLib>
+    <IsaClientLib Condition="'$(IsaClientLib)' == ''">$(MSBuildThisFileDirectory)..\src\</IsaClientLib>
+    <IsaClientExe Condition="'$(IsaClientExe)' == '' and Exists('$(IsaClientLib)Terraria.exe')">$(IsaClientLib)Terraria.exe</IsaClientExe>
+    <IsaClientExe Condition="'$(IsaClientExe)' == ''">$(MSBuildThisFileDirectory)..\src\bin\Release\net48\Terraria.exe</IsaClientExe>
+    <IsaClientPlugins Condition="'$(IsaClientPlugins)' == ''">$([System.Environment]::GetFolderPath(SpecialFolder.MyDocuments))\My Games\Terraria\IsaClient\Plugins</IsaClientPlugins>
+    <XnaGac>$(WINDIR)\Microsoft.NET\assembly\GAC_32</XnaGac>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The client itself, plus the game's libraries. Never copied next to the plugin: the game has them already. -->
+    <Reference Include="Terraria"><HintPath>$(IsaClientExe)</HintPath><Private>false</Private></Reference>
+    <Reference Include="ReLogic" Condition="Exists('$(IsaClientLib)ReLogic.dll')"><HintPath>$(IsaClientLib)ReLogic.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="ReLogic" Condition="!Exists('$(IsaClientLib)ReLogic.dll')"><HintPath>$(IsaClientLib)Terraria.Libraries.ReLogic.ReLogic.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Newtonsoft.Json" Condition="Exists('$(IsaClientLib)Newtonsoft.Json.dll')"><HintPath>$(IsaClientLib)Newtonsoft.Json.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Newtonsoft.Json" Condition="!Exists('$(IsaClientLib)Newtonsoft.Json.dll')"><HintPath>$(IsaClientLib)Terraria.Libraries.JSON.NET.Newtonsoft.Json.dll</HintPath><Private>false</Private></Reference>
+    <!-- XNA 4.0 is installed with Terraria (Global Assembly Cache). -->
+    <Reference Include="Microsoft.Xna.Framework"><HintPath>$(XnaGac)\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game"><HintPath>$(XnaGac)\Microsoft.Xna.Framework.Game\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Game.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Microsoft.Xna.Framework.Graphics"><HintPath>$(XnaGac)\Microsoft.Xna.Framework.Graphics\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Graphics.dll</HintPath><Private>false</Private></Reference>
+
+    <!-- ImGui: the same version the client embeds. Only for compiling: at run time the client's copy is used. -->
+    <PackageReference Include="ImGui.NET" Version="1.91.0.1" ExcludeAssets="runtime;build" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.6.0" ExcludeAssets="runtime" />
+    <PackageReference Include="System.Buffers" Version="4.6.0" ExcludeAssets="runtime" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.0" ExcludeAssets="runtime" />
+    <!-- Harmony, to patch game methods (the client has it built in). -->
+    <PackageReference Include="Lib.Harmony" Version="2.3.6" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <!-- TerraAngel plugins (*.TAPlugin) were written where the game's vectors and ImGui's are the same type: in them
+       Vector2/3/4 are IsaClient's bridge vectors, which convert to and from XNA's and System.Numerics' by themselves. -->
+  <ItemGroup Condition="$(AssemblyName.EndsWith('.TAPlugin'))">
+    <Using Include="TerraAngel.Compat.Vector2" Alias="Vector2" />
+    <Using Include="TerraAngel.Compat.Vector3" Alias="Vector3" />
+    <Using Include="TerraAngel.Compat.Vector4" Alias="Vector4" />
+    <Using Include="TerraAngel.Compat" />
+  </ItemGroup>
+
+  <!-- After every build the plugin (and its .pdb for line numbers in errors) goes to the game's Plugins folder.
+       In the game: .plugins reload <name> (or the Reload button) picks the new build up without restarting. -->
+  <Target Name="CopyToIsaClientPlugins" AfterTargets="Build" Condition="'$(IsaClientPlugins)' != 'none'">
+    <MakeDir Directories="$(IsaClientPlugins)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(IsaClientPlugins)" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(IsaClientPlugins)" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    <Message Importance="high" Text="Plugin copied to $(IsaClientPlugins)" />
+  </Target>
+</Project>

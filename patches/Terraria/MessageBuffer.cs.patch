@@ -1,0 +1,647 @@
+--- a/Terraria/MessageBuffer.cs
++++ b/Terraria/MessageBuffer.cs
+@@ -1,4 +1,4 @@
+-using System;
++﻿using System;
+ using System.Collections.Generic;
+ using System.IO;
+ using Microsoft.Xna.Framework;
+@@ -23,6 +23,10 @@
+ using Terraria.Social.Steam;
+ using Terraria.Testing;
+ using Terraria.UI;
++using IsaClient.Community;
++using IsaClient.Networking;
++using IsaClient.Rendering;
++using IsaClient.WorldTools;
+ 
+ namespace Terraria;
+ 
+@@ -175,6 +179,11 @@
+ 		{
+ 			ResetReader();
+ 		}
++		if (Main.netMode == 1)
++		{
++			IsaClient.MultiClient.Possession.OnGamePacket(b, readBuffer, start, length);
++			VanishDetection.OnClientPacket(b, readBuffer, start, length);
++		}
+ 		reader.BaseStream.Position = num;
+ 		switch (b)
+ 		{
+@@ -223,8 +232,13 @@
+ 		case 2:
+ 			if (Main.netMode == 1)
+ 			{
++				string kickReason = NetworkText.Deserialize(reader).ToString();
++				if (IsaClient.MultiClient.Possession.InterceptKick(kickReason))
++				{
++					break;
++				}
+ 				Netplay.Disconnect = true;
+-				Main.statusText = NetworkText.Deserialize(reader).ToString();
++				Main.statusText = kickReason;
+ 			}
+ 			break;
+ 		case 3:
+@@ -251,6 +265,7 @@
+ 				NetMessage.TrySendData(42, -1, -1, null, num134);
+ 				NetMessage.TrySendData(50, -1, -1, null, num134);
+ 				NetMessage.TrySendData(147, -1, -1, null, num134, player17.CurrentLoadoutIndex);
++				IsaClient.Networking.MobileMode.AfterSlot(num134);
+ 				for (int num135 = 0; num135 < 59; num135++)
+ 				{
+ 					NetMessage.TrySendData(5, -1, -1, null, num134, PlayerItemSlotID.Inventory0 + num135);
+@@ -287,6 +302,13 @@
+ 			if (Main.netMode == 2)
+ 			{
+ 				num188 = whoAmI;
++			}
++			if (ServerDetection.BlockServerChange(num188, "player's data", delegate
++			{
++				NetMessage.SendData(4, -1, -1, null, Main.myPlayer);
++			}))
++			{
++				break;
+ 			}
+ 			if (num188 == Main.myPlayer && !Main.ServerSideCharacter)
+ 			{
+@@ -353,6 +375,10 @@
+ 			player18.usedGummyWorm = bitsByte34[4];
+ 			player18.usedAmbrosia = bitsByte34[5];
+ 			player18.ateArtisanBread = bitsByte34[6];
++			if (Main.netMode == 1)
++			{
++				VanishDetection.OnSyncPlayerReceived(player18);
++			}
+ 			if (Main.netMode != 2)
+ 			{
+ 				break;
+@@ -410,9 +436,20 @@
+ 			{
+ 				num25 = whoAmI;
+ 			}
++			if (!Main.player[num25].HasLockedInventory() && ServerDetection.BlockServerChange(num25, "inventory contents", delegate
++			{
++				ServerDetection.SendInventoryManually();
++			}))
++			{
++				break;
++			}
+ 			if (num25 == Main.myPlayer && !Main.ServerSideCharacter && !Main.player[num25].HasLockedInventory())
+ 			{
+ 				break;
++			}
++			if (num25 == Main.myPlayer && Main.netMode == 1 && Main.ServerSideCharacter)
++			{
++				IsaClient.Networking.SscSync.OnServerSetMySlot();
+ 			}
+ 			Player player2 = Main.player[num25];
+ 			lock (player2)
+@@ -425,6 +462,13 @@
+ 				item.Prefix(prefixWeWant);
+ 				item.favorited = favorited;
+ 				slot.Item = item;
++				if (num25 == Main.myPlayer && Main.netMode == 1 && Main.ServerSideCharacter)
++				{
++					// IsaClient: changed / server-unknown items come back as they were.
++					IsaClient.Items.ItemKeeper.OnServerSlot(num26, slot);
++					item = slot.Item;
++				}
++				IsaClient.Menu.StorageSync.OnSlot(num25, num26);
+ 				if (num25 == Main.myPlayer && !Main.ServerSideCharacter)
+ 				{
+ 					slotReference.Item = item.Clone();
+@@ -541,6 +585,7 @@
+ 				if (Main.ServerSideCharacter)
+ 				{
+ 					Main.ActivePlayerFileData.MarkAsServerSide();
++					ServerDetection.OnTshockServer = true;
+ 				}
+ 				BitsByte bitsByte8 = reader.ReadByte();
+ 				NPC.downedMechBoss1 = bitsByte8[0];
+@@ -650,8 +695,11 @@
+ 				Main.LobbyId = reader.ReadUInt64();
+ 				Sandstorm.IntendedSeverity = reader.ReadSingle();
+ 				ExtraSpawnPointManager.Read(reader, networking: true);
+-				Main.dungeonX = reader.ReadInt16();
+-				Main.dungeonY = reader.ReadInt16();
++				if (!IsaClient.Networking.ProtocolCompat.Active)
++				{
++					Main.dungeonX = reader.ReadInt16();
++					Main.dungeonY = reader.ReadInt16();
++				}
+ 				if (Netplay.Connection.State == 3)
+ 				{
+ 					Main.windSpeedCurrent = Main.windSpeedTarget;
+@@ -918,6 +966,7 @@
+ 			}
+ 			PlayerSpawnContext playerSpawnContext = (PlayerSpawnContext)reader.ReadByte();
+ 			player10.Spawn(playerSpawnContext);
++			VanishDetection.OnPlayerSpawnReceived(player10);
+ 			if (Main.netMode != 2 || Netplay.Clients[whoAmI].State < 3)
+ 			{
+ 				break;
+@@ -952,6 +1001,13 @@
+ 		case 13:
+ 		{
+ 			int num121 = reader.ReadByte();
++			if (ServerDetection.BlockServerChange(num121, "position, controls, stealth or ghost state", delegate
++			{
++				NetMessage.SendData(13, -1, -1, null, Main.myPlayer);
++			}))
++			{
++				break;
++			}
+ 			if (num121 == Main.myPlayer && !Main.ServerSideCharacter)
+ 			{
+ 				break;
+@@ -1049,6 +1105,10 @@
+ 			player13.isOperatingAnotherEntity = bitsByte27[3];
+ 			player13.controlUseTile = bitsByte27[4];
+ 			player13.netCameraTarget = (bitsByte27[5] ? new Vector2?(reader.ReadVector2()) : ((Vector2?)null));
++			if (Main.netMode == 1)
++			{
++				PlayerListPanel.OnControlsPacket(num121);
++			}
+ 			player13.lastItemUseAttemptSuccess = bitsByte27[6];
+ 			Utils.Swap(ref t, ref player13.position);
+ 			if (Main.netMode == 2 && Netplay.Clients[whoAmI].State == 10)
+@@ -1077,6 +1137,7 @@
+ 			}
+ 			else
+ 			{
++				VanishDetection.OnPlayerDeactivated(num235);
+ 				Main.player[num235].active = false;
+ 			}
+ 			if (active != Main.player[num235].active)
+@@ -1095,6 +1156,13 @@
+ 		case 16:
+ 		{
+ 			int num73 = reader.ReadByte();
++			if (ServerDetection.BlockServerChange(num73, "HP", delegate
++			{
++				NetMessage.SendData(16, -1, -1, null, Main.myPlayer);
++			}))
++			{
++				break;
++			}
+ 			if (num73 != Main.myPlayer || Main.ServerSideCharacter)
+ 			{
+ 				if (Main.netMode == 2)
+@@ -1444,6 +1512,8 @@
+ 		}
+ 		case 21:
+ 		case 90:
++		case 145:
++		case 148:
+ 		{
+ 			int num41 = reader.ReadInt16();
+ 			Vector2 vector = reader.ReadVector2();
+@@ -1453,6 +1523,12 @@
+ 			BitsByte bitsByte4 = reader.ReadByte();
+ 			bool num43 = bitsByte4[2];
+ 			bool flag3 = bitsByte4[3];
++			if (IsaClient.Networking.ProtocolCompat.Active)
++			{
++				// 1.4.5.6: the shimmer state comes in packet 145 and the enemy grab delay in 148, not in the flags.
++				num43 = b == 145;
++				flag3 = b == 148;
++			}
+ 			int num44 = reader.ReadInt16();
+ 			bool shimmered = num43 && reader.ReadBoolean();
+ 			float shimmerTime = (num43 ? reader.ReadSingle() : 0f);
+@@ -1550,7 +1626,17 @@
+ 			break;
+ 		}
+ 		case 22:
+-			if (Main.netMode != 2)
++			if (Main.netMode != 2 && IsaClient.Networking.ProtocolCompat.Active)
++			{
++				// 1.4.5.6: item index, owner and position only. Like the old client, keep a fresh reservation for 15 ticks.
++				WorldItem legacyItem = Main.item[reader.ReadInt16()];
++				legacyItem.playerIndexTheItemIsReservedFor = reader.ReadByte();
++				legacyItem.timeToKeepReservation = ((legacyItem.playerIndexTheItemIsReservedFor == Main.myPlayer) ? Math.Max(legacyItem.timeToKeepReservation, 15) : 0);
++				legacyItem.position = reader.ReadVector2();
++				// IsaClient: a wipe removes what is given to you at once (and notes when others were given theirs).
++				IsaClient.WorldTools.GroundWipe.OnReserved(legacyItem.whoAmI);
++			}
++			else if (Main.netMode != 2)
+ 			{
+ 				WorldItem obj6 = Main.item[reader.ReadInt16()];
+ 				obj6.playerIndexTheItemIsReservedFor = reader.ReadByte();
+@@ -1558,6 +1644,8 @@
+ 				obj6.grabDelayPlayer = reader.ReadByte();
+ 				obj6.grabDelayTime = reader.Read7BitEncodedInt();
+ 				obj6.position = reader.ReadVector2();
++				// IsaClient: a wipe removes what is given to you at once (and notes when others were given theirs).
++				IsaClient.WorldTools.GroundWipe.OnReserved(obj6.whoAmI);
+ 			}
+ 			break;
+ 		case 23:
+@@ -1566,11 +1654,32 @@
+ 			{
+ 				break;
+ 			}
+-			byte b14 = reader.ReadByte();
+-			byte b15 = reader.ReadByte();
++			byte b14;
++			byte b15;
++			if (IsaClient.Networking.ProtocolCompat.Active)
++			{
++				// 1.4.5.6: short slot and no generation. A slot that is not active locally starts a new NPC (the old rule).
++				int legacySlot = reader.ReadInt16();
++				if (legacySlot < 0 || legacySlot >= Main.maxNPCs)
++				{
++					break;
++				}
++				b14 = (byte)legacySlot;
++				NPC legacyNpc = Main.npc[b14];
++				b15 = (legacyNpc.active ? legacyNpc.generation : ((byte)(legacyNpc.generation + 1)));
++			}
++			else
++			{
++				b14 = reader.ReadByte();
++				b15 = reader.ReadByte();
++			}
+ 			Vector2 vector7 = reader.ReadVector2();
+ 			Vector2 velocity6 = reader.ReadVector2();
+ 			int num175 = reader.ReadUInt16();
++			if (num175 == 65535 && IsaClient.Networking.ProtocolCompat.Active)
++			{
++				num175 = 0;
++			}
+ 			BitsByte bitsByte30 = reader.ReadByte();
+ 			BitsByte bitsByte31 = reader.ReadByte();
+ 			float[] array2 = ReUseTemporaryNPCAI();
+@@ -1586,6 +1695,10 @@
+ 				}
+ 			}
+ 			int num177 = reader.ReadInt16();
++			if (IsaClient.Networking.ProtocolCompat.Active)
++			{
++				IsaClient.Networking.ProtocolCompat.NpcAiFromLegacy(num177, array2);
++			}
+ 			int? playerCountForMultiplayerDifficultyOverride = 1;
+ 			if (bitsByte31[0])
+ 			{
+@@ -1632,7 +1745,7 @@
+ 			{
+ 				nPC5.active = true;
+ 			}
+-			Vector2 vector8 = NPCID.Sets.SyncAnchor[nPC5.type] * nPC5.Size;
++			Vector2 vector8 = (IsaClient.Networking.ProtocolCompat.Active ? Vector2.Zero : (NPCID.Sets.SyncAnchor[nPC5.type] * nPC5.Size));
+ 			if (!flag17 && Vector2.DistanceSquared(nPC5.position + vector8, vector7) <= (float)(Main.multiplayerNPCSmoothingRange * Main.multiplayerNPCSmoothingRange))
+ 			{
+ 				nPC5.netOffset += nPC5.position + vector8 - vector7;
+@@ -1708,9 +1821,24 @@
+ 			break;
+ 		case 27:
+ 		{
+-			ProjectileKey key2 = (ProjectileKey)reader.ReadInt32();
++			bool legacyProjectile = IsaClient.Networking.ProtocolCompat.Active;
++			ProjectileKey key2 = default(ProjectileKey);
++			int legacyIdentity = 0;
++			int legacyOwner = 0;
++			if (legacyProjectile)
++			{
++				legacyIdentity = reader.ReadInt16();
++			}
++			else
++			{
++				key2 = (ProjectileKey)reader.ReadInt32();
++			}
+ 			Vector2 position4 = reader.ReadVector2();
+ 			Vector2 velocity5 = reader.ReadVector2();
++			if (legacyProjectile)
++			{
++				legacyOwner = reader.ReadByte();
++			}
+ 			int num158 = reader.ReadInt16();
+ 			BitsByte bitsByte28 = reader.ReadByte();
+ 			BitsByte bitsByte29 = (byte)(bitsByte28[2] ? reader.ReadByte() : 0);
+@@ -1721,8 +1849,31 @@
+ 			int damage3 = (bitsByte28[4] ? reader.ReadInt16() : 0);
+ 			float knockBack2 = (bitsByte28[5] ? reader.ReadSingle() : 0f);
+ 			int originalDamage = (bitsByte28[6] ? reader.ReadInt16() : 0);
++			if (legacyProjectile && bitsByte28[7])
++			{
++				reader.ReadInt16();
++			}
+ 			array[2] = (bitsByte29[0] ? reader.ReadSingle() : 0f);
++			if (legacyProjectile)
++			{
++				// 1.4.5.6 identifies projectiles by (identity, owner): rebuild the key of our copy, and turn ai fields that
++				// point at another projectile from its identity into its key.
++				if (legacyIdentity < 0 || legacyIdentity > 1000 || num158 <= 0 || num158 >= ProjectileID.Count)
++				{
++					break;
++				}
++				key2 = Projectile.LegacyNetKey(legacyOwner, legacyIdentity, create: true);
++				int refAi = IsaClient.Networking.ProtocolCompat.ProjectileRefAi(num158);
++				if (refAi >= 0)
++				{
++					array[refAi] = IsaClient.Networking.ProtocolCompat.AiFromLegacy(legacyOwner, array[refAi]);
++				}
++			}
+ 			if (Main.netMode == 2 && (Main.projHostile[num158] || key2.Spawner != whoAmI))
++			{
++				break;
++			}
++			if (Main.netMode == 1 && AntiLag.ShouldBlockIncomingProjectile(key2, num158))
+ 			{
+ 				break;
+ 			}
+@@ -1769,8 +1920,22 @@
+ 			{
+ 				NetMessage.TrySendData(162, whoAmI);
+ 			}
+-			int num240 = reader.ReadByte();
+-			int num241 = reader.ReadByte();
++			int num240;
++			int num241;
++			if (IsaClient.Networking.ProtocolCompat.Active)
++			{
++				num240 = reader.ReadInt16();
++				if (num240 < 0 || num240 >= Main.maxNPCs)
++				{
++					break;
++				}
++				num241 = Main.npc[num240].generation;
++			}
++			else
++			{
++				num240 = reader.ReadByte();
++				num241 = reader.ReadByte();
++			}
+ 			int num242 = reader.ReadInt16();
+ 			float num243 = reader.ReadSingle();
+ 			int num244 = reader.ReadByte() - 1;
+@@ -1824,8 +1989,25 @@
+ 			break;
+ 		case 29:
+ 		{
+-			ProjectileKey projectileKey = (ProjectileKey)reader.ReadInt32();
+-			Vector2 position3 = reader.ReadVector2();
++			ProjectileKey projectileKey;
++			Vector2 position3;
++			if (IsaClient.Networking.ProtocolCompat.Active)
++			{
++				// 1.4.5.6: (identity, owner), no position: the projectile dies where our copy is.
++				int legacyIdentity2 = reader.ReadInt16();
++				int legacyOwner2 = reader.ReadByte();
++				projectileKey = Projectile.LegacyNetKey(legacyOwner2, legacyIdentity2, create: false);
++				if ((int)projectileKey == 0 || !projectileKey.TryGet(out var legacyProj))
++				{
++					break;
++				}
++				position3 = legacyProj.position;
++			}
++			else
++			{
++				projectileKey = (ProjectileKey)reader.ReadInt32();
++				position3 = reader.ReadVector2();
++			}
+ 			if (projectileKey.TryGet(out var proj) && proj.active)
+ 			{
+ 				if (Main.netMode == 2 && proj.owner != whoAmI)
+@@ -1857,6 +2039,18 @@
+ 			}
+ 			bool flag5 = reader.ReadBoolean();
+ 			Main.player[num52].hostile = flag5;
++			if (Main.netMode == 1 && num52 == Main.myPlayer)
++			{
++				if (ServerDetection.NotifyServerModifiedPlayer)
++				{
++					Main.NewText("Server forced PVP status to " + (flag5 ? "on." : "off."));
++				}
++				if (ServerDetection.AwaitTshockResponseTime > 0)
++				{
++					ServerDetection.AwaitTshockResponseTime = 0;
++					ServerDetection.OnTshockServer = true;
++				}
++			}
+ 			if (Main.netMode == 2)
+ 			{
+ 				NetMessage.TrySendData(30, -1, whoAmI, null, num52);
+@@ -1915,6 +2109,11 @@
+ 					NetMessage.TrySendData(32, -1, whoAmI, null, num149, num150);
+ 				}
+ 			}
++			else if (Main.netMode == 1 && num149 >= 0 && num149 < 8000)
++			{
++				// IsaClient: a far chest kept small during a map reveal takes its item too.
++				MapReveal.KeptChestItem(num149, num150, type15, stack7, prefixWeWant3);
++			}
+ 			break;
+ 		}
+ 		case 33:
+@@ -1937,6 +2136,7 @@
+ 			}
+ 			if (Main.netMode == 1)
+ 			{
++				IsaClient.WorldTools.ProtectedChests.OnServerOpened(num21);
+ 				Player player = Main.player[Main.myPlayer];
+ 				if (player.chest == -1)
+ 				{
+@@ -2165,6 +2365,13 @@
+ 				num167 = whoAmI;
+ 			}
+ 			int num168 = reader.ReadInt16();
++			if (Main.netMode == 1 && ServerDetection.BlockServerChange(num167, "HP (heal)", delegate
++			{
++				NetMessage.SendData(16, -1, -1, null, Main.myPlayer);
++			}))
++			{
++				break;
++			}
+ 			if (num167 != Main.myPlayer || Main.ServerSideCharacter)
+ 			{
+ 				Main.player[num167].HealEffect(num168);
+@@ -2190,6 +2397,10 @@
+ 			player16.zone4 = reader.ReadByte();
+ 			player16.zone5 = reader.ReadByte();
+ 			player16.townNPCs = reader.ReadByte();
++			if (Main.netMode == 1)
++			{
++				PlayerListPanel.OnZonePacket(num131);
++			}
+ 			if (Main.netMode == 2)
+ 			{
+ 				if (!flag13 && player16.zone5[0])
+@@ -2233,7 +2444,7 @@
+ 		{
+ 			int num61 = reader.ReadInt16();
+ 			WorldItem worldItem2 = Main.item[num61];
+-			bool forceAssignToServer = reader.ReadBoolean();
++			bool forceAssignToServer = !IsaClient.Networking.ProtocolCompat.Active && reader.ReadBoolean();
+ 			if (Main.netMode == 1)
+ 			{
+ 				if (worldItem2.playerIndexTheItemIsReservedFor == Main.myPlayer)
+@@ -2293,6 +2504,13 @@
+ 			if (Main.netMode == 2)
+ 			{
+ 				num245 = whoAmI;
++			}
++			else if (ServerDetection.BlockServerChange(num245, "mana", delegate
++			{
++				NetMessage.SendData(42, -1, -1, null, Main.myPlayer);
++			}))
++			{
++				break;
+ 			}
+ 			else if (Main.myPlayer == num245 && !Main.ServerSideCharacter)
+ 			{
+@@ -2460,6 +2678,13 @@
+ 			{
+ 				num228 = whoAmI;
+ 			}
++			else if (ServerDetection.BlockServerChange(num228, "buffs", delegate
++			{
++				NetMessage.SendData(50, -1, -1, null, Main.myPlayer);
++			}))
++			{
++				break;
++			}
+ 			else if (num228 == Main.myPlayer && !Main.ServerSideCharacter)
+ 			{
+ 				break;
+@@ -2606,6 +2831,22 @@
+ 				}
+ 				else
+ 				{
++					if (num78 == Main.myPlayer)
++					{
++						if (num79 == 149)
++						{
++							ServerDetection.DidTShockDisableYou = true;
++							ServerDetection.TShockDisableTime = num80;
++						}
++						if (!Main.pvpBuff[num79] && !BuffID.Sets.IsBuffAppliedInArea[num79])
++						{
++							ServerDetection.OnTshockServer = true;
++						}
++						if (ServerDetection.NotifyServerModifiedPlayer && !BuffID.Sets.IsBuffAppliedInArea[num79])
++						{
++							Main.NewText("Server added buff: " + num79 + " for " + num80 + " frames.");
++						}
++					}
+ 					Main.player[num78].AddBuff(num79, num80, fromNetPvP: true);
+ 				}
+ 			}
+@@ -2649,6 +2890,10 @@
+ 			if (Main.netMode == 2)
+ 			{
+ 				NetMessage.TrySendData(58, -1, whoAmI, null, whoAmI, num40);
++				break;
++			}
++			if (AntiLag.ShouldBlockIncomingSound(num39))
++			{
+ 				break;
+ 			}
+ 			Player player4 = Main.player[num39];
+@@ -3170,6 +3415,13 @@
+ 		case 76:
+ 		{
+ 			int num190 = reader.ReadByte();
++			if (ServerDetection.BlockServerChange(num190, "angler quests", delegate
++			{
++				NetMessage.SendData(76, -1, -1, null, Main.myPlayer);
++			}))
++			{
++				break;
++			}
+ 			if (num190 != Main.myPlayer || Main.ServerSideCharacter)
+ 			{
+ 				if (Main.netMode == 2)
+@@ -3386,6 +3638,7 @@
+ 					inner.notAmmo = reader.ReadBoolean();
+ 				}
+ 			}
++			inner.modifiedByServer = true;
+ 			break;
+ 		}
+ 		case 89:
+@@ -3676,6 +3929,10 @@
+ 				NetMessage.TrySendData(102, -1, -1, null, num107, (int)num108, other.X, other.Y);
+ 				break;
+ 			}
++			if (AntiLag.ShouldBlockIncomingNebula(num107))
++			{
++				break;
++			}
+ 			Player player11 = Main.player[num107];
+ 			for (int num109 = 0; num109 < 255; num109++)
+ 			{
+@@ -3818,7 +4075,11 @@
+ 			int type5 = reader.ReadInt16();
+ 			int num67 = reader.ReadInt16();
+ 			int num68 = reader.ReadByte();
+-			if (num68 == Main.myPlayer)
++			if (num68 == Main.myPlayer && WorldCommands.BlockWirePayment)
++			{
++				Main.player[num68].wireOperationsCooldown = 0;
++			}
++			else if (num68 == Main.myPlayer)
+ 			{
+ 				Player player7 = Main.player[num68];
+ 				for (int k = 0; k < num67; k++)
+@@ -3903,6 +4164,10 @@
+ 				if (Main.netMode == 2)
+ 				{
+ 					NetMessage.SendPlayerHurt(num27, playerDeathReason2, damage, num28, flag2, pvp2, num29, -1, whoAmI);
++				}
++				else
++				{
++					PlayerListPanel.OnHurtPacket(num27, playerDeathReason2, damage);
+ 				}
+ 			}
+ 			break;
+@@ -4299,8 +4564,9 @@
+ 			{
+ 				NetMessage.SendData(141, -1, whoAmI, null, (int)messageSource, (int)b6, velocity2.X, velocity2.Y, num89, num90);
+ 			}
+-			else
++			else if (IsaClient.Rendering.LucyChorus.ShowsNetLine(b6))
+ 			{
++				// IsaClient: stand-in lines (for someone's own line, which comes through the pipe) aren't shown.
+ 				LucyAxeMessage.CreateFromNet(messageSource, b6, new Vector2(num89, num90), velocity2);
+ 			}
+ 			break;
+@@ -4357,6 +4623,20 @@
+ 			if (Main.netMode == 2)
+ 			{
+ 				num69 = whoAmI;
++			}
++			if (ServerDetection.BlockServerChange(num69, "loadout", delegate
++			{
++				NetMessage.SendData(147, -1, -1, null, Main.myPlayer, Main.player[Main.myPlayer].CurrentLoadoutIndex);
++			}))
++			{
++				break;
++			}
++			if (Main.netMode == 1 && num69 == Main.myPlayer && ServerDetection.AwaitTshockResponseTime > 0)
++			{
++				ServerDetection.AwaitTshockResponseTime = 0;
++				ServerDetection.OnTshockServer = true;
++				ServerDetection.SendInventoryManually();
++				break;
+ 			}
+ 			int num70 = reader.ReadByte();
+ 			Main.player[num69].TrySwitchingLoadout(num70);
+@@ -4456,9 +4736,14 @@
+ 		{
+ 			short num31 = reader.ReadInt16();
+ 			short newSize = reader.ReadInt16();
+-			if (num31 >= 0 && num31 < 8000)
++			if (num31 >= 0 && num31 < 8000 && Main.chest[num31] != null)
+ 			{
+ 				Main.chest[num31].Resize(newSize);
++			}
++			else if (Main.netMode == 1 && num31 >= 0 && num31 < 8000)
++			{
++				// IsaClient: a far chest kept small during a map reveal takes its size too.
++				MapReveal.KeptChestResize(num31, newSize);
+ 			}
+ 			break;
+ 		}

@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Generation.Dungeon/DungeonCrawler.cs
++++ b/Terraria.GameContent.Generation.Dungeon/DungeonCrawler.cs
+@@ -425,7 +425,7 @@
+ 			currentDungeonData.createdDungeonEntranceOnSurface = true;
+ 		}
+ 		Vector2D currentPos = default(Vector2D);
+-		((Vector2D)(ref currentPos))._002Ector((double)currentDungeonData.genVars.generatingDungeonPositionX, (double)currentDungeonData.genVars.generatingDungeonPositionY);
++		currentPos = new Vector2D((double)currentDungeonData.genVars.generatingDungeonPositionX, (double)currentDungeonData.genVars.generatingDungeonPositionY);
+ 		double num2 = (flag ? dungeonEntrancePosition.Distance(currentPos) : 0.0);
+ 		int amountPassed = (int)num2;
+ 		int num3 = 100;

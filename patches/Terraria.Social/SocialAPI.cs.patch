@@ -1,0 +1,11 @@
+--- a/Terraria.Social/SocialAPI.cs
++++ b/Terraria.Social/SocialAPI.cs
+@@ -93,7 +93,7 @@
+ 
+ 	private static void LoadDiscord()
+ 	{
+-		if (!Main.dedServ && (Platform.IsWindows || Environment.Is64BitOperatingSystem))
++		if (!Main.dedServ && (ReLogic.OS.Platform.IsWindows || Environment.Is64BitOperatingSystem))
+ 		{
+ 			_ = Environment.Is64BitProcess;
+ 		}

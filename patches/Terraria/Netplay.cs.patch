@@ -1,0 +1,61 @@
+--- a/Terraria/Netplay.cs
++++ b/Terraria/Netplay.cs
+@@ -12,6 +12,7 @@
+ using Terraria.Net.Sockets;
+ using Terraria.Social;
+ using Terraria.Utilities;
++using IsaClient.Networking;
+ 
+ namespace Terraria;
+ 
+@@ -334,6 +335,7 @@
+ 	{
+ 		if (Main.netMode == 1 && Connection.IsActive)
+ 		{
++			IsaClient.MultiClient.Possession.UpdateMainThread();
+ 			NetMessage.CheckBytes();
+ 		}
+ 	}
+@@ -424,6 +426,8 @@
+ 
+ 	private static void ClientLoopSetup(RemoteAddress address)
+ 	{
++		IsaClient.MultiClient.Possession.OnConnectionStarting();
++		IsaClient.Networking.SscSync.OnConnectionStarting();
+ 		Connection.ResetSpecialFlags();
+ 		ResetNetDiag();
+ 		Main.ServerSideCharacter = false;
+@@ -518,10 +522,13 @@
+ 					{
+ 						Main.statusText = Language.GetTextValue("Net.RequestingTileData");
+ 					}
+-					if (!Connection.IsReading && !Disconnect && Connection.Socket.IsDataAvailable() && !Connection.ReadBufferFull)
++					lock (IsaClient.MultiClient.Possession.ReadGate)
+ 					{
+-						Connection.IsReading = true;
+-						Connection.Socket.AsyncReceive(Connection.ReadBuffer, 0, Connection.ReadBuffer.Length, Connection.ClientReadCallBack);
++						if (!Connection.IsReading && !Disconnect && !IsaClient.MultiClient.Possession.HoldReads && Connection.Socket.IsDataAvailable() && !Connection.ReadBufferFull)
++						{
++							Connection.IsReading = true;
++							Connection.Socket.AsyncReceive(Connection.ReadBuffer, 0, Connection.ReadBuffer.Length, Connection.ClientReadCallBack);
++						}
+ 					}
+ 					if (Connection.StatusMax > 0 && Connection.StatusText != "")
+ 					{
+@@ -542,6 +549,7 @@
+ 				}
+ 				num = Connection.State;
+ 			}
++			IsaClient.MultiClient.Possession.OnGameDisconnected();
+ 			try
+ 			{
+ 				Connection.IsActive = false;
+@@ -552,6 +560,8 @@
+ 			}
+ 			if (!Main.gameMenu)
+ 			{
++				// Kicked / lost connection / timed out while playing (leaving on purpose goes to the menu first).
++				Rejoin.QueueAutoRejoin();
+ 				Main.menuMode = 14;
+ 				Main.gameMenu = true;
+ 				Main.SwitchNetMode(0);

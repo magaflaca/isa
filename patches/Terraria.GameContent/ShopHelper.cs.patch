@@ -1,0 +1,19 @@
+--- a/Terraria.GameContent/ShopHelper.cs
++++ b/Terraria.GameContent/ShopHelper.cs
+@@ -4,6 +4,7 @@
+ using Terraria.GameContent.Personalities;
+ using Terraria.ID;
+ using Terraria.Localization;
++using IsaClient.Gameplay;
+ 
+ namespace Terraria.GameContent;
+ 
+@@ -56,7 +57,7 @@
+ 		_currentNPCBeingTalkedTo = npc;
+ 		_currentPlayerTalking = player;
+ 		ProcessMood(player, npc);
+-		result.PriceAdjustment = _currentPriceAdjustment;
++		result.PriceAdjustment = (PlayerCheats.FreeShops ? 0f : _currentPriceAdjustment);
+ 		result.HappinessReport = _currentHappiness;
+ 		return result;
+ 	}

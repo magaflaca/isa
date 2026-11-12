@@ -1,0 +1,11 @@
+--- a/Terraria/Gore.cs
++++ b/Terraria/Gore.cs
+@@ -1305,7 +1305,7 @@
+ 
+ 	public static int NewGore(Vector2 Position, Vector2 Velocity, int Type, float Scale = 1f)
+ 	{
+-		if (Main.netMode == 2)
++		if (Main.netMode == 2 || (IsaClient.Items.ShotPreview.Busy || IsaClient.Items.ShotPreview.Drawing))
+ 		{
+ 			return 600;
+ 		}

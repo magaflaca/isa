@@ -1,0 +1,11 @@
+--- a/Terraria.Social.Base/AWorkshopEntry.cs
++++ b/Terraria.Social.Base/AWorkshopEntry.cs
+@@ -38,7 +38,7 @@
+ 	public static string ReadHeader(string jsonText)
+ 	{
+ 		JToken val = default(JToken);
+-		if (!JObject.Parse(jsonText).TryGetValue("ContentType", ref val))
++		if (!JObject.Parse(jsonText).TryGetValue("ContentType", out val))
+ 		{
+ 			return null;
+ 		}

@@ -1,0 +1,11 @@
+--- a/Terraria.Social.Steam/CoreSocialModule.cs
++++ b/Terraria.Social.Steam/CoreSocialModule.cs
+@@ -48,7 +48,7 @@
+ 		Main.OnTickForThirdPartySoftwareOnly += Pulse;
+ 		if (Platform.IsOSX && !Main.dedServ)
+ 		{
+-			_onOverlayActivated = Callback<GameOverlayActivated_t>.Create((DispatchDelegate<GameOverlayActivated_t>)OnOverlayActivated);
++			_onOverlayActivated = Callback<GameOverlayActivated_t>.Create((Callback<GameOverlayActivated_t>.DispatchDelegate)OnOverlayActivated);
+ 		}
+ 	}
+ 

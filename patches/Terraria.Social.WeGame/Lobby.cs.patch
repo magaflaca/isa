@@ -1,0 +1,11 @@
+--- a/Terraria.Social.WeGame/Lobby.cs
++++ b/Terraria.Social.WeGame/Lobby.cs
+@@ -55,7 +55,7 @@
+ 		//IL_003e: Invalid comparison between Unknown and I4
+ 		//IL_0042: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_004c: Expected O, but got Unknown
+-		WeGameHelper.WriteDebugString("OnRailEvent,id=" + ((object)(*(RAILEventID*)(&id))/*cast due to constrained. prefix*/).ToString() + " ,result=" + ((object)System.Runtime.CompilerServices.Unsafe.As<RailResult, RailResult>(ref data.result)/*cast due to constrained. prefix*/).ToString());
++		WeGameHelper.WriteDebugString("OnRailEvent,id=" + ((object)(*(RAILEventID*)(&id))/*cast due to constrained. prefix*/).ToString() + " ,result=" + ((object)data.result/*cast due to constrained. prefix*/).ToString());
+ 		if ((int)id == 3002)
+ 		{
+ 			OnGameServerCreated((CreateGameServerResult)data);

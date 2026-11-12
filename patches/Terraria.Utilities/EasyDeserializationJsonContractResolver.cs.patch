@@ -1,0 +1,27 @@
+--- a/Terraria.Utilities/EasyDeserializationJsonContractResolver.cs
++++ b/Terraria.Utilities/EasyDeserializationJsonContractResolver.cs
+@@ -10,13 +10,13 @@
+ {
+ 	protected override JsonContract CreateContract(Type objectType)
+ 	{
+-		JsonContract val = ((DefaultContractResolver)this).CreateContract(objectType);
++		JsonContract val = base.CreateContract(objectType);
+ 		if (val is JsonStringContract && objectType != typeof(string))
+ 		{
+ 			TypeConverter converter = TypeDescriptor.GetConverter(objectType);
+ 			if (converter != null && converter.CanConvertTo(typeof(string)) && !converter.CanConvertFrom(typeof(string)))
+ 			{
+-				val = (JsonContract)(object)((DefaultContractResolver)this).CreateObjectContract(objectType);
++				val = (JsonContract)(object)base.CreateObjectContract(objectType);
+ 			}
+ 		}
+ 		if (objectType.IsArray || objectType.IsValueType)
+@@ -29,7 +29,7 @@
+ 	protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+ 	{
+ 		//IL_0002: Unknown result type (might be due to invalid IL or missing references)
+-		JsonProperty val = ((DefaultContractResolver)this).CreateProperty(member, memberSerialization);
++		JsonProperty val = base.CreateProperty(member, memberSerialization);
+ 		if (!val.Writable)
+ 		{
+ 			val.Ignored = true;

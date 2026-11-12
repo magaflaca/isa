@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\IsaClient.Plugin.props" />
+  <PropertyGroup>
+    <!-- A TerraAngel plugin keeps its .TAPlugin name. -->
+    <AssemblyName>ConsoleExample.TAPlugin</AssemblyName>
+    <RootNamespace>Console.TAPlugin</RootNamespace>
+  </PropertyGroup>
+</Project>

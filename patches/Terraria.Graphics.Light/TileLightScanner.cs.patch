@@ -1,0 +1,26 @@
+--- a/Terraria.Graphics.Light/TileLightScanner.cs
++++ b/Terraria.Graphics.Light/TileLightScanner.cs
+@@ -88,7 +88,9 @@
+ 
+ 	public void GetTileLight(int x, int y, out Vector3 outputColor)
+ 	{
+-		outputColor = Vector3.Zero;
++		// Fullbright / Global Brightness: every tile starts with at least this much light.
++		float fullbright = IsaClient.Rendering.FullbrightLighting.Percent;
++		outputColor = new Vector3(fullbright, fullbright, fullbright);
+ 		Tile tile = Main.tile[x, y];
+ 		FastRandom localRandom = _random.WithModifier(x, y);
+ 		if (y <= (int)Main.worldSurface)
+@@ -105,6 +107,12 @@
+ 			ApplyTileLight(tile, x, y, ref localRandom, ref outputColor);
+ 		}
+ 		ApplyLiquidLight(tile, ref outputColor);
++		// Lava / shimmer (and a few tile and wall rules) overwrite channels with lower values (their tint); with
++		// Fullbright on that left those liquids darker than everything around them. Keep the minimum on every channel.
++		if (fullbright > 0f)
++		{
++			outputColor = Vector3.Max(outputColor, new Vector3(fullbright));
++		}
+ 	}
+ 
+ 	private void ApplyLiquidLight(Tile tile, ref Vector3 lightColor)

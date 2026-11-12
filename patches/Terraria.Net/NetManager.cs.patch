@@ -1,0 +1,34 @@
+--- a/Terraria.Net/NetManager.cs
++++ b/Terraria.Net/NetManager.cs
+@@ -53,6 +53,19 @@
+ 	private void Read(BinaryReader reader, int userId, int readLength, bool addToDiagnostics)
+ 	{
+ 		ushort num = reader.ReadUInt16();
++		if (IsaClient.Networking.ServerModes.TryRead(num, reader))
++		{
++			return;
++		}
++		if (IsaClient.Networking.ProtocolCompat.Active)
++		{
++			int num2 = IsaClient.Networking.ProtocolCompat.ModuleFromLegacy(num);
++			if (num2 < 0)
++			{
++				return;
++			}
++			num = (ushort)num2;
++		}
+ 		if (_modules.ContainsKey(num))
+ 		{
+ 			_modules[num].Deserialize(reader, userId);
+@@ -147,6 +160,11 @@
+ 	public void SendToServer(NetPacket packet)
+ 	{
+ 		Invariant.Assert(!Main.dedServ, "Packets can only be sent to the server from a client.");
++		if (!IsaClient.Networking.ProtocolCompat.PrepareModulePacket(packet.Buffer.Data))
++		{
++			packet.Recycle();
++			return;
++		}
+ 		SendData(Netplay.Connection.Socket, packet);
+ 		packet.Recycle();
+ 	}

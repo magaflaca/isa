@@ -1,0 +1,66 @@
+--- a/Terraria.GameContent.UI.States/UIManageControls.cs
++++ b/Terraria.GameContent.UI.States/UIManageControls.cs
+@@ -17,7 +17,7 @@
+ 
+ namespace Terraria.GameContent.UI.States;
+ 
+-public class UIManageControls : UIState
++public partial class UIManageControls : UIState
+ {
+ 	public class SpecialControls
+ 	{
+@@ -74,7 +74,7 @@
+ 	{
+ 		"Throw", "Inventory", "RadialHotbar", "RadialQuickbar", "LockOn", "ToggleCreativeMenu", "Loadout1", "Loadout2", "Loadout3", "ToggleCameraMode",
+ 		"sp3", "sp4", "sp5", "sp6", "sp7", "sp8", "sp18", "sp19", "sp9", "sp10",
+-		"sp11", "sp12", "sp13", "ArmorSetAbility", "sp22", "sp21"
++		"sp11", "sp12", "sp13", "ArmorSetAbility", "sp22", "sp21", "Open Menu", "Load Config", "Hold for Activator", "Hold for Activator (Map)", "Hold for Rapidfire"
+ 	};
+ 
+ 	private static List<string> _BindingsHalfSingleLine = new List<string> { "sp9", "sp10", "sp11", "sp12", "sp13", "sp20" };
+@@ -317,6 +317,7 @@
+ 		_bindsGamepadUI.Add(CreateBindingGroup(2, bindings3, currentInputMode));
+ 		_bindsGamepadUI.Add(CreateBindingGroup(3, bindings5, currentInputMode));
+ 		_bindsGamepadUI.Add(CreateBindingGroup(4, bindings6, currentInputMode));
++		AddClientBindingGroups();
+ 	}
+ 
+ 	private UISortableElement CreateBindingGroup(int elementIndex, List<string> bindings, InputMode currentInputMode)
+@@ -356,6 +357,21 @@
+ 		case 4:
+ 			uIPanel.BackgroundColor = Color.Lerp(uIPanel.BackgroundColor, Color.Turquoise, 0.18f);
+ 			break;
++		case 13:
++			uIPanel.BackgroundColor = Color.Lerp(uIPanel.BackgroundColor, Color.ForestGreen, 0.18f);
++			break;
++		case 14:
++			uIPanel.BackgroundColor = Color.Lerp(uIPanel.BackgroundColor, Color.Crimson, 0.18f);
++			break;
++		case 15:
++			uIPanel.BackgroundColor = Color.Lerp(uIPanel.BackgroundColor, Color.DeepSkyBlue, 0.18f);
++			break;
++		case 16:
++			uIPanel.BackgroundColor = Color.Lerp(uIPanel.BackgroundColor, Color.Orange, 0.18f);
++			break;
++		case 17:
++			uIPanel.BackgroundColor = Color.Lerp(uIPanel.BackgroundColor, Color.MediumOrchid, 0.18f);
++			break;
+ 		}
+ 		CreateElementGroup(uIList, bindings, currentInputMode, uIPanel.BackgroundColor);
+ 		uIPanel.BackgroundColor = uIPanel.BackgroundColor.MultiplyRGBA(new Color(111, 111, 111));
+@@ -376,6 +392,15 @@
+ 			break;
+ 		case 4:
+ 			text = Lang.menu[198];
++			break;
++		case 13:
++		case 14:
++		case 15:
++		case 16:
++			text = Language.GetText(Array.Find(_isaGroups, g => g.Index == elementIndex).Title);
++			break;
++		case 17:
++			text = Language.GetText("Music (IsaClient)");
+ 			break;
+ 		}
+ 		UITextPanel<LocalizedText> element = new UITextPanel<LocalizedText>(text, 0.7f)

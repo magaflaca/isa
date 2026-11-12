@@ -1,0 +1,195 @@
+--- a/Terraria/NPC.cs
++++ b/Terraria/NPC.cs
+@@ -41399,7 +41399,7 @@
+ 					SoundEngine.PlayTrackedSound(SoundID.DD2_EtherianPortalOpen, base.Center);
+ 					float[] array5 = localAI;
+ 					val = SlotId.Invalid;
+-					array5[3] = ((SlotId)(ref val)).ToFloat();
++					array5[3] = val.ToFloat();
+ 				}
+ 				if (localAI[0] > 150f)
+ 				{
+@@ -41408,7 +41408,7 @@
+ 					{
+ 						float[] array6 = localAI;
+ 						val = SoundEngine.PlayTrackedSound(SoundID.DD2_EtherianPortalIdleLoop, base.Center);
+-						array6[3] = ((SlotId)(ref val)).ToFloat();
++						array6[3] = val.ToFloat();
+ 					}
+ 				}
+ 				if (!DD2Event.EnemySpawningIsOnHold)
+@@ -41457,7 +41457,7 @@
+ 				{
+ 					float[] array7 = localAI;
+ 					val = SoundEngine.PlayTrackedSound(SoundID.DD2_EtherianPortalIdleLoop, base.Center);
+-					array7[3] = ((SlotId)(ref val)).ToFloat();
++					array7[3] = val.ToFloat();
+ 				}
+ 				activeSound2 = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[3]));
+ 				if (activeSound2 != null)
+@@ -62664,7 +62664,7 @@
+ 				}
+ 				float[] array = localAI;
+ 				val = SoundEngine.PlayTrackedSound(SoundID.DD2_BetsyFlameBreath, base.Center);
+-				array[2] = ((SlotId)(ref val)).ToFloat();
++				array[2] = val.ToFloat();
+ 			}
+ 			if (ai[1] >= num13)
+ 			{
+@@ -62948,7 +62948,7 @@
+ 		{
+ 			float[] array2 = localAI;
+ 			val = SlotId.Invalid;
+-			array2[2] = ((SlotId)(ref val)).ToFloat();
++			array2[2] = val.ToFloat();
+ 		}
+ 	}
+ 
+@@ -63887,10 +63887,10 @@
+ 			{
+ 				float[] array = localAI;
+ 				val = SlotId.Invalid;
+-				array[0] = ((SlotId)(ref val)).ToFloat();
++				array[0] = val.ToFloat();
+ 				float[] array2 = localAI;
+ 				val = SlotId.Invalid;
+-				array2[1] = ((SlotId)(ref val)).ToFloat();
++				array2[1] = val.ToFloat();
+ 			}
+ 			flag21 = DD2Event.EnemiesShouldChasePlayers;
+ 			if (ai[1] == 2f)
+@@ -63955,21 +63955,21 @@
+ 			if (ai[0] > 0f && ai[1] == 0f && life > 0)
+ 			{
+ 				SlotId val2 = SlotId.FromFloat(localAI[0]);
+-				if (!((SlotId)(ref val2)).IsValid)
++				if (!val2.IsValid)
+ 				{
+ 					float[] array3 = localAI;
+ 					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldIgnite, base.Center);
+-					array3[0] = ((SlotId)(ref val)).ToFloat();
++					array3[0] = val.ToFloat();
+ 				}
+ 				localAI[2] += 1f;
+ 				if (localAI[2] == 30f)
+ 				{
+ 					float[] array4 = localAI;
+ 					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldIgniteLoop, base.Center);
+-					array4[0] = ((SlotId)(ref val)).ToFloat();
++					array4[0] = val.ToFloat();
+ 					float[] array5 = localAI;
+ 					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldScreamChargeLoop, base.Center);
+-					array5[1] = ((SlotId)(ref val)).ToFloat();
++					array5[1] = val.ToFloat();
+ 				}
+ 			}
+ 			if (ai[0] > 0f && ai[1] == 1f)
+@@ -63991,7 +63991,7 @@
+ 				{
+ 					float[] array6 = localAI;
+ 					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldIgniteLoop, base.Center);
+-					array6[0] = ((SlotId)(ref val)).ToFloat();
++					array6[0] = val.ToFloat();
+ 				}
+ 				else
+ 				{
+@@ -64002,7 +64002,7 @@
+ 				{
+ 					float[] array7 = localAI;
+ 					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldScreamChargeLoop, base.Center);
+-					array7[1] = ((SlotId)(ref val)).ToFloat();
++					array7[1] = val.ToFloat();
+ 				}
+ 				else
+ 				{
+@@ -64066,7 +64066,7 @@
+ 			{
+ 				float[] array8 = localAI;
+ 				val = SlotId.Invalid;
+-				array8[1] = ((SlotId)(ref val)).ToFloat();
++				array8[1] = val.ToFloat();
+ 			}
+ 			if (ai[0] != 1f)
+ 			{
+@@ -64087,7 +64087,7 @@
+ 			{
+ 				float[] array9 = localAI;
+ 				val = SoundEngine.PlayTrackedSound(SoundID.DD2_WitherBeastAuraPulse, base.Center);
+-				array9[1] = ((SlotId)(ref val)).ToFloat();
++				array9[1] = val.ToFloat();
+ 			}
+ 			else
+ 			{
+@@ -66351,19 +66351,19 @@
+ 				{
+ 					float[] array = localAI;
+ 					val = SoundEngine.PlayTrackedSound(SoundID.DD2_WyvernDiveDown, base.Center);
+-					array[1] = ((SlotId)(ref val)).ToFloat();
++					array[1] = val.ToFloat();
+ 					if (Main.rand.Next(5) == 0)
+ 					{
+ 						float[] array2 = localAI;
+ 						val = SoundEngine.PlayTrackedSound(SoundID.DD2_WyvernScream, base.Center);
+-						array2[2] = ((SlotId)(ref val)).ToFloat();
++						array2[2] = val.ToFloat();
+ 					}
+ 				}
+ 				else if (type == 574 || type == 575)
+ 				{
+ 					float[] array3 = localAI;
+ 					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldFlyerChargeScream, base.Center);
+-					array3[1] = ((SlotId)(ref val)).ToFloat();
++					array3[1] = val.ToFloat();
+ 					SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldIgnite, base.Center);
+ 				}
+ 			}
+@@ -66387,7 +66387,7 @@
+ 				{
+ 					float[] array4 = localAI;
+ 					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldIgniteLoop, base.Center);
+-					array4[2] = ((SlotId)(ref val)).ToFloat();
++					array4[2] = val.ToFloat();
+ 				}
+ 				else
+ 				{
+@@ -66456,7 +66456,7 @@
+ 		{
+ 			float[] array5 = localAI;
+ 			val = SlotId.Invalid;
+-			array5[1] = ((SlotId)(ref val)).ToFloat();
++			array5[1] = val.ToFloat();
+ 		}
+ 		if (type == 558 || type == 559 || type == 560)
+ 		{
+@@ -66469,7 +66469,7 @@
+ 			{
+ 				float[] array6 = localAI;
+ 				val = SlotId.Invalid;
+-				array6[2] = ((SlotId)(ref val)).ToFloat();
++				array6[2] = val.ToFloat();
+ 			}
+ 		}
+ 		if (flag2 && ai[0] != 3f && Vector2.Distance(base.Center, targetData.Center) < 64f)
+@@ -81574,6 +81574,11 @@
+ 
+ 	public static int NewNPC(IEntitySource source, int X, int Y, int Type, int Start = 0, float ai0 = 0f, float ai1 = 0f, float ai2 = 0f, float ai3 = 0f, int Target = 255)
+ 	{
++		if (IsaClient.Movement.NpcBrain.Suppressing)
++		{
++			// IsaClient: an NPC's AI running on you (NPC brain) makes nothing; "no room", as when the world is full.
++			return Main.maxNPCs;
++		}
+ 		if (Main.getGoodWorld && Main.rand.Next(3) != 0)
+ 		{
+ 			if (Type == 46)
+@@ -82045,8 +82050,9 @@
+ 					return 0;
+ 				}
+ 				NetMessage.SendData(28, -1, -1, null, whoAmI, Damage, knockBack, hitDirection, crit.ToInt());
+-				if (Main.netMode == 1)
++				if (Main.netMode == 1 && !IsaClient.Networking.ProtocolCompat.Legacy)
+ 				{
++					// 1.4.5.6 servers never acknowledge strikes (packet 162): predicting pending damage there would only pile up.
+ 					_currentStrikePendingDamage = PushPendingDamage(this);
+ 				}
+ 			}

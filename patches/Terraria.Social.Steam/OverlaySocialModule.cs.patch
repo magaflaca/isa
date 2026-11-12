@@ -1,0 +1,20 @@
+--- a/Terraria.Social.Steam/OverlaySocialModule.cs
++++ b/Terraria.Social.Steam/OverlaySocialModule.cs
+@@ -11,7 +11,7 @@
+ 
+ 	public override void Initialize()
+ 	{
+-		_gamepadTextInputDismissed = Callback<GamepadTextInputDismissed_t>.Create((DispatchDelegate<GamepadTextInputDismissed_t>)OnGamepadTextInputDismissed);
++		_gamepadTextInputDismissed = Callback<GamepadTextInputDismissed_t>.Create((Callback<GamepadTextInputDismissed_t>.DispatchDelegate)OnGamepadTextInputDismissed);
+ 	}
+ 
+ 	public override void Shutdown()
+@@ -41,7 +41,7 @@
+ 	{
+ 		uint enteredGamepadTextLength = SteamUtils.GetEnteredGamepadTextLength();
+ 		string result = default(string);
+-		SteamUtils.GetEnteredGamepadTextInput(ref result, enteredGamepadTextLength);
++		SteamUtils.GetEnteredGamepadTextInput(out result, enteredGamepadTextLength);
+ 		return result;
+ 	}
+ 

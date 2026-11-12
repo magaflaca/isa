@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Generation.Dungeon.Rooms/DungeonRoom.cs
++++ b/Terraria.GameContent.Generation.Dungeon.Rooms/DungeonRoom.cs
+@@ -220,7 +220,7 @@
+ 			}
+ 			return result;
+ 		}
+-		connectionPoint = Vector2D.op_Implicit(GetRoomCenterForHallway(otherRoomPos));
++		connectionPoint = ((Vector2D)(GetRoomCenterForHallway(otherRoomPos)));
+ 		Vector2D val2 = (otherRoomPos - connectionPoint).SafeNormalize(Vector2D.UnitX);
+ 		if (-0.5 < val2.Y && val2.Y < 0.7 && WorldGen.genRand.Next(2) == 0)
+ 		{

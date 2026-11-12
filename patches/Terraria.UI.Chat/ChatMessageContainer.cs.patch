@@ -1,0 +1,182 @@
+--- a/Terraria.UI.Chat/ChatMessageContainer.cs
++++ b/Terraria.UI.Chat/ChatMessageContainer.cs
+@@ -1,78 +1,101 @@
+-using System.Collections.Generic;
+-using Microsoft.Xna.Framework;
+-using Terraria.GameContent;
+-
+-namespace Terraria.UI.Chat;
+-
+-public class ChatMessageContainer
+-{
+-	public string OriginalText;
+-
+-	private bool _prepared;
+-
+-	private List<TextSnippet[]> _parsedText;
+-
+-	private Color _color;
+-
+-	private int _widthLimitInPixels;
+-
+-	private int _timeLeft;
+-
+-	public int LineCount => _parsedText.Count;
+-
+-	public bool CanBeShownWhenChatIsClosed => _timeLeft > 0;
+-
+-	public bool Prepared => _prepared;
+-
+-	public void SetContents(string text, Color color, int widthLimitInPixels)
+-	{
+-		OriginalText = text;
+-		_color = color;
+-		_widthLimitInPixels = widthLimitInPixels;
+-		_parsedText = new List<TextSnippet[]>();
+-		_timeLeft = 600;
+-		Refresh();
+-	}
+-
+-	public void OnWidthLimitChanged()
+-	{
+-		if (_widthLimitInPixels == -1)
+-		{
+-			_prepared = false;
+-		}
+-	}
+-
+-	public void Update()
+-	{
+-		if (_timeLeft > 0)
+-		{
+-			_timeLeft--;
+-		}
+-		Refresh();
+-	}
+-
+-	public TextSnippet[] GetSnippetWithInversedIndex(int snippetIndex)
+-	{
+-		int index = _parsedText.Count - 1 - snippetIndex;
+-		return _parsedText[index];
+-	}
+-
+-	private void Refresh()
+-	{
+-		if (!_prepared)
+-		{
+-			_prepared = true;
+-			int num = _widthLimitInPixels;
+-			if (num == -1)
+-			{
+-				num = Main.ChatLineWidthLimit;
+-			}
+-			List<List<TextSnippet>> list = Utils.WordwrapStringSmart(OriginalText, _color, FontAssets.MouseText.Value, num, 10);
+-			_parsedText.Clear();
+-			for (int i = 0; i < list.Count; i++)
+-			{
+-				_parsedText.Add(list[i].ToArray());
+-			}
+-		}
+-	}
+-}
++using System.Collections.Generic;
++using Microsoft.Xna.Framework;
++using Terraria.GameContent;
++
++namespace Terraria.UI.Chat;
++
++public partial class ChatMessageContainer
++{
++	public string OriginalText;
++
++	private bool _prepared;
++
++	private List<TextSnippet[]> _parsedText;
++
++	private Color _color;
++
++	private int _widthLimitInPixels;
++
++	private int _timeLeft;
++
++	public int LineCount => _parsedText.Count;
++
++	public bool CanBeShownWhenChatIsClosed => _timeLeft > 0;
++
++	public bool Prepared => _prepared;
++
++	public void SetContents(string text, Color color, int widthLimitInPixels)
++	{
++		OriginalText = text;
++		_shownText = null;
++		_color = color;
++		_widthLimitInPixels = widthLimitInPixels;
++		_parsedText = new List<TextSnippet[]>();
++		_timeLeft = 600;
++		Refresh();
++	}
++
++	public void OnWidthLimitChanged()
++	{
++		if (_widthLimitInPixels == -1)
++		{
++			_prepared = false;
++		}
++	}
++
++	public void Update()
++	{
++		if (_timeLeft > 0)
++		{
++			_timeLeft--;
++		}
++		if (_imageLayout != IsaClient.ChatImages.ChatImageLayout.Version)
++		{
++			_prepared = false;
++		}
++		Refresh();
++	}
++
++	public TextSnippet[] GetSnippetWithInversedIndex(int snippetIndex)
++	{
++		int index = _parsedText.Count - 1 - snippetIndex;
++		// The message can change while the chat draws (merged spam lines): never index past it.
++		if (index < 0 || index >= _parsedText.Count)
++		{
++			return new TextSnippet[0];
++		}
++		return _parsedText[index];
++	}
++
++	private void Refresh()
++	{
++		if (!_prepared)
++		{
++			_prepared = true;
++			int num = _widthLimitInPixels;
++			if (num == -1)
++			{
++				num = Main.ChatLineWidthLimit;
++			}
++			// Secret messages are read from the original (a translation would scramble their words).
++			bool secret = IsaClient.Community.SecretChat.IsSecret(OriginalText);
++			string text = IsaClient.Community.SecretChat.Expand(IsaClient.ChatImages.PictureCodes.ExpandShown(secret ? OriginalText : ShownText, OriginalText));
++			// What IsaClient sent in the chat with the pipe off (pictures, cards, reactions): shown as through the pipe.
++			text = IsaClient.ChatImages.ChatData.Expand(OriginalText, text);
++			if (_pipePictures != null)
++			{
++				// Shared characters, styles and schematics go on their own line under the message, like pictures.
++				text = text + (IsaClient.Sharing.ShareChat.HasShareTag(_pipePictures) ? "\n" : " ") + _pipePictures;
++			}
++			List<List<TextSnippet>> list = Utils.WordwrapStringSmart(text, _color, FontAssets.MouseText.Value, num, 10);
++			IsaClient.Community.ChatLinks.Linkify(list);
++			IsaClient.ChatImages.ChatImageLayout.Apply(list);
++			_imageLayout = IsaClient.ChatImages.ChatImageLayout.Version;
++			_parsedText.Clear();
++			for (int i = 0; i < list.Count; i++)
++			{
++				_parsedText.Add(list[i].ToArray());
++			}
++		}
++	}
++}

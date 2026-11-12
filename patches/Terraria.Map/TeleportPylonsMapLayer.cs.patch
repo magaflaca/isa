@@ -1,0 +1,19 @@
+--- a/Terraria.Map/TeleportPylonsMapLayer.cs
++++ b/Terraria.Map/TeleportPylonsMapLayer.cs
+@@ -8,6 +8,7 @@
+ using Terraria.GameContent.Tile_Entities;
+ using Terraria.GameInput;
+ using Terraria.UI;
++using IsaClient.Movement;
+ 
+ namespace Terraria.Map;
+ 
+@@ -36,7 +37,7 @@
+ 		Texture2D value = TextureAssets.Extra[182].Value;
+ 		Texture2D value2 = TextureAssets.Extra[299].Value;
+ 		Color color = Color.White;
+-		if (!TeleportPylonsSystem.IsPlayerNearAPylon(Main.LocalPlayer))
++		if (!TeleportPylonsSystem.IsPlayerNearAPylon(Main.LocalPlayer) && !TeleportTools.BypassTeleportRequests)
+ 		{
+ 			color = Color.Gray * 0.5f;
+ 		}

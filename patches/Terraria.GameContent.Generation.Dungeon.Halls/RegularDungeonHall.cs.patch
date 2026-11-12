@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Generation.Dungeon.Halls/RegularDungeonHall.cs
++++ b/Terraria.GameContent.Generation.Dungeon.Halls/RegularDungeonHall.cs
+@@ -119,7 +119,7 @@
+ 		int num3 = num + num2;
+ 		Vector2D v = endPoint - startPoint;
+ 		Vector2D val2 = v.SafeNormalize(Vector2D.UnitX);
+-		int num4 = (int)Math.Ceiling(((Vector2D)(ref v)).Length() / ((Vector2D)(ref val2)).Length());
++		int num4 = (int)Math.Ceiling(v.Length() / val2.Length());
+ 		Bounds.SetBounds((int)startPoint.X, (int)startPoint.Y, (int)startPoint.X, (int)startPoint.Y);
+ 		DungeonRoomSearchSettings dungeonRoomSearchSettings = new DungeonRoomSearchSettings
+ 		{

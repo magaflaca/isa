@@ -1,0 +1,23 @@
+--- a/Terraria.GameContent/CraftingRequests.cs
++++ b/Terraria.GameContent/CraftingRequests.cs
+@@ -4,6 +4,7 @@
+ using Terraria.DataStructures;
+ using Terraria.Net;
+ using Terraria.Testing;
++using IsaClient.Gameplay;
+ 
+ namespace Terraria.GameContent;
+ 
+@@ -102,6 +103,12 @@
+ 		for (int i = 0; i < qty && (i <= 0 || (Recipe.CollectedEnoughItemsToCraft(recipe) && Main.CursorHasSpaceToCraftRecipe(recipe))); i++)
+ 		{
+ 			list.Clear();
++			if (PlayerCheats.FreeCraft)
++			{
++				// Free Crafting: the result without spending anything.
++				Main.CraftItem_GrantItem(recipe, CreateResult(recipe), quickCraft);
++				continue;
++			}
+ 			recipe.GetIngredientsForOneCraft(localPlayer, list);
+ 			if (Main.netMode == 0 || list.All((Recipe.RequiredItemEntry req) => CanCraftLocally(req, chests)))
+ 			{

@@ -1,0 +1,79 @@
+--- a/Terraria.IO/WorldFile.cs
++++ b/Terraria.IO/WorldFile.cs
+@@ -15,10 +15,11 @@
+ using Terraria.UI;
+ using Terraria.Utilities;
+ using Terraria.WorldBuilding;
++using IsaClient.WorldTools;
+ 
+ namespace Terraria.IO;
+ 
+-public class WorldFile
++public partial class WorldFile
+ {
+ 	public static class TilePacker
+ 	{
+@@ -1443,7 +1444,7 @@
+ 			int num2;
+ 			for (num2 = 0; num2 < Main.maxTilesY; num2++)
+ 			{
+-				Tile tile = Main.tile[i, num2];
++				Tile tile = MapReveal.NormalizeTile(Main.tile[i, num2]);
+ 				int num3 = 4;
+ 				byte b3;
+ 				byte b4;
+@@ -1579,7 +1580,7 @@
+ 				short num6 = 0;
+ 				int num7 = num2 + 1;
+ 				int num8 = Main.maxTilesY - num2 - 1;
+-				while (num8 > 0 && tile.isTheSameAs(Main.tile[i, num7]) && TileID.Sets.AllowsSaveCompressionBatching[tile.type])
++				while (num8 > 0 && tile.isTheSameAs(MapReveal.NormalizeTile(Main.tile[i, num7])) && TileID.Sets.AllowsSaveCompressionBatching[tile.type])
+ 				{
+ 					num6++;
+ 					num8--;
+@@ -1628,7 +1629,7 @@
+ 						flag = true;
+ 						break;
+ 					}
+-					Tile tile = Main.tile[j, k];
++					Tile tile = MapReveal.NormalizeTile(Main.tile[j, k]);
+ 					if (!tile.active() || !Main.tileContainer[tile.type])
+ 					{
+ 						flag = true;
+@@ -1645,6 +1646,9 @@
+ 				num++;
+ 			}
+ 		}
++		// IsaClient: chests of far sections kept small during a map reveal (WldDownloadCommands) go in too.
++		byte[] storedChests = MapReveal.StoredChestsForSave(out int storedChestCount);
++		num = (short)(num + storedChestCount);
+ 		writer.Write(num);
+ 		for (int i = 0; i < 8000; i++)
+ 		{
+@@ -1676,6 +1680,10 @@
+ 					writer.Write(item.prefix);
+ 				}
+ 			}
++		}
++		if (storedChestCount > 0)
++		{
++			writer.Write(storedChests);
+ 		}
+ 		return (int)writer.BaseStream.Position;
+ 	}
+@@ -3316,11 +3324,14 @@
+ 	{
+ 		lock (TileEntity.EntityCreationLock)
+ 		{
+-			writer.Write(TileEntity.ByID.Count);
++			// IsaClient: tile entities of far sections kept small during a map reveal (WldDownloadCommands) go in too.
++			byte[] stored = MapReveal.StoredEntitiesForSave(out int storedCount);
++			writer.Write(TileEntity.ByID.Count + storedCount);
+ 			foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)
+ 			{
+ 				TileEntity.Write(writer, item.Value);
+ 			}
++			writer.Write(stored);
+ 		}
+ 		return (int)writer.BaseStream.Position;
+ 	}

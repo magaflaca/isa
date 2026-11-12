@@ -1,0 +1,13 @@
+--- a/Terraria.GameContent.Liquid/LiquidRenderer.cs
++++ b/Terraria.GameContent.Liquid/LiquidRenderer.cs
+@@ -864,6 +864,10 @@
+ 
+ 	public void SetWaveMaskData(ref Texture2D texture)
+ 	{
++		if (_drawArea.Width <= 0 || _drawArea.Height <= 0)
++		{
++			return;
++		}
+ 		try
+ 		{
+ 			if (texture == null || texture.Width < _drawArea.Height || texture.Height < _drawArea.Width)

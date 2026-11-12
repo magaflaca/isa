@@ -1,0 +1,33 @@
+--- a/Terraria.ID/LiquidID.cs
++++ b/Terraria.ID/LiquidID.cs
+@@ -1,14 +1,16 @@
+-namespace Terraria.ID;
+-
+-public static class LiquidID
+-{
+-	public const short Water = 0;
+-
+-	public const short Lava = 1;
+-
+-	public const short Honey = 2;
+-
+-	public const short Shimmer = 3;
+-
+-	public static readonly short Count = 4;
+-}
++using ReLogic.Reflection;
++
++namespace Terraria.ID;
++
++public static partial class LiquidID
++{
++	public const short Water = 0;
++
++	public const short Lava = 1;
++
++	public const short Honey = 2;
++
++	public const short Shimmer = 3;
++
++	public static readonly short Count = 4;
++}

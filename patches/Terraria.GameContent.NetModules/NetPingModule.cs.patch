@@ -1,0 +1,13 @@
+--- a/Terraria.GameContent.NetModules/NetPingModule.cs
++++ b/Terraria.GameContent.NetModules/NetPingModule.cs
+@@ -20,8 +20,9 @@
+ 		{
+ 			NetManager.Instance.Broadcast(Serialize(position), userId);
+ 		}
+-		else
++		else if (!IsaClient.Net.Pipe.PingCarrier.OnClientPing(position))
+ 		{
++			// Carrier pings (IsaClient data) are consumed above and never shown; only real map pings reach here.
+ 			Main.Pings.Add(position);
+ 		}
+ 		return true;

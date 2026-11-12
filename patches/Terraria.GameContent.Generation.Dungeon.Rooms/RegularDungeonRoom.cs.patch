@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Generation.Dungeon.Rooms/RegularDungeonRoom.cs
++++ b/Terraria.GameContent.Generation.Dungeon.Rooms/RegularDungeonRoom.cs
+@@ -59,7 +59,7 @@
+ 		int totalBoundsSize = num + num2;
+ 		InnerBounds.SetBounds(point.X, point.Y, point.X, point.Y);
+ 		OuterBounds.SetBounds(point.X, point.Y, point.X, point.Y);
+-		GenerateDungeonSquareRoom(data, InnerBounds, OuterBounds, Vector2D.op_Implicit(point), settings.StyleData, num, totalBoundsSize, generating, generating);
++		GenerateDungeonSquareRoom(data, InnerBounds, OuterBounds, ((Vector2D)(point)), settings.StyleData, num, totalBoundsSize, generating, generating);
+ 		_innerBoundsSize = num;
+ 		InnerBounds.CalculateHitbox();
+ 		OuterBounds.CalculateHitbox();

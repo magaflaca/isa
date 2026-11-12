@@ -1,0 +1,11 @@
+--- a/Terraria.GameInput/TriggersSet.cs
++++ b/Terraria.GameInput/TriggersSet.cs
+@@ -4,7 +4,7 @@
+ 
+ namespace Terraria.GameInput;
+ 
+-public class TriggersSet
++public partial class TriggersSet
+ {
+ 	public Dictionary<string, bool> KeyStatus = new Dictionary<string, bool>();
+ 

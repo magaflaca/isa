@@ -1,0 +1,57 @@
+--- a/Terraria.GameContent/LucyAxeMessage.cs
++++ b/Terraria.GameContent/LucyAxeMessage.cs
+@@ -4,6 +4,7 @@
+ using Terraria.ID;
+ using Terraria.Localization;
+ using Terraria.UI;
++using IsaClient.Rendering;
+ 
+ namespace Terraria.GameContent;
+ 
+@@ -23,7 +24,7 @@
+ 
+ 	private static byte _variation;
+ 
+-	private static int[] _messageCooldownsByType = new int[7];
++	internal static int[] _messageCooldownsByType = new int[7];
+ 
+ 	private static string GetCategoryName(MessageSource source)
+ 	{
+@@ -76,7 +77,7 @@
+ 
+ 	private static void ItemSlot_OnItemTransferred(ItemSlot.ItemTransferInfo info)
+ 	{
+-		if (info.ItemType != 5095)
++		if (info.ItemType != 5095 || Cosmetics.LucyMessagesMode == 1)
+ 		{
+ 			return;
+ 		}
+@@ -122,14 +123,25 @@
+ 		}
+ 	}
+ 
+-	public static void Create(MessageSource source, Vector2 position, Vector2 velocity)
++	public static void Create(MessageSource source, Vector2 position, Vector2 velocity, bool forced = false, byte variation = 99)
+ 	{
+ 		if (Main.netMode != 2)
+ 		{
+-			GiveIdleMessageCooldown();
++			// forced / variation: Lucy cosmetics (no idle cooldown, pick the line).
++			if (!forced)
++			{
++				GiveIdleMessageCooldown();
++			}
++			if (variation != 99)
++			{
++				_variation = variation;
++			}
+ 			SpawnPopupText(source, _variation, position, velocity);
+ 			PlaySound(source, position);
+-			SpawnEmoteBubble();
++			if (!forced)
++			{
++				SpawnEmoteBubble();
++			}
+ 			if (Main.netMode == 1)
+ 			{
+ 				NetMessage.SendData(141, -1, -1, null, (int)source, (int)_variation, velocity.X, velocity.Y, (int)position.X, (int)position.Y);

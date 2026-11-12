@@ -1,0 +1,55 @@
+--- a/Terraria.GameInput/PlayerInput.cs
++++ b/Terraria.GameInput/PlayerInput.cs
+@@ -17,7 +17,7 @@
+ 
+ namespace Terraria.GameInput;
+ 
+-public class PlayerInput
++public partial class PlayerInput
+ {
+ 	public class MiscSettingsTEMP
+ 	{
+@@ -233,7 +233,10 @@
+ 		"MapFull", "MapStyle", "Hotbar1", "Hotbar2", "Hotbar3", "Hotbar4", "Hotbar5", "Hotbar6", "Hotbar7", "Hotbar8",
+ 		"Hotbar9", "Hotbar10", "HotbarMinus", "HotbarPlus", "DpadRadial1", "DpadRadial2", "DpadRadial3", "DpadRadial4", "RadialHotbar", "RadialQuickbar",
+ 		"DpadSnap1", "DpadSnap2", "DpadSnap3", "DpadSnap4", "MenuUp", "MenuDown", "MenuLeft", "MenuRight", "LockOn", "ViewZoomIn",
+-		"ViewZoomOut", "Loadout1", "Loadout2", "Loadout3", "PreviousLoadout", "NextLoadout", "ToggleCameraMode", "ToggleCreativeMenu", "ArmorSetAbility", "Dash"
++		"ViewZoomOut", "Loadout1", "Loadout2", "Loadout3", "PreviousLoadout", "NextLoadout", "ToggleCameraMode", "ToggleCreativeMenu", "ArmorSetAbility", "Dash",
++		"Open Menu", "Load Config", "Use Brush", "Use Brush (Map)", "Mouse TP", "Map TP", "Hold for Activator", "Hold for Activator (Map)", "Hold for Rapidfire", "Noclip", "Noclip Speed Modifier",
++		"Undo Paste", "Free Camera", "AFK AI", "Wiki Lookup", "Auto Clicker", "Ghost Mode", "Music Player", "Mini Player", "Play/Pause Music", "Stop Music",
++		"Next Song", "Previous Song", "Music Volume Up", "Music Volume Down", "Music Shuffle", "Music Repeat", "Favorite Song"
+ 	};
+ 
+ 	private static bool _canReleaseRebindingLock = true;
+@@ -2101,6 +2104,7 @@
+ 				c.KeyStatus["ViewZoomOut"].Add("OemMinus");
+ 				c.KeyStatus["ViewZoomIn"].Add("OemPlus");
+ 				c.KeyStatus["ToggleCreativeMenu"].Add("C");
++				AddClientDefaultKeys(c);
+ 				c.KeyStatus["Loadout1"].Add("F1");
+ 				c.KeyStatus["Loadout2"].Add("F2");
+ 				c.KeyStatus["Loadout3"].Add("F3");
+@@ -2214,6 +2218,7 @@
+ 				c.KeyStatus["ViewZoomOut"].Add("OemMinus");
+ 				c.KeyStatus["ViewZoomIn"].Add("OemPlus");
+ 				c.KeyStatus["ToggleCreativeMenu"].Add("C");
++				AddClientDefaultKeys(c);
+ 				c.KeyStatus["Loadout1"].Add("F1");
+ 				c.KeyStatus["Loadout2"].Add("F2");
+ 				c.KeyStatus["Loadout3"].Add("F3");
+@@ -2326,6 +2331,7 @@
+ 				c.KeyStatus["ViewZoomOut"].Add("OemMinus");
+ 				c.KeyStatus["ViewZoomIn"].Add("OemPlus");
+ 				c.KeyStatus["ToggleCreativeMenu"].Add("C");
++				AddClientDefaultKeys(c);
+ 				c.KeyStatus["Loadout1"].Add("F1");
+ 				c.KeyStatus["Loadout2"].Add("F2");
+ 				c.KeyStatus["Loadout3"].Add("F3");
+@@ -2438,6 +2444,7 @@
+ 				c.KeyStatus["ViewZoomOut"].Add("OemMinus");
+ 				c.KeyStatus["ViewZoomIn"].Add("OemPlus");
+ 				c.KeyStatus["ToggleCreativeMenu"].Add("C");
++				AddClientDefaultKeys(c);
+ 				c.KeyStatus["Loadout1"].Add("F1");
+ 				c.KeyStatus["Loadout2"].Add("F2");
+ 				c.KeyStatus["Loadout3"].Add("F3");

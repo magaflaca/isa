@@ -1,0 +1,13 @@
+/.vanilla/
+/.tools/
+bin/
+obj/
+__pycache__/
+.vs/
+.idea/
+*.user
+/src/*
+!/src/IsaClient.*/
+!/src/NuGet.offline.config
+!/src/Terraria.csproj
+!/src/app.ico

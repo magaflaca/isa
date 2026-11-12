@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Biomes.Desert/ChambersEntrance.cs
++++ b/Terraria.GameContent.Biomes.Desert/ChambersEntrance.cs
+@@ -77,7 +77,7 @@
+ 			for (double num8 = 0.0; num8 <= 1.0; num8 += 0.02)
+ 			{
+ 				Vector2D val = new Vector2D(pathConnection.Position.X + pathConnection.Direction * num7 * num8, pathConnection.Position.Y);
+-				((Vector2D)(ref val2))._002Ector(pathConnection2.Position.X + pathConnection2.Direction * num7 * (1.0 - num8), pathConnection2.Position.Y);
++				val2 = new Vector2D(pathConnection2.Position.X + pathConnection2.Direction * num7 * (1.0 - num8), pathConnection2.Position.Y);
+ 				Vector2D val3 = Vector2D.Lerp(pathConnection.Position, pathConnection2.Position, num8);
+ 				Vector2D val4 = Vector2D.Lerp(val, val3, num8);
+ 				Vector2D val5 = Vector2D.Lerp(val3, val2, num8);

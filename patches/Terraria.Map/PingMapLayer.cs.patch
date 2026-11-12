@@ -1,0 +1,11 @@
+--- a/Terraria.Map/PingMapLayer.cs
++++ b/Terraria.Map/PingMapLayer.cs
+@@ -32,7 +32,7 @@
+ 		//IL_0091: Unknown result type (might be due to invalid IL or missing references)
+ 		SpriteFrame frame = new SpriteFrame(1, 5);
+ 		DateTime now = DateTime.Now;
+-		foreach (ItemPair<Ping> item in (IEnumerable<ItemPair<Ping>>)_pings)
++		foreach (SlotVector<Ping>.ItemPair item in (IEnumerable<SlotVector<Ping>.ItemPair>)_pings)
+ 		{
+ 			Ping value = item.Value;
+ 			double totalSeconds = (now - value.Time).TotalSeconds;

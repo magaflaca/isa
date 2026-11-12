@@ -1,0 +1,29 @@
+--- a/Terraria.Social.WeGame/NetClientSocialModule.cs
++++ b/Terraria.Social.WeGame/NetClientSocialModule.cs
+@@ -226,7 +226,7 @@
+ 			}
+ 		}
+ 		string text = default(string);
+-		rail_api.RailFactory().RailUtils().GetLaunchAppParameters((EnumRailLaunchAppType)2, ref text);
++		rail_api.RailFactory().RailUtils().GetLaunchAppParameters((EnumRailLaunchAppType)2, out text);
+ 		ProcessStartInfo startInfo2 = process.StartInfo;
+ 		startInfo2.Arguments = startInfo2.Arguments + " " + text;
+ 		WeGameHelper.WriteDebugString("LaunchLocalServer,cmd_line:" + process.StartInfo.Arguments);
+@@ -364,7 +364,7 @@
+ 		//IL_00a9: Expected O, but got Unknown
+ 		//IL_00d3: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_00dd: Expected O, but got Unknown
+-		WeGameHelper.WriteDebugString("OnRailEvent,id=" + ((object)(*(RAILEventID*)(&id))/*cast due to constrained. prefix*/).ToString() + " ,result=" + ((object)System.Runtime.CompilerServices.Unsafe.As<RailResult, RailResult>(ref data.result)/*cast due to constrained. prefix*/).ToString());
++		WeGameHelper.WriteDebugString("OnRailEvent,id=" + ((object)(*(RAILEventID*)(&id))/*cast due to constrained. prefix*/).ToString() + " ,result=" + ((object)data.result/*cast due to constrained. prefix*/).ToString());
+ 		if ((int)id <= 12010)
+ 		{
+ 			if ((int)id != 12002)
+@@ -583,7 +583,7 @@
+ 
+ 	private void OnRailSetMetaData(RailFriendsSetMetadataResult data)
+ 	{
+-		WeGameHelper.WriteDebugString("OnRailSetMetaData - " + ((object)System.Runtime.CompilerServices.Unsafe.As<RailResult, RailResult>(ref ((EventBase)data).result)/*cast due to constrained. prefix*/).ToString());
++		WeGameHelper.WriteDebugString("OnRailSetMetaData - " + ((object)((EventBase)data).result/*cast due to constrained. prefix*/).ToString());
+ 	}
+ 
+ 	private void OnRailRespondInvation(RailUsersRespondInvitation data)

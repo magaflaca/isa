@@ -1,0 +1,15 @@
+--- a/Terraria.GameContent.Generation.Dungeon.Rooms/GenShapeDungeonRoom.cs
++++ b/Terraria.GameContent.Generation.Dungeon.Rooms/GenShapeDungeonRoom.cs
+@@ -167,10 +167,10 @@
+ 		byte? paintID = ((settings.OverridePaintTile > -1) ? new byte?((byte)settings.OverridePaintTile) : settings.StyleData.TilePaintColor);
+ 		byte? paintID2 = ((settings.OverridePaintWall > -1) ? new byte?((byte)settings.OverridePaintWall) : settings.StyleData.WallPaintColor);
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)i, (double)j);
++		val = new Vector2D((double)i, (double)j);
+ 		if (base.Processed)
+ 		{
+-			val = Vector2D.op_Implicit(base.Center);
++			val = ((Vector2D)(base.Center));
+ 		}
+ 		InnerBounds.SetBounds((int)val.X, (int)val.Y, (int)val.X, (int)val.Y);
+ 		OuterBounds.SetBounds((int)val.X, (int)val.Y, (int)val.X, (int)val.Y);

@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.RGB/DebugKeyboard.cs
++++ b/Terraria.GameContent.RGB/DebugKeyboard.cs
+@@ -45,7 +45,7 @@
+ 		for (int i = 0; i < ((RgbDevice)this).LedCount; i++)
+ 		{
+ 			Vector2 ledCanvasPosition = ((RgbDevice)this).GetLedCanvasPosition(i);
+-			drawer.DrawSquare(new Vector4(ledCanvasPosition * scale + position, scale / 100f, scale / 100f), new Color(((RgbDevice)this).GetUnprocessedLedColor(i)));
++			drawer.DrawSquare(new Vector4(ledCanvasPosition * scale + position, scale / 100f, scale / 100f), new Color(GetUnprocessedLedColor(i)));
+ 		}
+ 	}
+ }

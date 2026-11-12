@@ -1,0 +1,88 @@
+--- a/Terraria.Social.Steam/WorkshopHelper.cs
++++ b/Terraria.Social.Steam/WorkshopHelper.cs
+@@ -56,7 +56,7 @@
+ 				PublishedFileId_t[] array2 = (PublishedFileId_t[])(object)array;
+ 				for (int i = 0; i < array2.Length; i++)
+ 				{
+-					if (SteamUGC.GetItemInstallInfo(array2[i], ref num, ref empty, 1024u, ref num2))
++					if (SteamUGC.GetItemInstallInfo(array2[i], out num, out empty, 1024u, out num2))
+ 					{
+ 						list.Add(empty);
+ 					}
+@@ -133,8 +133,8 @@
+ 
+ 			private void LoadHooks()
+ 			{
+-				OnSteamUGCQueryCompletedCallResult = CallResult<SteamUGCQueryCompleted_t>.Create((APIDispatchDelegate<SteamUGCQueryCompleted_t>)OnSteamUGCQueryCompleted);
+-				OnSteamUGCRequestUGCDetailsResultCallResult = CallResult<SteamUGCRequestUGCDetailsResult_t>.Create((APIDispatchDelegate<SteamUGCRequestUGCDetailsResult_t>)OnSteamUGCRequestUGCDetailsResult);
++				OnSteamUGCQueryCompletedCallResult = CallResult<SteamUGCQueryCompleted_t>.Create((CallResult<SteamUGCQueryCompleted_t>.APIDispatchDelegate)OnSteamUGCQueryCompleted);
++				OnSteamUGCRequestUGCDetailsResultCallResult = CallResult<SteamUGCRequestUGCDetailsResult_t>.Create((CallResult<SteamUGCRequestUGCDetailsResult_t>.APIDispatchDelegate)OnSteamUGCRequestUGCDetailsResult);
+ 			}
+ 
+ 			public void Prepare()
+@@ -156,9 +156,9 @@
+ 				//IL_0031: Unknown result type (might be due to invalid IL or missing references)
+ 				//IL_0038: Unknown result type (might be due to invalid IL or missing references)
+ 				CSteamID steamID = SteamUser.GetSteamID();
+-				m_UGCQueryHandle = SteamUGC.CreateQueryUserUGCRequest(((CSteamID)(ref steamID)).GetAccountID(), (EUserUGCList)0, (EUGCMatchingUGCType)(-1), (EUserUGCListSortOrder)0, SteamUtils.GetAppID(), SteamUtils.GetAppID(), 1u);
++				m_UGCQueryHandle = SteamUGC.CreateQueryUserUGCRequest(steamID.GetAccountID(), (EUserUGCList)0, (EUGCMatchingUGCType)(-1), (EUserUGCListSortOrder)0, SteamUtils.GetAppID(), SteamUtils.GetAppID(), 1u);
+ 				SteamAPICall_t val = SteamUGC.SendQueryUGCRequest(m_UGCQueryHandle);
+-				OnSteamUGCQueryCompletedCallResult.Set(val, (APIDispatchDelegate<SteamUGCQueryCompleted_t>)OnSteamUGCQueryCompleted);
++				OnSteamUGCQueryCompletedCallResult.Set(val, (CallResult<SteamUGCQueryCompleted_t>.APIDispatchDelegate)OnSteamUGCQueryCompleted);
+ 			}
+ 
+ 			private void OnSteamUGCQueryCompleted(SteamUGCQueryCompleted_t pCallback, bool bIOFailure)
+@@ -181,12 +181,12 @@
+ 				SteamUGCDetails_t val = default(SteamUGCDetails_t);
+ 				for (uint num = 0u; num < pCallback.m_unNumResultsReturned; num++)
+ 				{
+-					SteamUGC.GetQueryUGCResult(m_UGCQueryHandle, num, ref val);
++					SteamUGC.GetQueryUGCResult(m_UGCQueryHandle, num, out val);
+ 					ulong publishedFileId = val.m_nPublishedFileId.m_PublishedFileId;
+ 					SteamWorkshopItem value = new SteamWorkshopItem
+ 					{
+-						Title = ((SteamUGCDetails_t)(ref val)).m_rgchTitle,
+-						Description = ((SteamUGCDetails_t)(ref val)).m_rgchDescription
++						Title = val.m_rgchTitle,
++						Description = val.m_rgchDescription
+ 					};
+ 					_items.Add(publishedFileId, value);
+ 				}
+@@ -227,8 +227,8 @@
+ 				//IL_00ee: Unknown result type (might be due to invalid IL or missing references)
+ 				_issueReporter = issueReporter;
+ 				_endAction = endAction;
+-				_createItemHook = CallResult<CreateItemResult_t>.Create((APIDispatchDelegate<CreateItemResult_t>)CreateItemResult);
+-				_updateItemHook = CallResult<SubmitItemUpdateResult_t>.Create((APIDispatchDelegate<SubmitItemUpdateResult_t>)UpdateItemResult);
++				_createItemHook = CallResult<CreateItemResult_t>.Create((CallResult<CreateItemResult_t>.APIDispatchDelegate)CreateItemResult);
++				_updateItemHook = CallResult<SubmitItemUpdateResult_t>.Create((CallResult<SubmitItemUpdateResult_t>.APIDispatchDelegate)UpdateItemResult);
+ 				ERemoteStoragePublishedFileVisibility visibility = GetVisibility(publicity);
+ 				_entryData = new SteamWorkshopItem
+ 				{
+@@ -279,7 +279,7 @@
+ 				//IL_000b: Unknown result type (might be due to invalid IL or missing references)
+ 				//IL_0012: Unknown result type (might be due to invalid IL or missing references)
+ 				SteamAPICall_t val = SteamUGC.CreateItem(SteamUtils.GetAppID(), (EWorkshopFileType)0);
+-				_createItemHook.Set(val, (APIDispatchDelegate<CreateItemResult_t>)CreateItemResult);
++				_createItemHook.Set(val, (CallResult<CreateItemResult_t>.APIDispatchDelegate)CreateItemResult);
+ 			}
+ 
+ 			private unsafe void CreateItemResult(CreateItemResult_t param, bool bIOFailure)
+@@ -371,7 +371,7 @@
+ 				}
+ 				SteamAPICall_t val2 = SteamUGC.SubmitItemUpdate(val, "");
+ 				_updateHandle = val;
+-				_updateItemHook.Set(val2, (APIDispatchDelegate<SubmitItemUpdateResult_t>)UpdateItemResult);
++				_updateItemHook.Set(val2, (CallResult<SubmitItemUpdateResult_t>.APIDispatchDelegate)UpdateItemResult);
+ 			}
+ 
+ 			private unsafe void UpdateItemResult(SubmitItemUpdateResult_t param, bool bIOFailure)
+@@ -487,7 +487,7 @@
+ 				}
+ 				ulong num = default(ulong);
+ 				ulong num2 = default(ulong);
+-				SteamUGC.GetItemUpdateProgress(_updateHandle, ref num, ref num2);
++				SteamUGC.GetItemUpdateProgress(_updateHandle, out num, out num2);
+ 				if (num2 == 0L)
+ 				{
+ 					return false;

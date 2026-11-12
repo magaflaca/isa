@@ -1,0 +1,11 @@
+--- a/Terraria/TimeLogger.cs
++++ b/Terraria/TimeLogger.cs
+@@ -716,6 +716,8 @@
+ 
+ 	public static void DrawException(Exception e)
+ 	{
++		// Drawing errors are skipped so the game keeps going; the first of each kind goes to Errors.txt.
++		IsaClient.Core.ClientLog.LogOnce(e);
+ 		if (currentlyLogging)
+ 		{
+ 			logBuilder.AppendLine(e.ToString());

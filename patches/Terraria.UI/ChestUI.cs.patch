@@ -1,0 +1,68 @@
+--- a/Terraria.UI/ChestUI.cs
++++ b/Terraria.UI/ChestUI.cs
+@@ -156,6 +156,10 @@
+ 		color.A = byte.MaxValue;
+ 		DynamicSpriteFont value = FontAssets.MouseText.Value;
+ 		Vector2 vector = new Vector2(504f, Main.instance.invBottom);
++		if (IsaClient.WorldTools.ProtectedChests.ReadOnlyActive)
++		{
++			text += "  [c/FFB45A:(read-only, local copy)]";
++		}
+ 		ChatManager.DrawColorCodedStringWithShadow(spritebatch, value, text, vector, color, 0f, Vector2.Zero, Vector2.One, -1f, 1.5f);
+ 		if (Main.editChest)
+ 		{
+@@ -388,6 +392,10 @@
+ 
+ 	public static void LootAll()
+ 	{
++		if (IsaClient.WorldTools.ProtectedChests.ReadOnlyActive)
++		{
++			return;
++		}
+ 		Player player = Main.player[Main.myPlayer];
+ 		GetItemSettings settings = ((player.chest > -1) ? GetItemSettings.LootAllFromChest : GetItemSettings.LootAllFromBank);
+ 		if (player.chest > -1)
+@@ -535,6 +543,10 @@
+ 
+ 	public static void DepositAll()
+ 	{
++		if (IsaClient.WorldTools.ProtectedChests.ReadOnlyActive)
++		{
++			return;
++		}
+ 		Player player = Main.player[Main.myPlayer];
+ 		if (player.chest > -1)
+ 		{
+@@ -656,6 +668,10 @@
+ 
+ 	public static void QuickStack(bool voidStack = false)
+ 	{
++		if (IsaClient.WorldTools.ProtectedChests.ReadOnlyActive)
++		{
++			return;
++		}
+ 		Player player = Main.player[Main.myPlayer];
+ 		Item[] array = player.inventory;
+ 		if (voidStack)
+@@ -822,6 +838,10 @@
+ 
+ 	public static void RenameChest()
+ 	{
++		if (IsaClient.WorldTools.ProtectedChests.ReadOnlyActive)
++		{
++			return;
++		}
+ 		Player player = Main.player[Main.myPlayer];
+ 		if (!Main.editChest)
+ 		{
+@@ -866,6 +886,10 @@
+ 
+ 	public static void Restock()
+ 	{
++		if (IsaClient.WorldTools.ProtectedChests.ReadOnlyActive)
++		{
++			return;
++		}
+ 		Player player = Main.player[Main.myPlayer];
+ 		Item[] inventory = player.inventory;
+ 		Item[] item = player.bank.item;

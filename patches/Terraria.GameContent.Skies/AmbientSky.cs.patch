@@ -1,0 +1,20 @@
+--- a/Terraria.GameContent.Skies/AmbientSky.cs
++++ b/Terraria.GameContent.Skies/AmbientSky.cs
+@@ -1384,7 +1384,7 @@
+ 		{
+ 			SkyManager.Instance.Deactivate("Ambience");
+ 		}
+-		foreach (ItemPair<SkyEntity> item in (IEnumerable<ItemPair<SkyEntity>>)_entities)
++		foreach (SlotVector<SkyEntity>.ItemPair item in (IEnumerable<SlotVector<SkyEntity>.ItemPair>)_entities)
+ 		{
+ 			SkyEntity value = item.Value;
+ 			value.Update(_frameCounter);
+@@ -1407,7 +1407,7 @@
+ 			_entities.Clear();
+ 			SkyManager.Instance.Deactivate("Ambience");
+ 		}
+-		foreach (ItemPair<SkyEntity> item in (IEnumerable<ItemPair<SkyEntity>>)_entities)
++		foreach (SlotVector<SkyEntity>.ItemPair item in (IEnumerable<SlotVector<SkyEntity>.ItemPair>)_entities)
+ 		{
+ 			item.Value.Draw(spriteBatch, 3f, minDepth, maxDepth);
+ 		}

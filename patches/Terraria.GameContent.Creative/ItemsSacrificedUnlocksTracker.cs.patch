@@ -1,0 +1,68 @@
+--- a/Terraria.GameContent.Creative/ItemsSacrificedUnlocksTracker.cs
++++ b/Terraria.GameContent.Creative/ItemsSacrificedUnlocksTracker.cs
+@@ -3,10 +3,11 @@
+ using System.Collections.Generic;
+ using System.IO;
+ using Terraria.ID;
++using IsaClient.Gameplay;
+ 
+ namespace Terraria.GameContent.Creative;
+ 
+-public class ItemsSacrificedUnlocksTracker : IPersistentPerWorldContent, IOnPlayerJoining
++public partial class ItemsSacrificedUnlocksTracker : IPersistentPerWorldContent, IOnPlayerJoining
+ {
+ 	public const int POSITIVE_SACRIFICE_COUNT_CAP = 9999;
+ 
+@@ -38,6 +39,10 @@
+ 
+ 	public int GetSacrificeCount(int itemId)
+ 	{
++		if (PlayerCheats.JourneyMenu)
++		{
++			return int.MaxValue;
++		}
+ 		if (ContentSamples.CreativeResearchItemPersistentIdOverride.TryGetValue(itemId, out var value))
+ 		{
+ 			itemId = value;
+@@ -48,6 +53,18 @@
+ 
+ 	public void ForEachItemWithResearchProgress(Action<int> action)
+ 	{
++		if (PlayerCheats.JourneyMenu)
++		{
++			// Every item, also deprecated/unobtainable ones (they get a blue dot in the grid).
++			for (int i = 1; i < ItemID.Count; i++)
++			{
++				if (ContentSamples.ItemsByType.ContainsKey(i))
++				{
++					action(i);
++				}
++			}
++			return;
++		}
+ 		foreach (KeyValuePair<int, int> item in _sacrificesCountByItemIdCache)
+ 		{
+ 			if (item.Value > 0)
+@@ -76,6 +93,11 @@
+ 
+ 	public bool TryGetSacrificeNumbers(int itemId, out int amountWeHave, out int amountNeededTotal)
+ 	{
++		if (PlayerCheats.JourneyMenu && !CreativeItemSacrificesCatalog.Instance.TryGetSacrificeCountCapToUnlockInfiniteItems(itemId, out var _))
++		{
++			amountWeHave = (amountNeededTotal = 1);
++			return true;
++		}
+ 		if (ContentSamples.CreativeResearchItemPersistentIdOverride.TryGetValue(itemId, out var value))
+ 		{
+ 			itemId = value;
+@@ -86,6 +108,10 @@
+ 			return false;
+ 		}
+ 		_sacrificesCountByItemIdCache.TryGetValue(itemId, out amountWeHave);
++		if (PlayerCheats.JourneyMenu)
++		{
++			amountWeHave = amountNeededTotal;
++		}
+ 		return true;
+ 	}
+ 

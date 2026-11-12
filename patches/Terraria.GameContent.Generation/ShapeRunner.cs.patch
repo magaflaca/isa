@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Generation/ShapeRunner.cs
++++ b/Terraria.GameContent.Generation/ShapeRunner.cs
+@@ -61,7 +61,7 @@
+ 		double num2 = _steps;
+ 		double num3 = _startStrength;
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)origin.X, (double)origin.Y);
++		val = new Vector2D((double)origin.X, (double)origin.Y);
+ 		Vector2D val2 = ((_startVelocity == Vector2D.Zero) ? Utils.RandomVector2D(GenBase._random, -1.0, 1.0) : _startVelocity);
+ 		while (num > 0.0 && num3 > 0.0)
+ 		{

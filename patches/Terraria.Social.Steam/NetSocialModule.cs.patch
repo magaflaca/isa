@@ -1,0 +1,29 @@
+--- a/Terraria.Social.Steam/NetSocialModule.cs
++++ b/Terraria.Social.Steam/NetSocialModule.cs
+@@ -54,7 +54,7 @@
+ 	{
+ 		CoreSocialModule.OnTick += _reader.ReadTick;
+ 		CoreSocialModule.OnTick += _writer.SendAll;
+-		_lobbyChatMessage = Callback<LobbyChatMsg_t>.Create((DispatchDelegate<LobbyChatMsg_t>)OnLobbyChatMessage);
++		_lobbyChatMessage = Callback<LobbyChatMsg_t>.Create((Callback<LobbyChatMsg_t>.DispatchDelegate)OnLobbyChatMessage);
+ 	}
+ 
+ 	public override void Shutdown()
+@@ -115,7 +115,7 @@
+ 		CSteamID val = default(CSteamID);
+ 		while (message.Length - memoryStream.Position >= 8)
+ 		{
+-			((CSteamID)(ref val))._002Ector(binaryReader.ReadUInt64());
++			val = new CSteamID(binaryReader.ReadUInt64());
+ 			if (val != SteamUser.GetSteamID())
+ 			{
+ 				_lobby.SetPlayedWith(val);
+@@ -128,7 +128,7 @@
+ 		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0009: Unknown result type (might be due to invalid IL or missing references)
+ 		P2PSessionState_t result = default(P2PSessionState_t);
+-		SteamNetworking.GetP2PSessionState(userId, ref result);
++		SteamNetworking.GetP2PSessionState(userId, out result);
+ 		return result;
+ 	}
+ 

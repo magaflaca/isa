@@ -1,0 +1,50 @@
+# Chat commands: switches -> one handler per command in its module + CommandCatalog, in the original dispatch order.
+catalog  IsaClient.Core.CommandCatalog
+# chosen handler names (abbreviations the vocabulary cannot split, and names taken by existing helpers)
+method infsn UnlimitedSnakeRopesCommand
+method informothers InformOthersCommand
+method detsp DetectSpyingCommand
+method tinvis TrueInvisibilityCommand
+method asm AssemblyCommand
+method arcoiris RainbowCommand
+method lockonplayers LockOnPlayersCommand
+method bamount BombAmountCommand
+method btype BombTypeCommand
+method dmode DrawModeCommand
+method plb PlacementBypassCommand
+method tstest TileSyncTestCommand
+method lchest LocalChestsCommand
+method remalltile RemoveAllTilesCommand
+method delgrounditems DeleteGroundItemsCommand
+method rj RejoinCommand
+method freecamd FreeCamDebugCommand
+method freecam2 FreeCamAltCommand
+method rapidpos RapidPositionCommand
+method ignoredmgblocks IgnoreDamageBlocksCommand
+method relockchests RelockChestsCommand
+method noinvis RevealInvisiblePlayersCommand
+method seeinvis SeeInvisibleTilesCommand
+method extraproj ExtraProjectileHitboxesCommand
+method gotomouse GoToMouseCommand
+method tpbypass TeleportBypassCommand
+method tp TeleportCommand
+method fixup FixUpCommand
+method paintbrush PaintBrushCommand
+method controlnpc ControlNpcChatCommand
+method worlddifficulty WorldDifficultyChatCommand
+method fillchest FillChestChatCommand
+method mychar MyCharacterCommand
+ifs-first  IsaClient.Core.ChatCommands.Execute
+parser   ChatCommands.HandleAbbreviations(c.Name, c.Parts)
+switch   IsaClient.Core.ChatCommands.HandleClientCommands
+switch   IsaClient.Core.ChatCommands.HandlePlayerCheatCommands
+parser   AiAssistant.HandleCommand(c.Name, c.Text, c.Parts)
+parser   MultiClientManager.HandleCommand(c.Name, c.Text, c.Parts)
+parser   FullbrightLighting.HandleCommand(c.Name, c.Parts)
+parser   Proxy.HandleCommand(c.Name, c.Text, c.Parts)
+switch   IsaClient.Core.ChatCommands.HandlePlayerListCommands
+switch   IsaClient.Core.ChatCommands.HandleInfoCommands
+switch   IsaClient.Core.ChatCommands.HandleFeatureCommands
+switch   IsaClient.Core.ChatCommands.HandleUtilityCommands
+ifs-rest IsaClient.Core.ChatCommands.Execute
+switch   IsaClient.Core.ChatCommands.Execute

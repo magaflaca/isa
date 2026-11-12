@@ -1,0 +1,67 @@
+--- a/Terraria/Lighting.cs
++++ b/Terraria/Lighting.cs
+@@ -148,6 +148,10 @@
+ 
+ 	public static void AddLight(int i, int j, int torchID, float lightAmount)
+ 	{
++		if (IsaClient.Items.ShotPreview.Busy)
++		{
++			return;
++		}
+ 		TorchID.TorchColor(torchID, out var R, out var G, out var B);
+ 		_activeEngine.AddLight(i, j, new Vector3(R * lightAmount, G * lightAmount, B * lightAmount));
+ 	}
+@@ -160,7 +164,7 @@
+ 
+ 	public static void AddLight(int i, int j, float r, float g, float b)
+ 	{
+-		if (!Main.gamePaused && Main.netMode != 2)
++		if (!Main.gamePaused && Main.netMode != 2 && !IsaClient.Items.ShotPreview.Busy)
+ 		{
+ 			_activeEngine.AddLight(i, j, new Vector3(r, g, b));
+ 		}
+@@ -183,7 +187,7 @@
+ 
+ 	public static Color GetColor(Point tileCoords)
+ 	{
+-		if (Main.gameMenu)
++		if (Main.gameMenu || IsaClient.Items.ShotPreview.Drawing)
+ 		{
+ 			return Color.White;
+ 		}
+@@ -192,7 +196,7 @@
+ 
+ 	public static Color GetColor(Point tileCoords, Color originalColor)
+ 	{
+-		if (Main.gameMenu)
++		if (Main.gameMenu || IsaClient.Items.ShotPreview.Drawing)
+ 		{
+ 			return originalColor;
+ 		}
+@@ -201,7 +205,7 @@
+ 
+ 	public static Color GetColor(int x, int y, Color oldColor)
+ 	{
+-		if (Main.gameMenu)
++		if (Main.gameMenu || IsaClient.Items.ShotPreview.Drawing)
+ 		{
+ 			return oldColor;
+ 		}
+@@ -210,7 +214,7 @@
+ 
+ 	public static Color GetColorClamped(int x, int y, Color oldColor)
+ 	{
+-		if (Main.gameMenu)
++		if (Main.gameMenu || IsaClient.Items.ShotPreview.Drawing)
+ 		{
+ 			return oldColor;
+ 		}
+@@ -221,7 +225,7 @@
+ 
+ 	public static Color GetColor(int x, int y)
+ 	{
+-		if (Main.gameMenu)
++		if (Main.gameMenu || IsaClient.Items.ShotPreview.Drawing)
+ 		{
+ 			return Color.White;
+ 		}

@@ -1,0 +1,23 @@
+--- a/Terraria.GameContent.Biomes.Desert/DesertHive.cs
++++ b/Terraria.GameContent.Biomes.Desert/DesertHive.cs
+@@ -252,9 +252,9 @@
+ 		//IL_01d9: Unknown result type (might be due to invalid IL or missing references)
+ 		FastRandom fastRandom = new FastRandom(Main.ActiveWorldFileData.Seed).WithModifier(57005uL);
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)description.Hive.Width, (double)description.Hive.Height);
++		val = new Vector2D((double)description.Hive.Width, (double)description.Hive.Height);
+ 		Vector2D val2 = default(Vector2D);
+-		((Vector2D)(ref val2))._002Ector((double)clusters.Width, (double)clusters.Height);
++		val2 = new Vector2D((double)clusters.Width, (double)clusters.Height);
+ 		Vector2D val3 = description.BlockScale / 2.0;
+ 		for (int i = area.Left; i < area.Right; i++)
+ 		{
+@@ -306,7 +306,7 @@
+ 				double num7 = num + num3;
+ 				Tile tile = Main.tile[i, j];
+ 				Vector2D val5 = (new Vector2D((double)num4, (double)num5) - val3) / val * 2.0 - Vector2D.One;
+-				bool flag = ((Vector2D)(ref val5)).Length() >= 0.8;
++				bool flag = val5.Length() >= 0.8;
+ 				PostPlacementEffect postPlacementEffect = PostPlacementEffect.None;
+ 				bool flag2 = true;
+ 				if (num7 > 3.5)

@@ -1,0 +1,14 @@
+--- a/Terraria.IO/Preferences.cs
++++ b/Terraria.IO/Preferences.cs
+@@ -202,6 +202,11 @@
+ 				{
+ 					if (!(value is T result))
+ 					{
++						// Lists come back from JSON as JArray (not JObject); without this every saved list silently fell back to its default.
++						if (value is JArray array)
++						{
++							return array.ToObject<T>();
++						}
+ 						if (value is JObject)
+ 						{
+ 							return JsonConvert.DeserializeObject<T>(((object)(JObject)value).ToString());

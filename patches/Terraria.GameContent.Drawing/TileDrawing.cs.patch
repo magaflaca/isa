@@ -1,0 +1,20 @@
+--- a/Terraria.GameContent.Drawing/TileDrawing.cs
++++ b/Terraria.GameContent.Drawing/TileDrawing.cs
+@@ -121,7 +121,7 @@
+ 
+ 	private List<Point> _reverseVineRootsPositions = new List<Point>();
+ 
+-	private TilePaintSystemV2 _paintSystem;
++	public TilePaintSystemV2 _paintSystem;
+ 
+ 	private INatureRenderer _natureRenderer = new NextNatureRenderer();
+ 
+@@ -7009,7 +7009,7 @@
+ 				bool flag2 = _rand.Next(600) == 0;
+ 				if (!flag2)
+ 				{
+-					_windGrid.GetWindTime(i, j, 8, out var windTimeLeft, out var directionX, out directionX);
++					_windGrid.GetWindTime(i, j, 8, out int windTimeLeft, out int directionX, out int directionY);
+ 					flag2 = windTimeLeft > 0 && _rand.Next(48) == 0;
+ 				}
+ 				if (flag2)

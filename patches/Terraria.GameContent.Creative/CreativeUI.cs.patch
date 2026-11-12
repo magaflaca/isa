@@ -1,0 +1,19 @@
+--- a/Terraria.GameContent.Creative/CreativeUI.cs
++++ b/Terraria.GameContent.Creative/CreativeUI.cs
+@@ -12,6 +12,7 @@
+ using Terraria.Net;
+ using Terraria.UI;
+ using Terraria.UI.Gamepad;
++using IsaClient.Gameplay;
+ 
+ namespace Terraria.GameContent.Creative;
+ 
+@@ -95,7 +96,7 @@
+ 		{
+ 			Initialize();
+ 		}
+-		if (Main.LocalPlayer.difficulty != 3)
++		if (Main.LocalPlayer.difficulty != 3 && !PlayerCheats.JourneyMenu)
+ 		{
+ 			Enabled = false;
+ 		}

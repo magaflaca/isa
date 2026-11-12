@@ -1,0 +1,81 @@
+--- a/Terraria/Tile.cs
++++ b/Terraria/Tile.cs
+@@ -1,9 +1,10 @@
+ using Microsoft.Xna.Framework;
+ using Terraria.DataStructures;
++using IsaClient.Building;
+ 
+ namespace Terraria;
+ 
+-public class Tile
++public partial class Tile
+ {
+ 	public ushort type;
+ 
+@@ -915,6 +916,66 @@
+ 		invisibleWall(invisibleWall: false);
+ 	}
+ 
++	public void LoadFrom(TileCopy from)
++	{
++		type = from.type;
++		wall = from.wall;
++		liquid = from.liquid;
++		sTileHeader = from.sTileHeader;
++		bTileHeader = from.bTileHeader;
++		bTileHeader2 = from.bTileHeader2;
++		bTileHeader3 = from.bTileHeader3;
++		frameX = from.frameX;
++		frameY = from.frameY;
++	}
++
++	public bool MatchesCopy(TileCopy compTile)
++	{
++		if (compTile == null)
++		{
++			return false;
++		}
++		if (sTileHeader != compTile.sTileHeader)
++		{
++			return false;
++		}
++		if (active())
++		{
++			if (type != compTile.type)
++			{
++				return false;
++			}
++			if (Main.tileFrameImportant[type] && (frameX != compTile.frameX || frameY != compTile.frameY))
++			{
++				return false;
++			}
++		}
++		if (wall != compTile.wall || liquid != compTile.liquid)
++		{
++			return false;
++		}
++		if (liquid == 0)
++		{
++			if (wallColor() != compTile.wallColor())
++			{
++				return false;
++			}
++			if (wire4() != compTile.wire4())
++			{
++				return false;
++			}
++		}
++		else if (bTileHeader != compTile.bTileHeader)
++		{
++			return false;
++		}
++		if (invisibleBlock() != compTile.invisibleBlock() || invisibleWall() != compTile.invisibleWall() || fullbrightBlock() != compTile.fullbrightBlock() || fullbrightWall() != compTile.fullbrightWall())
++		{
++			return false;
++		}
++		return true;
++	}
++
+ 	public override string ToString()
+ 	{
+ 		return "Tile Type:" + type + " Active:" + active().ToString() + " Wall:" + wall + " Slope:" + slope() + " fX:" + frameX + " fY:" + frameY;

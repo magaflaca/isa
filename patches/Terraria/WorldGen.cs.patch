@@ -1,0 +1,286 @@
+--- a/Terraria/WorldGen.cs
++++ b/Terraria/WorldGen.cs
+@@ -33,10 +33,11 @@
+ using Terraria.UI;
+ using Terraria.Utilities;
+ using Terraria.WorldBuilding;
++using IsaClient.Gameplay;
+ 
+ namespace Terraria;
+ 
+-public class WorldGen
++public partial class WorldGen
+ {
+ 	public class SecretSeed
+ 	{
+@@ -6648,6 +6649,7 @@
+ 
+ 	public static void SaveAndQuit(Action callback = null)
+ 	{
++		IsaClient.MultiClient.Possession.OnGameDisconnected();
+ 		SoundEngine.PlaySound(11);
+ 		StopWaterfallAmbienceAudio();
+ 		Main.invasionProgress = -1;
+@@ -9767,7 +9769,7 @@
+ 		{
+ 			val2.X = 1.0;
+ 		}
+-		while (((Vector2D)(ref val2)).Length() < 4.0)
++		while (val2.Length() < 4.0)
+ 		{
+ 			val2 *= 1.5;
+ 		}
+@@ -9837,7 +9839,7 @@
+ 				for (int l = num6; l < num7; l++)
+ 				{
+ 					Vector2D val3 = new Vector2D(Math.Abs((double)k - val.X), Math.Abs((double)l - val.Y));
+-					if (((Vector2D)(ref val3)).Length() < num8 * 0.8 && TileType(k, l) == 1 && (!Main.tile[k - 1, l].active() || !Main.tile[k + 1, l].active() || !Main.tile[k, l - 1].active() || !Main.tile[k, l + 1].active()))
++					if (val3.Length() < num8 * 0.8 && TileType(k, l) == 1 && (!Main.tile[k - 1, l].active() || !Main.tile[k + 1, l].active() || !Main.tile[k, l - 1].active() || !Main.tile[k, l + 1].active()))
+ 					{
+ 						SpreadGrass(k - 1, l, 1, neonMossType);
+ 					}
+@@ -10255,7 +10257,7 @@
+ 			}
+ 		}
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)X, (double)num);
++		val = new Vector2D((double)X, (double)num);
+ 		Vector2D val2 = default(Vector2D);
+ 		val2.X = genRand.NextDouble() * 0.6 - 0.3;
+ 		val2.Y = genRand.NextDouble() * 0.5 + 0.5;
+@@ -10282,7 +10284,7 @@
+ 						num4 *= 2.0;
+ 					}
+ 					Vector2D val3 = val - new Vector2D((double)k, (double)l);
+-					if (((Vector2D)(ref val3)).Length() < num4 * 2.0 && !Main.tile[k, l].active() && Main.tile[k, l + 1].active() && Main.tile[k, l + 1].type == 1 && genRand.Next(7) == 0 && SolidTile(k - 1, l + 1) && SolidTile(k + 1, l + 1))
++					if (val3.Length() < num4 * 2.0 && !Main.tile[k, l].active() && Main.tile[k, l + 1].active() && Main.tile[k, l + 1].type == 1 && genRand.Next(7) == 0 && SolidTile(k - 1, l + 1) && SolidTile(k + 1, l + 1))
+ 					{
+ 						if (genRand.Next(3) != 0)
+ 						{
+@@ -10294,7 +10296,7 @@
+ 						}
+ 						PlaceSmallPile(k, l, genRand.Next(6), 0, 185);
+ 					}
+-					if (((Vector2D)(ref val3)).Length() < num4)
++					if (val3.Length() < num4)
+ 					{
+ 						if (Main.tileSolid[Main.tile[k, l].type])
+ 						{
+@@ -10351,7 +10353,7 @@
+ 		}
+ 		num--;
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)X, (double)num);
++		val = new Vector2D((double)X, (double)num);
+ 		Vector2D val2 = default(Vector2D);
+ 		val2.X = genRand.NextDouble() * 0.6 - 0.3;
+ 		val2.Y = genRand.NextDouble() * 0.5 + 0.5;
+@@ -10372,7 +10374,7 @@
+ 					double num5 = num2 * (double)genRand.Next(70, 91) * 0.01;
+ 					Vector2D val3 = val - new Vector2D((double)i, (double)num4);
+ 					val3.X *= 0.6;
+-					if (((Vector2D)(ref val3)).Length() < num5)
++					if (val3.Length() < num5)
+ 					{
+ 						if (num4 <= num + 1 || genRand.Next(6) == 0)
+ 						{
+@@ -10478,7 +10480,7 @@
+ 		}
+ 		num--;
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)X, (double)num);
++		val = new Vector2D((double)X, (double)num);
+ 		Vector2D val2 = default(Vector2D);
+ 		val2.X = genRand.NextDouble() * 0.6 - 0.3;
+ 		val2.Y = genRand.NextDouble() * 0.5 + 0.5;
+@@ -10498,9 +10500,9 @@
+ 				{
+ 					double num11 = num8 * (double)genRand.Next(70, 91) * 0.01 * 1.2;
+ 					Vector2D val3 = val - new Vector2D((double)k, (double)num10);
+-					if (((Vector2D)(ref val3)).Length() > 30.0)
++					if (val3.Length() > 30.0)
+ 					{
+-						((Vector2D)(ref val))._002Ector((double)X, (double)num);
++						val = new Vector2D((double)X, (double)num);
+ 						val2.X = genRand.NextDouble() * 0.6 - 0.3;
+ 						val2.Y = genRand.NextDouble() * 0.5 + 0.5;
+ 					}
+@@ -10508,7 +10510,7 @@
+ 					{
+ 						val3.X *= 0.25;
+ 						val3.Y *= 0.8;
+-						if (((Vector2D)(ref val3)).Length() < num11 && Main.tile[k, num10].active())
++						if (val3.Length() < num11 && Main.tile[k, num10].active())
+ 						{
+ 							Main.tile[k, num10].active(active: true);
+ 							Main.tile[k, num10].halfBrick(halfBrick: false);
+@@ -10669,7 +10671,7 @@
+ 			}
+ 		}
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)num, (double)num2);
++		val = new Vector2D((double)num, (double)num2);
+ 		Vector2D val2 = default(Vector2D);
+ 		val2.X = genRand.NextDouble() * 0.6 - 0.3;
+ 		val2.Y = genRand.NextDouble() * 0.5 + 0.5;
+@@ -10697,11 +10699,11 @@
+ 						num9 *= 2.0;
+ 					}
+ 					Vector2D val3 = val - new Vector2D((double)k, (double)l);
+-					if (((Vector2D)(ref val3)).Length() < num8)
++					if (val3.Length() < num8)
+ 					{
+ 						Main.tile[k, l].active(active: false);
+ 					}
+-					else if (((Vector2D)(ref val3)).Length() < num9)
++					else if (val3.Length() < num9)
+ 					{
+ 						Main.tile[k, l].type = type;
+ 						if (genRand.Next(4) == 0)
+@@ -28796,13 +28798,13 @@
+ 					if (array7[num43])
+ 					{
+ 						Vector2D val = new Vector2D((double)array5[num43], (double)array6[num43]) - new Vector2D((double)num50, (double)num51);
+-						if (((Vector2D)(ref val)).Length() < (double)num44 * 0.9)
++						if (val.Length() < (double)num44 * 0.9)
+ 						{
+ 							Main.tile[num50, num51].type = 192;
+ 							Main.tile[num50, num51].active(active: true);
+ 							Main.tile[num50, num51].halfBrick(halfBrick: false);
+ 						}
+-						if (SecretSeed.extraLivingTrees.Enabled && ((Vector2D)(ref val)).Length() < (double)num44 * 0.7)
++						if (SecretSeed.extraLivingTrees.Enabled && val.Length() < (double)num44 * 0.7)
+ 						{
+ 							Main.tile[num50, num51].wall = 60;
+ 						}
+@@ -34026,7 +34028,7 @@
+ 			}
+ 		}
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)num5, (double)num6);
++		val = new Vector2D((double)num5, (double)num6);
+ 		for (int num33 = 0; num33 < num2; num33++)
+ 		{
+ 			if (progress != null)
+@@ -34203,7 +34205,7 @@
+ 		int num63 = num6;
+ 		num3 = -num4;
+ 		Vector2D val2 = default(Vector2D);
+-		((Vector2D)(ref val2))._002Ector((double)num5, (double)num6);
++		val2 = new Vector2D((double)num5, (double)num6);
+ 		int num64 = genRand.Next(2, 5);
+ 		bool flag4 = true;
+ 		int num65 = 0;
+@@ -76147,9 +76149,9 @@
+ 		}
+ 		int num2 = k;
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)i, (double)k);
++		val = new Vector2D((double)i, (double)k);
+ 		Vector2D val2 = default(Vector2D);
+-		((Vector2D)(ref val2))._002Ector((double)genRand.Next(-20, 21) * 0.1, (double)genRand.Next(20, 201) * 0.01);
++		val2 = new Vector2D((double)genRand.Next(-20, 21) * 0.1, (double)genRand.Next(20, 201) * 0.01);
+ 		if (val2.X < 0.0)
+ 		{
+ 			crimDir = -1;
+@@ -76289,13 +76291,13 @@
+ 			int num18 = (int)val.Y;
+ 			int num19 = 0;
+ 			bool flag2 = true;
+-			((Vector2D)(ref val3))._002Ector((double)genRand.Next(-20, 21) * 0.15, (double)genRand.Next(0, 21) * 0.15);
++			val3 = new Vector2D((double)genRand.Next(-20, 21) * 0.15, (double)genRand.Next(0, 21) * 0.15);
+ 			while (flag2)
+ 			{
+-				((Vector2D)(ref val3))._002Ector((double)genRand.Next(-20, 21) * 0.15, (double)genRand.Next(0, 21) * 0.15);
++				val3 = new Vector2D((double)genRand.Next(-20, 21) * 0.15, (double)genRand.Next(0, 21) * 0.15);
+ 				while (Math.Abs(val3.X) + Math.Abs(val3.Y) < 1.5)
+ 				{
+-					((Vector2D)(ref val3))._002Ector((double)genRand.Next(-20, 21) * 0.15, (double)genRand.Next(0, 21) * 0.15);
++					val3 = new Vector2D((double)genRand.Next(-20, 21) * 0.15, (double)genRand.Next(0, 21) * 0.15);
+ 				}
+ 				flag2 = false;
+ 				for (int num20 = 0; num20 < num16; num20++)
+@@ -76463,7 +76465,7 @@
+ 		double num2 = genRand.Next(6, 11);
+ 		bool flag = true;
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector(2.0, (double)genRand.Next(-20, 0) * 0.01);
++		val = new Vector2D(2.0, (double)genRand.Next(-20, 0) * 0.01);
+ 		val.X *= -crimDir;
+ 		while (flag)
+ 		{
+@@ -77361,7 +77363,7 @@
+ 						continue;
+ 					}
+ 					Vector2D val3 = new Vector2D(Math.Abs((double)k - val.X), Math.Abs((double)l - val.Y));
+-					double num11 = ((Vector2D)(ref val3)).Length();
++					double num11 = val3.Length();
+ 					if (flag5 && num11 < num4 * 0.5 + 1.0)
+ 					{
+ 						Main.tile[k, l].type = num;
+@@ -77542,7 +77544,7 @@
+ 		//IL_01c7: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_01d0: Unknown result type (might be due to invalid IL or missing references)
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)startX, (double)startY);
++		val = new Vector2D((double)startX, (double)startY);
+ 		bool flag = ((startX > Main.maxTilesX / 2) ? true : false);
+ 		int num = 2 + genRand.Next(2);
+ 		int num2 = 15 + genRand.Next(11);
+@@ -80219,7 +80221,7 @@
+ 				num6 = 0.0 - num6;
+ 			}
+ 			Vector2D val2 = default(Vector2D);
+-			((Vector2D)(ref val2))._002Ector((double)X, (double)Y);
++			val2 = new Vector2D((double)X, (double)Y);
+ 			for (int j = 0; j < num4; j++)
+ 			{
+ 				val2 = digTunnel(val2.X, val2.Y, num5, num6, genRand.Next(6, 20), genRand.Next(4, 9));
+@@ -80270,7 +80272,7 @@
+ 				num3 = 0.0 - num3;
+ 			}
+ 			Vector2D val = default(Vector2D);
+-			((Vector2D)(ref val))._002Ector((double)X, (double)Y);
++			val = new Vector2D((double)X, (double)Y);
+ 			for (int i = 0; i < num; i++)
+ 			{
+ 				val = digTunnel(val.X, val.Y, num2, num3, genRand.Next(5, 15), genRand.Next(2, 6), Wet: true);
+@@ -80396,7 +80398,7 @@
+ 		ushort type = 202;
+ 		ushort wall = 82;
+ 		Vector2D val = default(Vector2D);
+-		((Vector2D)(ref val))._002Ector((double)i, (double)j);
++		val = new Vector2D((double)i, (double)j);
+ 		int num2 = 1;
+ 		if (genRand.Next(2) == 0)
+ 		{
+@@ -82054,7 +82056,7 @@
+ 
+ 	public static bool SlopeTile(int i, int j, int slope = 0, bool noEffects = false, bool quiet = true)
+ 	{
+-		if (!CanPoundTile(i, j))
++		if (!CanPoundTile(i, j) && !PlayerCheats.HammerAnything)
+ 		{
+ 			return false;
+ 		}
+@@ -82091,7 +82093,7 @@
+ 
+ 	public static bool PoundTile(int i, int j)
+ 	{
+-		if (!CanPoundTile(i, j))
++		if (!CanPoundTile(i, j) && !PlayerCheats.HammerAnything)
+ 		{
+ 			return false;
+ 		}
+@@ -86250,6 +86252,11 @@
+ 
+ 	private static void TileFrameImportant(int i, int j, int type, Tile tileCache, bool resetFrame)
+ 	{
++		TileFrameImportantGuarded(i, j, type, tileCache, resetFrame);
++	}
++
++	private static void TileFrameImportantChecked(int i, int j, int type, Tile tileCache, bool resetFrame)
++	{
+ 		switch (type)
+ 		{
+ 		case 518:

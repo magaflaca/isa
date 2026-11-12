@@ -1,0 +1,38 @@
+--- a/Terraria.Social.Steam/AchievementsSocialModule.cs
++++ b/Terraria.Social.Steam/AchievementsSocialModule.cs
+@@ -20,7 +20,7 @@
+ 
+ 	public override void Initialize()
+ 	{
+-		_userStatsReceived = Callback<UserStatsReceived_t>.Create((DispatchDelegate<UserStatsReceived_t>)OnUserStatsReceived);
++		_userStatsReceived = Callback<UserStatsReceived_t>.Create((Callback<UserStatsReceived_t>.DispatchDelegate)OnUserStatsReceived);
+ 		SteamUserStats.RequestCurrentStats();
+ 		while (!_areStatsReceived)
+ 		{
+@@ -38,7 +38,7 @@
+ 	public override bool IsAchievementCompleted(string name)
+ 	{
+ 		bool flag = default(bool);
+-		return SteamUserStats.GetAchievement(name, ref flag) && flag;
++		return SteamUserStats.GetAchievement(name, out flag) && flag;
+ 	}
+ 
+ 	public override byte[] GetEncryptionKey()
+@@ -62,7 +62,7 @@
+ 		{
+ 			return value;
+ 		}
+-		if (SteamUserStats.GetStat(name, ref value))
++		if (SteamUserStats.GetStat(name, out value))
+ 		{
+ 			_intStatCache.Add(name, value);
+ 		}
+@@ -75,7 +75,7 @@
+ 		{
+ 			return value;
+ 		}
+-		if (SteamUserStats.GetStat(name, ref value))
++		if (SteamUserStats.GetStat(name, out value))
+ 		{
+ 			_floatStatCache.Add(name, value);
+ 		}

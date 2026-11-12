@@ -1,0 +1,13 @@
+--- a/Terraria.UI/ItemSorting.cs
++++ b/Terraria.UI/ItemSorting.cs
+@@ -1572,6 +1572,10 @@
+ 
+ 	public static void SortChest()
+ 	{
++		if (IsaClient.WorldTools.ProtectedChests.ReadOnlyActive)
++		{
++			return;
++		}
+ 		int chest = Main.player[Main.myPlayer].chest;
+ 		if (chest != -1)
+ 		{

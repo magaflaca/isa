@@ -1,0 +1,11 @@
+--- a/Terraria.GameContent.Generation.Dungeon/DungeonUtils.cs
++++ b/Terraria.GameContent.Generation.Dungeon/DungeonUtils.cs
+@@ -1027,7 +1027,7 @@
+ 						if (array7[num37])
+ 						{
+ 							Vector2D val = new Vector2D((double)array5[num37], (double)array6[num37]) - new Vector2D((double)num44, (double)num45);
+-							if (((Vector2D)(ref val)).Length() < (double)num38 * 0.9)
++							if (val.Length() < (double)num38 * 0.9)
+ 							{
+ 								Main.tile[num44, num45].type = 192;
+ 								Main.tile[num44, num45].active(active: true);

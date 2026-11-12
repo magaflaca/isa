@@ -1,0 +1,25 @@
+--- a/Terraria.ID/PaintCoatingID.cs
++++ b/Terraria.ID/PaintCoatingID.cs
+@@ -1,10 +1,12 @@
+-namespace Terraria.ID;
+-
+-public static class PaintCoatingID
+-{
+-	public const byte None = 0;
+-
+-	public const byte Glow = 1;
+-
+-	public const byte Echo = 2;
+-}
++using ReLogic.Reflection;
++
++namespace Terraria.ID;
++
++public static partial class PaintCoatingID
++{
++	public const byte None = 0;
++
++	public const byte Glow = 1;
++
++	public const byte Echo = 2;
++}

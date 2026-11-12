@@ -1,0 +1,5 @@
+IsaClient.Building.ColorMatching.ATempFix => IsNonSolidPixelTile
+IsaClient.Building.ColorMatching.HexStringToMicrosoftColor => FromHex
+IsaClient.Building.ColorMatching.ConvertBlockColorToClosestPixelColorV2 => ClosestBlockColor
+IsaClient.Building.SchematicFiles.SaveTEDITSchematic => Save
+IsaClient.Building.SchematicFiles.LoadTEDITSchematic => Load

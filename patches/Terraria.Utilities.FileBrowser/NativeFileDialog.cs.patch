@@ -1,0 +1,13 @@
+--- a/Terraria.Utilities.FileBrowser/NativeFileDialog.cs
++++ b/Terraria.Utilities.FileBrowser/NativeFileDialog.cs
+@@ -1,8 +1,9 @@
++using System.IO;
+ using System.Linq;
+ 
+ namespace Terraria.Utilities.FileBrowser;
+ 
+-public class NativeFileDialog : IFileBrowser
++public partial class NativeFileDialog : IFileBrowser
+ {
+ 	public string OpenFilePanel(string title, ExtensionFilter[] extensions)
+ 	{

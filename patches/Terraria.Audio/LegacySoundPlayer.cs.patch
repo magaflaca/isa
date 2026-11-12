@@ -1,0 +1,20 @@
+--- a/Terraria.Audio/LegacySoundPlayer.cs
++++ b/Terraria.Audio/LegacySoundPlayer.cs
+@@ -416,7 +416,7 @@
+ 			{
+ 				if (DoesSoundScaleWithAmbientVolume(type))
+ 				{
+-					num2 *= Main.ambientVolume * (float)((!FocusHelper.QuietAmbientSounds) ? 1 : 0);
++					num2 *= Main.ambientVolume * (float)((!FocusHelper.QuietAmbientSounds) ? 1 : 0) * IsaClient.Music.MediaFocus.GameSoundScale;
+ 					if (Main.gameMenu)
+ 					{
+ 						num2 = 0f;
+@@ -424,7 +424,7 @@
+ 				}
+ 				else
+ 				{
+-					num2 *= Main.soundVolume;
++					num2 *= Main.soundVolume * IsaClient.Music.MediaFocus.GameSoundScale;
+ 				}
+ 				if (num2 > 1f)
+ 				{
