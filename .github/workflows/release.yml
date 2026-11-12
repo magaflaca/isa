@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Release text
+        run: |
+          git fetch --force --depth 1 origin "refs/tags/$TAG:refs/tags/$TAG"
+          git tag -l --format='%(contents:subject)' "$TAG" > title.txt
+          git tag -l --format='%(contents:body)' "$TAG" > notes.md
+          if [ ! -s title.txt ]; then echo "IsaClient ${TAG#v}" > title.txt; fi
+
+      - name: Client
+        id: client
+        run: |
+          want="${TAG#v}"
+          for i in $(seq 1 60); do
+            curl -fsS https://client.hacks.win/api/latest -o latest.json || true
+            live=$(python3 -c "import json; print(json.load(open('latest.json')).get('fullVersion', ''))" 2>/dev/null || true)
+            if [ "$live" = "$want" ]; then break; fi
+            sleep 30
+          done
+          if [ "$live" != "$want" ]; then
+            echo "::warning::client.hacks.win has '$live', not '$want': the release goes out without Terraria.exe"
+            exit 0
+          fi
+          curl -fsSL https://client.hacks.win/download -o Terraria.exe
+          sha=$(python3 -c "import json; print(next(f['sha256'] for f in json.load(open('latest.json'))['files'] if f['path'] == 'Terraria.exe'))")
+          echo "$sha  Terraria.exe" | sha256sum -c -
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      - name: Release
+        run: |
+          title=$(cat title.txt)
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release edit "$TAG" --title "$title" --notes-file notes.md
+          else
+            gh release create "$TAG" --verify-tag --title "$title" --notes-file notes.md
+          fi
+
+      - name: Attach Terraria.exe
+        if: steps.client.outputs.ready == 'true'
+        run: gh release upload "$TAG" Terraria.exe --clobber
