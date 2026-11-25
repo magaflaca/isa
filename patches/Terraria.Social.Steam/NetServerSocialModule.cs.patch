@@ -9,7 +9,7 @@
  		if (Program.LaunchParameters.ContainsKey("-lobby"))
  		{
  			_mode |= ServerMode.Lobby;
-@@ -259,7 +259,7 @@
+@@ -282,7 +282,7 @@
  		{
  			SteamNetworking.AcceptP2PSessionWithUser(steamIDRemote);
  			P2PSessionState_t val = default(P2PSessionState_t);

@@ -82,9 +82,10 @@ public class CheatPanel : UIState
 			MenuSimpleItem tab = CreateTabButton(tabNames[t], t / 3f, page);
 			uIPanel.Append(tab);
 		}
+		uIPanel.Append(CreateBackToPanelButton());
 		_uilist = new UIList();
 		_uilist.Width.Set(-25f, 1f);
-		_uilist.Height.Set(-50f, 1f);
+		_uilist.Height.Set(-ListTop, 1f);
 		_uilist.VAlign = 1f;
 		_uilist.PaddingBottom = 5f;
 		_uilist.ListPadding = 10f;
@@ -93,7 +94,7 @@ public class CheatPanel : UIState
 		FillList();
 		UIScrollbar uIScrollbar = new UIScrollbar();
 		uIScrollbar.SetView(100f, 1000f);
-		uIScrollbar.Height.Set(-67f, 1f);
+		uIScrollbar.Height.Set(-ListTop - 17f, 1f);
 		uIScrollbar.HAlign = 1f;
 		uIScrollbar.VAlign = 1f;
 		uIScrollbar.MarginBottom = 11f;
@@ -111,6 +112,29 @@ public class CheatPanel : UIState
 		_uiTextPanel = uITextPanel;
 		uIElement.Append(uITextPanel);
 		Append(uIElement);
+	}
+
+	public const float ListTop = 94f;
+
+	private static MenuSimpleItem CreateBackToPanelButton()
+	{
+		MenuSimpleItem button = new MenuSimpleItem(() => "[c/FFE645:Back to the IsaClient panel]", new Color(73, 94, 171, 255));
+		button.HAlign = 0f;
+		button.Width.Set(0f, 1f);
+		button.Height.Set(36f, 0f);
+		button.Top.Set(46f, 0f);
+		button.OnUpdate += delegate(UIElement element)
+		{
+			if (element.IsMouseHovering)
+			{
+				Main.instance.MouseText(IsaClient.Languages.L10n.T("The new panel: sections, search and favorites (.menu new)"), 0, 0);
+			}
+		};
+		button.OnLeftClick += delegate
+		{
+			IsaClient.Hub.ClientHub.SetClassic(false);
+		};
+		return button;
 	}
 
 	private MenuSimpleItem CreateTabButton(string name, float hAlign, int page)

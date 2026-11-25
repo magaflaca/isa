@@ -39,7 +39,7 @@ internal static class GroqBrowser
 	public static Outcome Answer(string question, AskOptions options, string today, string model, string effort, bool mustSearch)
 	{
 		StringBuilder system = new StringBuilder();
-		system.Append("You are ").Append(options.Name).Append(", a helpful assistant inside the game Terraria (the player uses Terraria 1.4.5.8 on PC). Today is ").Append(today).Append(".\n");
+		system.Append("You are ").Append(options.Name).Append(", a helpful assistant inside the game Terraria (the player uses Terraria 1.4.6.1 on PC). Today is ").Append(today).Append(".\n");
 		system.Append("When the question needs facts, use the browser: search, open the most relevant pages (two or three, official and well-known ones first), and search again with other words if needed. ");
 		system.Append("Read them carefully and answer only from what they say, never from memory: report exactly what a page states (what was added is not what was changed or fixed, a rumor is not a fact) and add no guesses or explanations of your own. If you couldn't find something, say so briefly. Never invent names, numbers, dates or stats. When facts change over time, say the date they refer to.\n");
 		system.Append("Cite each fact with the full address of its page in square brackets right after it, like [https://example.com/page]. Don't add a list of sources at the end.\n");

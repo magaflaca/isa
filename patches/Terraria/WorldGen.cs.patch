@@ -13,7 +13,7 @@
  {
  	public class SecretSeed
  	{
-@@ -6648,6 +6649,7 @@
+@@ -6635,6 +6636,7 @@
  
  	public static void SaveAndQuit(Action callback = null)
  	{
@@ -21,7 +21,7 @@
  		SoundEngine.PlaySound(11);
  		StopWaterfallAmbienceAudio();
  		Main.invasionProgress = -1;
-@@ -9767,7 +9769,7 @@
+@@ -9754,7 +9756,7 @@
  		{
  			val2.X = 1.0;
  		}
@@ -30,7 +30,7 @@
  		{
  			val2 *= 1.5;
  		}
-@@ -9837,7 +9839,7 @@
+@@ -9824,7 +9826,7 @@
  				for (int l = num6; l < num7; l++)
  				{
  					Vector2D val3 = new Vector2D(Math.Abs((double)k - val.X), Math.Abs((double)l - val.Y));
@@ -39,7 +39,7 @@
  					{
  						SpreadGrass(k - 1, l, 1, neonMossType);
  					}
-@@ -10255,7 +10257,7 @@
+@@ -10242,7 +10244,7 @@
  			}
  		}
  		Vector2D val = default(Vector2D);
@@ -48,7 +48,7 @@
  		Vector2D val2 = default(Vector2D);
  		val2.X = genRand.NextDouble() * 0.6 - 0.3;
  		val2.Y = genRand.NextDouble() * 0.5 + 0.5;
-@@ -10282,7 +10284,7 @@
+@@ -10269,7 +10271,7 @@
  						num4 *= 2.0;
  					}
  					Vector2D val3 = val - new Vector2D((double)k, (double)l);
@@ -57,7 +57,7 @@
  					{
  						if (genRand.Next(3) != 0)
  						{
-@@ -10294,7 +10296,7 @@
+@@ -10281,7 +10283,7 @@
  						}
  						PlaceSmallPile(k, l, genRand.Next(6), 0, 185);
  					}
@@ -66,7 +66,7 @@
  					{
  						if (Main.tileSolid[Main.tile[k, l].type])
  						{
-@@ -10351,7 +10353,7 @@
+@@ -10338,7 +10340,7 @@
  		}
  		num--;
  		Vector2D val = default(Vector2D);
@@ -75,7 +75,7 @@
  		Vector2D val2 = default(Vector2D);
  		val2.X = genRand.NextDouble() * 0.6 - 0.3;
  		val2.Y = genRand.NextDouble() * 0.5 + 0.5;
-@@ -10372,7 +10374,7 @@
+@@ -10359,7 +10361,7 @@
  					double num5 = num2 * (double)genRand.Next(70, 91) * 0.01;
  					Vector2D val3 = val - new Vector2D((double)i, (double)num4);
  					val3.X *= 0.6;
@@ -84,7 +84,7 @@
  					{
  						if (num4 <= num + 1 || genRand.Next(6) == 0)
  						{
-@@ -10478,7 +10480,7 @@
+@@ -10465,7 +10467,7 @@
  		}
  		num--;
  		Vector2D val = default(Vector2D);
@@ -93,7 +93,7 @@
  		Vector2D val2 = default(Vector2D);
  		val2.X = genRand.NextDouble() * 0.6 - 0.3;
  		val2.Y = genRand.NextDouble() * 0.5 + 0.5;
-@@ -10498,9 +10500,9 @@
+@@ -10485,9 +10487,9 @@
  				{
  					double num11 = num8 * (double)genRand.Next(70, 91) * 0.01 * 1.2;
  					Vector2D val3 = val - new Vector2D((double)k, (double)num10);
@@ -105,7 +105,7 @@
  						val2.X = genRand.NextDouble() * 0.6 - 0.3;
  						val2.Y = genRand.NextDouble() * 0.5 + 0.5;
  					}
-@@ -10508,7 +10510,7 @@
+@@ -10495,7 +10497,7 @@
  					{
  						val3.X *= 0.25;
  						val3.Y *= 0.8;
@@ -114,7 +114,7 @@
  						{
  							Main.tile[k, num10].active(active: true);
  							Main.tile[k, num10].halfBrick(halfBrick: false);
-@@ -10669,7 +10671,7 @@
+@@ -10656,7 +10658,7 @@
  			}
  		}
  		Vector2D val = default(Vector2D);
@@ -123,7 +123,7 @@
  		Vector2D val2 = default(Vector2D);
  		val2.X = genRand.NextDouble() * 0.6 - 0.3;
  		val2.Y = genRand.NextDouble() * 0.5 + 0.5;
-@@ -10697,11 +10699,11 @@
+@@ -10684,11 +10686,11 @@
  						num9 *= 2.0;
  					}
  					Vector2D val3 = val - new Vector2D((double)k, (double)l);
@@ -137,7 +137,7 @@
  					{
  						Main.tile[k, l].type = type;
  						if (genRand.Next(4) == 0)
-@@ -28796,13 +28798,13 @@
+@@ -28783,13 +28785,13 @@
  					if (array7[num43])
  					{
  						Vector2D val = new Vector2D((double)array5[num43], (double)array6[num43]) - new Vector2D((double)num50, (double)num51);
@@ -153,7 +153,7 @@
  						{
  							Main.tile[num50, num51].wall = 60;
  						}
-@@ -34026,7 +34028,7 @@
+@@ -34013,7 +34015,7 @@
  			}
  		}
  		Vector2D val = default(Vector2D);
@@ -162,7 +162,7 @@
  		for (int num33 = 0; num33 < num2; num33++)
  		{
  			if (progress != null)
-@@ -34203,7 +34205,7 @@
+@@ -34190,7 +34192,7 @@
  		int num63 = num6;
  		num3 = -num4;
  		Vector2D val2 = default(Vector2D);
@@ -171,7 +171,7 @@
  		int num64 = genRand.Next(2, 5);
  		bool flag4 = true;
  		int num65 = 0;
-@@ -76147,9 +76149,9 @@
+@@ -76132,9 +76134,9 @@
  		}
  		int num2 = k;
  		Vector2D val = default(Vector2D);
@@ -183,7 +183,7 @@
  		if (val2.X < 0.0)
  		{
  			crimDir = -1;
-@@ -76289,13 +76291,13 @@
+@@ -76274,13 +76276,13 @@
  			int num18 = (int)val.Y;
  			int num19 = 0;
  			bool flag2 = true;
@@ -200,7 +200,7 @@
  				}
  				flag2 = false;
  				for (int num20 = 0; num20 < num16; num20++)
-@@ -76463,7 +76465,7 @@
+@@ -76448,7 +76450,7 @@
  		double num2 = genRand.Next(6, 11);
  		bool flag = true;
  		Vector2D val = default(Vector2D);
@@ -209,7 +209,7 @@
  		val.X *= -crimDir;
  		while (flag)
  		{
-@@ -77361,7 +77363,7 @@
+@@ -77346,7 +77348,7 @@
  						continue;
  					}
  					Vector2D val3 = new Vector2D(Math.Abs((double)k - val.X), Math.Abs((double)l - val.Y));
@@ -218,7 +218,7 @@
  					if (flag5 && num11 < num4 * 0.5 + 1.0)
  					{
  						Main.tile[k, l].type = num;
-@@ -77542,7 +77544,7 @@
+@@ -77527,7 +77529,7 @@
  		//IL_01c7: Unknown result type (might be due to invalid IL or missing references)
  		//IL_01d0: Unknown result type (might be due to invalid IL or missing references)
  		Vector2D val = default(Vector2D);
@@ -227,7 +227,7 @@
  		bool flag = ((startX > Main.maxTilesX / 2) ? true : false);
  		int num = 2 + genRand.Next(2);
  		int num2 = 15 + genRand.Next(11);
-@@ -80219,7 +80221,7 @@
+@@ -80204,7 +80206,7 @@
  				num6 = 0.0 - num6;
  			}
  			Vector2D val2 = default(Vector2D);
@@ -236,7 +236,7 @@
  			for (int j = 0; j < num4; j++)
  			{
  				val2 = digTunnel(val2.X, val2.Y, num5, num6, genRand.Next(6, 20), genRand.Next(4, 9));
-@@ -80270,7 +80272,7 @@
+@@ -80255,7 +80257,7 @@
  				num3 = 0.0 - num3;
  			}
  			Vector2D val = default(Vector2D);
@@ -245,7 +245,7 @@
  			for (int i = 0; i < num; i++)
  			{
  				val = digTunnel(val.X, val.Y, num2, num3, genRand.Next(5, 15), genRand.Next(2, 6), Wet: true);
-@@ -80396,7 +80398,7 @@
+@@ -80381,7 +80383,7 @@
  		ushort type = 202;
  		ushort wall = 82;
  		Vector2D val = default(Vector2D);
@@ -254,7 +254,7 @@
  		int num2 = 1;
  		if (genRand.Next(2) == 0)
  		{
-@@ -82054,7 +82056,7 @@
+@@ -82039,7 +82041,7 @@
  
  	public static bool SlopeTile(int i, int j, int slope = 0, bool noEffects = false, bool quiet = true)
  	{
@@ -263,7 +263,7 @@
  		{
  			return false;
  		}
-@@ -82091,7 +82093,7 @@
+@@ -82076,7 +82078,7 @@
  
  	public static bool PoundTile(int i, int j)
  	{
@@ -272,7 +272,7 @@
  		{
  			return false;
  		}
-@@ -86250,6 +86252,11 @@
+@@ -86235,6 +86237,11 @@
  
  	private static void TileFrameImportant(int i, int j, int type, Tile tileCache, bool resetFrame)
  	{

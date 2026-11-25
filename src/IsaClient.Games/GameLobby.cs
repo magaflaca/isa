@@ -259,6 +259,7 @@ public static class GameLobby
 		TetrisArt.Update();
 		IsaClient.Gba.PokemonWindow.Update();
 		IsaClient.Psp.PspWindow.Update();
+		IsaClient.Gta.GtaSix.Update();
 		IsaClient.Casino.CasinoWindow.Update();
 		if (Main.gameMenu)
 		{

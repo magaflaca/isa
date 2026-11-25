@@ -1,6 +1,6 @@
 <p align="center"><img src=".github/logo.gif" alt="IsaClient"></p>
 
-Source of IsaClient, a Terraria 1.4.5.8 client for Windows.
+Source of IsaClient, a Terraria 1.4.6.1 client for Windows.
 
 This repo is a mirror. Development happens in a private repo and this one is updated on every release, so the
 history here is one commit per version. Looking for the client itself? Get it at https://client.hacks.win.
@@ -25,7 +25,7 @@ applies our changes on top.
 
 You need:
 
-- Terraria 1.4.5.8 from Steam (Windows)
+- Terraria 1.4.6.1 from Steam (Windows)
 - .NET 10 SDK
 - Python 3.10+
 

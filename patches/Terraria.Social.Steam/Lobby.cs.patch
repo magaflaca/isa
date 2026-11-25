@@ -1,6 +1,6 @@
 --- a/Terraria.Social.Steam/Lobby.cs
 +++ b/Terraria.Social.Steam/Lobby.cs
-@@ -18,11 +18,11 @@
+@@ -23,11 +23,11 @@
  
  	private CallResult<LobbyEnter_t> _lobbyEnter;
  
@@ -14,7 +14,7 @@
  
  	public Lobby()
  	{
-@@ -30,18 +30,18 @@
+@@ -35,19 +35,19 @@
  		//IL_0021: Unknown result type (might be due to invalid IL or missing references)
  		//IL_0027: Unknown result type (might be due to invalid IL or missing references)
  		//IL_002c: Unknown result type (might be due to invalid IL or missing references)
@@ -27,9 +27,10 @@
 -	public void Create(bool inviteOnly, APIDispatchDelegate<LobbyCreated_t> callResult)
 +	public void Create(bool inviteOnly, CallResult<LobbyCreated_t>.APIDispatchDelegate callResult)
  	{
- 		//IL_000c: Unknown result type (might be due to invalid IL or missing references)
- 		//IL_0011: Unknown result type (might be due to invalid IL or missing references)
- 		//IL_001f: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0013: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0018: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_0026: Unknown result type (might be due to invalid IL or missing references)
+ 		InviteOnly = inviteOnly;
 -		SteamAPICall_t val = SteamMatchmaking.CreateLobby((ELobbyType)(!inviteOnly), 256);
 +		SteamAPICall_t val = SteamMatchmaking.CreateLobby((inviteOnly ? ELobbyType.k_ELobbyTypePrivate : ELobbyType.k_ELobbyTypeFriendsOnly), 256);
  		_lobbyCreatedExternalCallback = callResult;
@@ -38,7 +39,7 @@
  		State = LobbyState.Creating;
  	}
  
-@@ -59,7 +59,7 @@
+@@ -65,7 +65,7 @@
  		}
  	}
  
@@ -47,7 +48,7 @@
  	{
  		//IL_0017: Unknown result type (might be due to invalid IL or missing references)
  		//IL_0018: Unknown result type (might be due to invalid IL or missing references)
-@@ -70,7 +70,7 @@
+@@ -76,7 +76,7 @@
  			State = LobbyState.Connecting;
  			_lobbyEnterExternalCallback = callResult;
  			SteamAPICall_t val = SteamMatchmaking.JoinLobby(lobbyId);
@@ -56,7 +57,7 @@
  		}
  	}
  
-@@ -79,7 +79,7 @@
+@@ -85,7 +85,7 @@
  		//IL_0001: Unknown result type (might be due to invalid IL or missing references)
  		CSteamID val = default(CSteamID);
  		EChatEntryType val2 = default(EChatEntryType);

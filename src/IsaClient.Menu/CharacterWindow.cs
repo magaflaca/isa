@@ -224,7 +224,14 @@ public class CharacterWindow : UIState
 		}
 		if (UiKit.Button(sb, new Rectangle(area.Right - 90 - 8 - 150, area.Y, 150, 30), "View my inventory", UiKit.Blue))
 		{
-			InventoryViewer.Open(Main.myPlayer);
+			if (IsaClient.Hub.ClientHub.ClassicNow)
+			{
+				InventoryViewer.Open(Main.myPlayer);
+			}
+			else
+			{
+				IsaClient.Hub.ClientHub.ShowPlayer(Main.myPlayer);
+			}
 			return;
 		}
 		int top = area.Y + 40;

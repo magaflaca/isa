@@ -1,14 +1,14 @@
 --- a/Terraria/Netplay.cs
 +++ b/Terraria/Netplay.cs
-@@ -12,6 +12,7 @@
- using Terraria.Net.Sockets;
+@@ -18,6 +18,7 @@
  using Terraria.Social;
+ using Terraria.Social.Steam;
  using Terraria.Utilities;
 +using IsaClient.Networking;
  
  namespace Terraria;
  
-@@ -334,6 +335,7 @@
+@@ -442,6 +443,7 @@
  	{
  		if (Main.netMode == 1 && Connection.IsActive)
  		{
@@ -16,7 +16,7 @@
  			NetMessage.CheckBytes();
  		}
  	}
-@@ -424,6 +426,8 @@
+@@ -677,6 +679,8 @@
  
  	private static void ClientLoopSetup(RemoteAddress address)
  	{
@@ -25,7 +25,7 @@
  		Connection.ResetSpecialFlags();
  		ResetNetDiag();
  		Main.ServerSideCharacter = false;
-@@ -518,10 +522,13 @@
+@@ -771,10 +775,13 @@
  					{
  						Main.statusText = Language.GetTextValue("Net.RequestingTileData");
  					}
@@ -42,7 +42,7 @@
  					}
  					if (Connection.StatusMax > 0 && Connection.StatusText != "")
  					{
-@@ -542,6 +549,7 @@
+@@ -795,6 +802,7 @@
  				}
  				num = Connection.State;
  			}
@@ -50,8 +50,8 @@
  			try
  			{
  				Connection.IsActive = false;
-@@ -552,6 +560,8 @@
- 			}
+@@ -806,6 +814,8 @@
+ 			GNS_API.Shutdown();
  			if (!Main.gameMenu)
  			{
 +				// Kicked / lost connection / timed out while playing (leaving on purpose goes to the menu first).
@@ -59,3 +59,31 @@
  				Main.menuMode = 14;
  				Main.gameMenu = true;
  				Main.SwitchNetMode(0);
+@@ -903,7 +913,8 @@
+ 	{
+ 		CleanupClientThreads();
+ 		Main.menuMode = 14;
+-		if (UseGNS)
++		bool gns = UseGNS && IsaClient.Networking.Crossplay.Allowed;
++		if (gns)
+ 		{
+ 			GNS_API.Startup();
+ 		}
+@@ -913,7 +924,7 @@
+ 		ClientLoopSetup(DirectConnectionAddress);
+ 		DirectMode = DirectConnectionMode.None;
+ 		DirectTCPSocket = Connection.Socket;
+-		if (UseGNS)
++		if (gns)
+ 		{
+ 			DirectUDPSocket = new GNS_Socket();
+ 		}
+@@ -924,7 +935,7 @@
+ 		};
+ 		AttachClientThread(obj);
+ 		obj.Start();
+-		if (UseGNS && DirectConnectionAddress is TcpAddress && ServerIPText != "127.0.0.1")
++		if (gns && DirectConnectionAddress is TcpAddress && ServerIPText != "127.0.0.1")
+ 		{
+ 			Thread obj2 = new Thread(UDPClientLoop)
+ 			{

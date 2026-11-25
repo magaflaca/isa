@@ -45,7 +45,9 @@ public static class MediaFocus
 	public static Func<bool> GamePlaying = () => false;
 
 	/// <summary>Read by Main.UpdateAudio: fades Terraria's music out while a song, a video or a game's music is on.</summary>
-	public static bool SilencesGameMusic => MusicPlayer.SilencesGameMusic || (MusicPlayer.MuteGameMusic && VideoOpen()) || GamePlaying() || ConsolePlaying() || CasinoPlaying();
+	public static bool SilencesGameMusic => MusicPlayer.SilencesGameMusic || (MusicPlayer.MuteGameMusic && VideoOpen()) || GamePlaying() || ConsolePlaying() || CasinoPlaying() || CinemaPlaying();
+
+	public static Func<bool> CinemaPlaying = () => false;
 
 	/// <summary>Set by the GBA player: the console is on and playing (its own slot, so a game setting GamePlaying can't drop it).</summary>
 	public static Func<bool> ConsolePlaying = () => false;
@@ -66,7 +68,7 @@ public static class MediaFocus
 	/// <summary>Per frame (main thread): fades the game's sound effects and ambience in and out.</summary>
 	public static void Update()
 	{
-		bool quiet = QuietGame && (MusicPlayer.IsPlaying || VideoPlaying());
+		bool quiet = (QuietGame && (MusicPlayer.IsPlaying || VideoPlaying())) || CinemaPlaying();
 		float target = quiet ? 0f : 1f;
 		if (!_touched && !quiet)
 		{

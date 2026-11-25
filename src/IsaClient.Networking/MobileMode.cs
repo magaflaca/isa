@@ -11,6 +11,8 @@ namespace IsaClient.Networking;
 /// Android does (captured from a phone): right after the loadout packet (147) of the join, before the inventory, holding
 /// the player's slot and three zero bytes. Servers that tell phones apart by it (TShock's PlayerPlatformInfo: IsaHacks,
 /// MobileMannequinFix) treat this client as a phone. Vanilla PC servers ignore the packet (id over their message count).
+/// From 1.4.6 the PC sends that same packet itself, so on network version 1.4.6.1 phones and PCs can't be told apart and
+/// this only matters on older servers.
 /// </summary>
 public static class MobileMode
 {
@@ -39,7 +41,7 @@ public static class MobileMode
 	/// <summary>Right after packet 147 while joining (the server just gave the slot): the platform packet.</summary>
 	public static void AfterSlot(int slot)
 	{
-		if (!Enabled)
+		if (!Enabled || NetworkVersion.IsLatest)
 		{
 			return;
 		}

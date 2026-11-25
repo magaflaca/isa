@@ -1,6 +1,6 @@
 --- a/Terraria.GameContent.Liquid/LiquidRenderer.cs
 +++ b/Terraria.GameContent.Liquid/LiquidRenderer.cs
-@@ -864,6 +864,10 @@
+@@ -849,6 +849,10 @@
  
  	public void SetWaveMaskData(ref Texture2D texture)
  	{

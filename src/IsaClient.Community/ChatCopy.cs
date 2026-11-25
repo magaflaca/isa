@@ -24,7 +24,7 @@ public static class ChatCopy
 
 	private static readonly List<(ChatMessageContainer Message, Rectangle Area)> _lines = new List<(ChatMessageContainer, Rectangle)>();
 
-	private static double _noteUntil;
+	private static DateTime _noteUntil;
 
 	private static Vector2 _noteAt;
 
@@ -102,7 +102,7 @@ public static class ChatCopy
 	public static void Note(string text)
 	{
 		_note = text ?? "";
-		_noteUntil = Main.timeForVisualEffects + 60.0;
+		_noteUntil = DateTime.UtcNow.AddSeconds(1.0);
 		_noteAt = new Vector2(Main.mouseX + 14, Main.mouseY - 18);
 	}
 
@@ -150,11 +150,12 @@ public static class ChatCopy
 
 	private static void DrawNote()
 	{
-		if (Main.timeForVisualEffects >= _noteUntil)
+		double left = (_noteUntil - DateTime.UtcNow).TotalSeconds;
+		if (left <= 0.0)
 		{
 			return;
 		}
-		float fade = (float)Math.Min(1.0, (_noteUntil - Main.timeForVisualEffects) / 20.0);
+		float fade = (float)Math.Min(1.0, left / 0.33);
 		Utils.DrawBorderString(Main.spriteBatch, _note, _noteAt, ClientChat.AccentColor * fade, 0.8f);
 	}
 }

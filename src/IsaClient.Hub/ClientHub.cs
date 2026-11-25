@@ -315,8 +315,8 @@ public static class ClientHub
 	{
 		float uiW = Main.instance.GraphicsDevice.Viewport.Width / Main.UIScale / HubInput.Scale;
 		float uiH = Main.instance.GraphicsDevice.Viewport.Height / Main.UIScale / HubInput.Scale;
-		int minW = 640;
-		int minH = 420;
+		int minW = MinWidth;
+		int minH = MinHeight;
 		if (float.IsNaN(HubPrefs.WindowW))
 		{
 			int w = (int)MathHelper.Clamp(uiW - 120f, minW, 980f);
@@ -329,9 +329,21 @@ public static class ClientHub
 		}
 		_win.Width = (int)MathHelper.Clamp(_win.Width, minW, Math.Max(minW, uiW - 8f));
 		_win.Height = (int)MathHelper.Clamp(_win.Height, minH, Math.Max(minH, uiH - 8f));
-		_win.X = (int)MathHelper.Clamp(_win.X, 4f - _win.Width + 120f, uiW - 120f);
-		_win.Y = (int)MathHelper.Clamp(_win.Y, 4f, uiH - 60f);
+		_win.X = (int)MathHelper.Clamp(_win.X, 4f, Math.Max(4f, uiW - _win.Width - 4f));
+		_win.Y = (int)MathHelper.Clamp(_win.Y, 4f, Math.Max(4f, uiH - _win.Height - 4f));
 		ScreenRect = HubInput.ToScreen(_win);
+	}
+
+	private const int MinWidth = 640;
+
+	private const int MinHeight = 420;
+
+	internal static float FitScale()
+	{
+		float uiW = Main.instance.GraphicsDevice.Viewport.Width / Main.UIScale;
+		float uiH = Main.instance.GraphicsDevice.Viewport.Height / Main.UIScale;
+		float fit = Math.Min((uiW - 8f) / (MinWidth * HubPrefs.Scale), (uiH - 8f) / (MinHeight * HubPrefs.Scale));
+		return MathHelper.Clamp(fit, 0.4f, 1f);
 	}
 
 	private static void SaveWindow()
@@ -668,14 +680,14 @@ public static class ClientHub
 		}
 		string hint = "Right click a card for more  ·  Star = favorite";
 		float hintW = HubKit.Measure(hint, 0.66f);
-		Rectangle classic = new Rectangle(r.Right - 132, r.Y + 4, 110, 21);
-		if (fav.Right + 12 + hintW < classic.X - 8)
+		Rectangle flash = new Rectangle(r.Right - 132, r.Y + 4, 110, 21);
+		if (fav.Right + 12 + hintW < flash.X - 8)
 		{
 			HubKit.Text(sb, hint, fav.Right + 12, r.Y + 7, Theme.Muted * 0.8f, 0.66f);
 		}
-		if (HubKit.Button(sb, "footer:classic", classic, "Classic panel", Theme.Card, "Switch to the old panel (Settings has the same option)"))
+		if (HubKit.Button(sb, "footer:flashthor", flash, "Flash Thor", Theme.Card, "A burst of colored lightning around you, all at once (everyone sees it). Also .thor flash"))
 		{
-			SetClassic(true);
+			IsaClient.Rendering.Thor.Flash();
 		}
 	}
 
@@ -1036,6 +1048,13 @@ public static class ClientHub
 		HubSection section = feature.Section;
 		int page = Math.Max(0, section.Pages.FindIndex(p => p.Groups.Contains(feature.Group)));
 		Open(section, page);
+	}
+
+	internal static void ShowPlayer(int index)
+	{
+		MenuState.CustomUI2.SetState(CheatPanel.UiStateNewCheatPanel);
+		OpenSection("multiplayer");
+		HubPlayerView.Open(index);
 	}
 
 	internal static void OpenSection(string id, int page = 0)

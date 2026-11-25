@@ -151,6 +151,7 @@ first sentence of its `<summary>`. Regenerate it after adding or moving classes.
 | `ChatText` | ChatText.cs | Typographic characters the game's font doesn't have (it draws them as *), turned into the plain ones: dashes and hyphens (AI answers love ‑ and —), curly quotes, odd spaces, the ellipsis. |
 | `ClientChat` | ClientChat.cs | Client messages in the local chat: normal output, notices and errors, each with its own color. |
 | `ClientInfo` | ClientInfo.cs | Client name and version (Version + Hotfix) used by the updater, the title and the credits. |
+| `ClientKeys` | ClientKeys.cs | A copy of IsaClient's own key bindings (Open Menu, Noclip, Wiki Lookup...) in IsaClient/IsaKeys.json. |
 | `ClientLifecycle` | ClientLifecycle.cs | Frame lifecycle of the client: initialization, the early and normal per-frame updates, entering a world. |
 | `ClientLog` | ClientLog.cs | Error log of the client (Terraria/IsaClient/Errors.txt). |
 | `ClientSettings` | ClientSettings.cs | Loads and saves IsaConfig.json. |
@@ -161,6 +162,8 @@ first sentence of its `<summary>`. Regenerate it after adding or moving classes.
 | `CommandRegistry` | CommandRegistry.cs | Every chat command of the client. |
 | `CommandSection` | CommandSection.cs | A group of chat commands in .help (".help 3" or ".help combat"). |
 | `DisplayScaling` | DisplayScaling.cs | "Sharp Display": the game tells Windows it handles screen scaling itself (DPI aware), so with Windows at 125% or 150% it draws at the screen's real resolution: sharper, and the interface looks smaller. |
+| `GameFolder` | GameFolder.cs | The game folder the exe runs from. |
+| `GameFolderContent` | GameFolderContent.cs | Content source under the game's own (lowest priority), for game folders older than this client: a texture the folder doesn't have comes from here instead of crashing the game while it loads. |
 | `GeneralCommands` | GeneralCommands.cs | Chat commands that do not belong to one module (settings, resets, small tweaks). |
 | `IdNameSearch` | IdNameSearch.cs | Name lookup over an ID class' public constants. |
 | `InfoAttribute` | InfoAttribute.cs | Marks a member with a short description. |
@@ -202,7 +205,7 @@ first sentence of its `<summary>`. Regenerate it after adding or moving classes.
 | `ItemModPresets` | ItemModPresets.cs | Item mods: saved stats of an item (one JSON per item inside a preset folder in "Terraria/Item Mods"), applied to every copy of that item you carry. |
 | `ItemShootBehavior` | ItemShootBehavior.cs |  |
 | `ItemTools` | ItemTools.cs | Item and buff commands (.item, .buff, .heal, .wear) and item tweaks (Zenith item, rope snakes, magical ice). |
-| `LegacyItems` | LegacyItems.cs | Client-only items, added after the last 1.4.5.8 item: the Flinxinator Staff, the pre-1.4 Legacy True Excalibur, Legacy True Night's Edge and Legacy Terra Blade (their old beams, no 1.4 swing effects) and the Rubblemaker (Pots). |
+| `LegacyItems` | LegacyItems.cs | Client-only items, added after the last vanilla item: the Flinxinator Staff, the pre-1.4 Legacy True Excalibur, Legacy True Night's Edge and Legacy Terra Blade (their old beams, no 1.4 swing effects) and the Rubblemaker (Pots). |
 | `NpcControl` | NpcControl.cs | Controlling an NPC as if it were your player (.cnpc, single player). |
 | `PlayerCheats` | PlayerCheats.cs | Player cheats of the panel: god mode, infinite mana/ammo/breath, ranges, drops, buffs on death and more. |
 | `PlayerTools` | PlayerTools.cs | Player tools: ghost mode and any item in any slot. |
@@ -270,6 +273,15 @@ first sentence of its `<summary>`. Regenerate it after adding or moving classes.
 | `StatePalette` | StatePalette.cs | Recolors the player inside an mGBA state before it's loaded. |
 | `TrainerArt` | TrainerArt.cs | Pictures for the trainer picker: the FireRed sprites a character becomes (walking, trainer card, battle back), made in the background and kept as textures, and the Terraria character itself without armor. |
 | `PixelArt` | TrainerArt.cs | Little pixel pictures drawn from strings (no textures). |
+
+## IsaClient.Gta
+
+| Class | File | What it does |
+|---|---|---|
+| `GtaArt` | GtaArt.cs |  |
+| `GtaSix` | GtaSix.cs |  |
+| `GtaTrailer` | GtaTrailer.cs |  |
+| `GtaVolume` | GtaVolume.cs |  |
 
 ## IsaClient.Hub
 
@@ -385,7 +397,7 @@ first sentence of its `<summary>`. Regenerate it after adding or moving classes.
 | `InventoryViewer` | InventoryViewer.cs | The inventory viewer, opened by clicking a row of the Player List: the player's inventory, coins, ammo, held mouse item, trash, armor/accessories/vanity/dyes (with their hide toggles), equipment slots, buffs and loadouts (click a loadout to preview it), plus a side column with their portrait, info and actions. |
 | `InventoryViewerButton` | InventoryViewerButton.cs | Inventory viewer action button: a framed label with an alternate label while its condition holds. |
 | `InventoryViewerButtons` | InventoryViewerButtons.cs | Right column of the inventory viewer: name, portrait over the biome they are in, info block and the actions (Teleport, Spectate, Copy Appearance, Copy Inventory, Save .plr). |
-| `MainMenuOverlay` | MainMenuOverlay.cs | Main menu overlay in the top-left corner: UUID tweaks ([F1] change, [F2] hide, [F3] random UUID), [F4] logo, [F5] network version (1.4.5.8 / 1.4.5.6), the proxy line, then the client version, the credits with clickable links and a row of icons (TerraAngel and original client credits, thanks, bots, music note). |
+| `MainMenuOverlay` | MainMenuOverlay.cs | Main menu overlay in the top-left corner: UUID tweaks ([F1] change, [F2] hide, [F3] random UUID), [F4] logo, [F5] network version (1.4.6.1 / 1.4.5.8 / 1.4.5.6), the proxy line, then the client version, the credits with clickable links and a row of icons (TerraAngel and original client credits, thanks, bots, music note). |
 | `MenuControls` | MenuControls.cs | Building blocks of panel rows: toggles, buttons, sliders, cycles, click sounds and tooltips. |
 | `MenuIcon` | MenuIcon.cs | The small clickable icons of the main menu overlay (credits row, version and proxy buttons) and the music note: every icon is scaled to fit the same Size box, so items and textures of any size look alike. |
 | `MenuListItem` | MenuListItem.cs | Panel row with a label and a value on the right. |
@@ -406,7 +418,7 @@ first sentence of its `<summary>`. Regenerate it after adding or moving classes.
 | `StorageSync` | StorageSync.cs | Which personal storages of other players the server has sent (Piggy Bank, Safe, Defender's Forge, Void Vault). |
 | `TravelMenu` | TravelMenu.cs | Cheats → Travel: noclip, teleports, surfaces, flight and position updates. |
 | `UiKit` | UiKit.cs | Small immediate-mode UI helpers (drawn and hit-tested in one call, in UI coordinates) shared by the character window and the .plr drop dialog: framed buttons with hover sound, toggles, text that never overflows, and character portraits. |
-| `Wiki` | Wiki.cs | Shift+click wiki lookup of items, NPCs and tiles. |
+| `Wiki` | Wiki.cs | Wiki lookup: with the inventory open, hold the Wiki Lookup key (Q by default, in Controls) over an item and click it to open it on the Terraria wiki. |
 | `WorldEditMenu` | WorldEditMenu.cs | Cheats → World Edit: packets, selection, paste, brushes, paint and world border. |
 | `WorldInfoMenu` | WorldInfoMenu.cs | World Information tab: world data, bosses, invasions, special seeds, utilities and flags. |
 
@@ -488,11 +500,14 @@ first sentence of its `<summary>`. Regenerate it after adding or moving classes.
 
 | Class | File | What it does |
 |---|---|---|
+| `Compat1456` | Compat1456.cs | Network version 1.4.5.6 (release 319), on top of Compat1458. |
+| `Compat1458` | Compat1458.cs | Servers older than 1.4.6 (network version 1.4.5.8, and 1.4.5.6 on top of Compat1456). |
 | `CountryNames` | CountryNames.cs | Country codes and English names, in the order of the flag atlas (IsaClient.Assets.Flags.txt). |
+| `Crossplay` | Crossplay.cs | 1.4.6 crossplay transport: next to TCP the game also tries the server over UDP (Valve's GameNetworkingSockets, through the game folder's GNS_Wrapper.dll) and keeps whichever connects first. |
 | `MobileMode` | MobileMode.cs | Mobile simulation (main menu, under the network version): the client also sends packet 164 exactly as Terraria for Android does (captured from a phone): right after the loadout packet (147) of the join, before the inventory, holding the player's slot and three zero bytes. |
 | `NetDebug` | NetDebug.cs | Netplay information on screen and debug names of packets. |
+| `NetworkVersion` | NetworkVersion.cs | Network version switch ([F5] / paper airplane in the main menu): the Terraria protocol used to join servers. |
 | `PacketPacing` | PacketPacing.cs | How fast world edit sends tile/erase/liquid/paint packets, and when it waits for the server. |
-| `ProtocolCompat` | ProtocolCompat.cs | Network version switch ([F5] / hammer in the main menu): lets this 1.4.5.8 client join 1.4.5.6 servers (release 319). |
 | `ProxyMode` | Proxy.cs |  |
 | `Proxy` | Proxy.cs | Personal proxy for the player's game connection, not for evading bans. |
 | `ProxyPool` | ProxyPool.cs | The free proxies, found and kept fresh in the background from the moment the client starts: the public lists are downloaded, every proxy is put through the real tunnel test (Test) twice, the good ones are located (country via ip-api.com) and tested again every few minutes. |
@@ -561,6 +576,7 @@ first sentence of its `<summary>`. Regenerate it after adding or moving classes.
 | `Hitboxes` | Hitboxes.cs | Draws player, NPC, projectile and item hitboxes. |
 | `InfoOverlays` | InfoOverlays.cs | Extra information: IDs, item/NPC/tile data and the owner of dropped items. |
 | `LucyChorus` | LucyChorus.cs | Lucy the Axe talking over someone: one line, or many a second until stopped, like a chorus. |
+| `RenderTargetState` | RenderTargetState.cs | Whether a render target can be drawn to. |
 | `SpoofedZones` | SpoofedZones.cs | Biome Spoofers: zones forced on for the local player. |
 | `Thor` | Thor.cs | .thor: colored lightning strikes the ground until .thor again. |
 | `WorldView` | WorldView.cs | How the world is drawn: forced sights, shaders, invisible things, screen clamp and world border. |

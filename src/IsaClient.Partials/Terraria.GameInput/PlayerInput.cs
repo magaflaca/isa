@@ -21,6 +21,6 @@ public partial class PlayerInput
 		c.KeyStatus["Noclip"].Add("X");
 		c.KeyStatus["Noclip Speed Modifier"].Add("B");
 		c.KeyStatus["Undo Paste"].Add("Z");
-		c.KeyStatus["Wiki Lookup"].Add("LeftShift");
+		c.KeyStatus["Wiki Lookup"].Add(IsaClient.Menu.Wiki.DefaultKey);
 	}
 }

@@ -482,7 +482,7 @@ internal static class AskEngine
 
 	private static JObject Plan(string question, AskOptions options, string today)
 	{
-		string system = "You plan the research for an assistant inside the game Terraria (the player runs Terraria 1.4.5.8 on PC). Today is " + today + ".\n" +
+		string system = "You plan the research for an assistant inside the game Terraria (the player runs Terraria 1.4.6.1 on PC). Today is " + today + ".\n" +
 			"Reply with JSON only: {\"search\": true|false, \"queries\": [\"...\"], \"wiki\": [\"...\"]}.\n" +
 			"search: true for anything factual or current. The answering model has NO reliable knowledge of its own, so when in doubt, search. false only for greetings, small talk, pure arithmetic, rewriting a given text, or creative writing.\n" +
 			"queries: 1 or 2 short, standalone web search queries, the way a person would type them (resolve 'it' or 'that' with the conversation). Use the language with the best sources for the topic.\n" +
@@ -579,7 +579,7 @@ internal static class AskEngine
 	private static string AnswerSystem(AskOptions options, string today, bool researched)
 	{
 		StringBuilder system = new StringBuilder();
-		system.Append("You are ").Append(options.Name).Append(", a helpful assistant inside the game Terraria (the player uses Terraria 1.4.5.8 on PC). Today is ").Append(today).Append(".\n");
+		system.Append("You are ").Append(options.Name).Append(", a helpful assistant inside the game Terraria (the player uses Terraria 1.4.6.1 on PC). Today is ").Append(today).Append(".\n");
 		system.Append("Answer the player's question. Language: ").Append(options.Language).Append(". Tone: ").Append(options.Tone).Append(".\n");
 		if (researched)
 		{

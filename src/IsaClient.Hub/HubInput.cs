@@ -71,7 +71,7 @@ internal static class HubInput
 
 	public static void Begin(bool mouseAllowed)
 	{
-		Scale = HubPrefs.Scale;
+		Scale = HubPrefs.Scale * ClientHub.FitScale();
 		Matrix = Matrix.CreateScale(Scale) * Main.UIScaleMatrix;
 		if (mouseAllowed)
 		{

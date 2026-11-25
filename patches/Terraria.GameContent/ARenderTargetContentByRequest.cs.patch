@@ -1,0 +1,29 @@
+--- a/Terraria.GameContent/ARenderTargetContentByRequest.cs
++++ b/Terraria.GameContent/ARenderTargetContentByRequest.cs
+@@ -26,7 +26,7 @@
+ 	public void PrepareRenderTarget(GraphicsDevice device, SpriteBatch spriteBatch)
+ 	{
+ 		_wasPrepared = false;
+-		if (_wasRequested)
++		if (_wasRequested && IsaClient.Rendering.RenderTargetState.DeviceReady(device))
+ 		{
+ 			_wasRequested = false;
+ 			HandleUseRequest(device, spriteBatch);
+@@ -37,7 +37,7 @@
+ 
+ 	protected void PrepareARenderTarget_AndListenToEvents(ref RenderTarget2D target, GraphicsDevice device, int neededWidth, int neededHeight, RenderTargetUsage usage)
+ 	{
+-		if (target == null || target.IsDisposed || target.Width != neededWidth || target.Height != neededHeight)
++		if (!IsaClient.Rendering.RenderTargetState.Usable(target) || target.Width != neededWidth || target.Height != neededHeight)
+ 		{
+ 			if (target != null)
+ 			{
+@@ -70,7 +70,7 @@
+ 
+ 	protected void PrepareARenderTarget_WithoutListeningToEvents(ref RenderTarget2D target, GraphicsDevice device, int neededWidth, int neededHeight, RenderTargetUsage usage)
+ 	{
+-		if (target == null || target.IsDisposed || target.Width != neededWidth || target.Height != neededHeight)
++		if (!IsaClient.Rendering.RenderTargetState.Usable(target) || target.Width != neededWidth || target.Height != neededHeight)
+ 		{
+ 			target = new RenderTarget2D(device, neededWidth, neededHeight, mipMap: false, device.PresentationParameters.BackBufferFormat, DepthFormat.None, 0, usage);
+ 		}

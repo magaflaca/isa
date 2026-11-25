@@ -13,7 +13,7 @@ public partial class Projectile
 	private static readonly ushort[,] legacyKeyGenerations = new ushort[256, 1001];
 
 	/// <summary>
-	/// 1.4.5.6 network compatibility (<see cref="IsaClient.Networking.ProtocolCompat" />): the key of the projectile a 1.4.5.6 server
+	/// 1.4.5.6 network compatibility (<see cref="IsaClient.Networking.Compat1456" />): the key of the projectile a 1.4.5.6 server
 	/// calls (identity, owner). An active projectile with that spawner and slot keeps its key; otherwise <paramref name="create" />
 	/// makes a new generation, like 1.4.5.6 taking a fresh slot. Without it, a missing projectile gives the default key.
 	/// </summary>

@@ -51,7 +51,7 @@ public static class ClientSettings
 	{
 		Store.Clear();
 		SettingFields.Write(Store);
-		Store.Put("NetworkVersion", ProtocolCompat.VersionName);
+		Store.Put("NetworkProtocol", NetworkVersion.Name);
 		Store.Put("CommandAbbreviations", ChatCommands.CommandAbbreviations);
 		MusicPlayer.Save();
 		Store.Save();
@@ -84,8 +84,8 @@ public static class ClientSettings
 	/// <summary>Values that are not one field, and checks that are more than a clamp.</summary>
 	private static void LoadSpecialValues()
 	{
-		string network = Store.Get("NetworkVersion", "1.4.5.8");
-		ProtocolCompat.Legacy = network == "1.4.5.6";
+		IsaClient.Menu.Wiki.MoveOldKey();
+		NetworkVersion.Current = NetworkVersion.Parse(Store.Get("NetworkProtocol", NetworkVersion.NameOf(NetworkVersion.Protocol.V1461)));
 		Dictionary<string, string> abbreviations = Store.Get<Dictionary<string, string>>("CommandAbbreviations", null);
 		ChatCommands.CommandAbbreviations = (abbreviations != null) ? new Dictionary<string, string>(abbreviations, StringComparer.OrdinalIgnoreCase) : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 		if (!ChatCommands.IsValidSpecifier(ChatCommands.CommandSpecifier))

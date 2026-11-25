@@ -1,6 +1,6 @@
 --- a/Terraria/NPC.cs
 +++ b/Terraria/NPC.cs
-@@ -41399,7 +41399,7 @@
+@@ -41404,7 +41404,7 @@
  					SoundEngine.PlayTrackedSound(SoundID.DD2_EtherianPortalOpen, base.Center);
  					float[] array5 = localAI;
  					val = SlotId.Invalid;
@@ -9,7 +9,7 @@
  				}
  				if (localAI[0] > 150f)
  				{
-@@ -41408,7 +41408,7 @@
+@@ -41413,7 +41413,7 @@
  					{
  						float[] array6 = localAI;
  						val = SoundEngine.PlayTrackedSound(SoundID.DD2_EtherianPortalIdleLoop, base.Center);
@@ -18,7 +18,7 @@
  					}
  				}
  				if (!DD2Event.EnemySpawningIsOnHold)
-@@ -41457,7 +41457,7 @@
+@@ -41462,7 +41462,7 @@
  				{
  					float[] array7 = localAI;
  					val = SoundEngine.PlayTrackedSound(SoundID.DD2_EtherianPortalIdleLoop, base.Center);
@@ -27,7 +27,7 @@
  				}
  				activeSound2 = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[3]));
  				if (activeSound2 != null)
-@@ -62664,7 +62664,7 @@
+@@ -62665,7 +62665,7 @@
  				}
  				float[] array = localAI;
  				val = SoundEngine.PlayTrackedSound(SoundID.DD2_BetsyFlameBreath, base.Center);
@@ -36,7 +36,7 @@
  			}
  			if (ai[1] >= num13)
  			{
-@@ -62948,7 +62948,7 @@
+@@ -62949,7 +62949,7 @@
  		{
  			float[] array2 = localAI;
  			val = SlotId.Invalid;
@@ -45,7 +45,7 @@
  		}
  	}
  
-@@ -63887,10 +63887,10 @@
+@@ -63888,10 +63888,10 @@
  			{
  				float[] array = localAI;
  				val = SlotId.Invalid;
@@ -58,7 +58,7 @@
  			}
  			flag21 = DD2Event.EnemiesShouldChasePlayers;
  			if (ai[1] == 2f)
-@@ -63955,21 +63955,21 @@
+@@ -63956,21 +63956,21 @@
  			if (ai[0] > 0f && ai[1] == 0f && life > 0)
  			{
  				SlotId val2 = SlotId.FromFloat(localAI[0]);
@@ -84,7 +84,7 @@
  				}
  			}
  			if (ai[0] > 0f && ai[1] == 1f)
-@@ -63991,7 +63991,7 @@
+@@ -63992,7 +63992,7 @@
  				{
  					float[] array6 = localAI;
  					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldIgniteLoop, base.Center);
@@ -93,7 +93,7 @@
  				}
  				else
  				{
-@@ -64002,7 +64002,7 @@
+@@ -64003,7 +64003,7 @@
  				{
  					float[] array7 = localAI;
  					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldScreamChargeLoop, base.Center);
@@ -102,7 +102,7 @@
  				}
  				else
  				{
-@@ -64066,7 +64066,7 @@
+@@ -64067,7 +64067,7 @@
  			{
  				float[] array8 = localAI;
  				val = SlotId.Invalid;
@@ -111,7 +111,7 @@
  			}
  			if (ai[0] != 1f)
  			{
-@@ -64087,7 +64087,7 @@
+@@ -64088,7 +64088,7 @@
  			{
  				float[] array9 = localAI;
  				val = SoundEngine.PlayTrackedSound(SoundID.DD2_WitherBeastAuraPulse, base.Center);
@@ -120,7 +120,7 @@
  			}
  			else
  			{
-@@ -66351,19 +66351,19 @@
+@@ -66352,19 +66352,19 @@
  				{
  					float[] array = localAI;
  					val = SoundEngine.PlayTrackedSound(SoundID.DD2_WyvernDiveDown, base.Center);
@@ -143,7 +143,7 @@
  					SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldIgnite, base.Center);
  				}
  			}
-@@ -66387,7 +66387,7 @@
+@@ -66388,7 +66388,7 @@
  				{
  					float[] array4 = localAI;
  					val = SoundEngine.PlayTrackedSound(SoundID.DD2_KoboldIgniteLoop, base.Center);
@@ -152,7 +152,7 @@
  				}
  				else
  				{
-@@ -66456,7 +66456,7 @@
+@@ -66457,7 +66457,7 @@
  		{
  			float[] array5 = localAI;
  			val = SlotId.Invalid;
@@ -161,7 +161,7 @@
  		}
  		if (type == 558 || type == 559 || type == 560)
  		{
-@@ -66469,7 +66469,7 @@
+@@ -66470,7 +66470,7 @@
  			{
  				float[] array6 = localAI;
  				val = SlotId.Invalid;
@@ -170,7 +170,7 @@
  			}
  		}
  		if (flag2 && ai[0] != 3f && Vector2.Distance(base.Center, targetData.Center) < 64f)
-@@ -81574,6 +81574,11 @@
+@@ -81564,6 +81564,11 @@
  
  	public static int NewNPC(IEntitySource source, int X, int Y, int Type, int Start = 0, float ai0 = 0f, float ai1 = 0f, float ai2 = 0f, float ai3 = 0f, int Target = 255)
  	{
@@ -182,12 +182,12 @@
  		if (Main.getGoodWorld && Main.rand.Next(3) != 0)
  		{
  			if (Type == 46)
-@@ -82045,8 +82050,9 @@
+@@ -82035,8 +82040,9 @@
  					return 0;
  				}
  				NetMessage.SendData(28, -1, -1, null, whoAmI, Damage, knockBack, hitDirection, crit.ToInt());
 -				if (Main.netMode == 1)
-+				if (Main.netMode == 1 && !IsaClient.Networking.ProtocolCompat.Legacy)
++				if (Main.netMode == 1 && !IsaClient.Networking.Compat1456.Active)
  				{
 +					// 1.4.5.6 servers never acknowledge strikes (packet 162): predicting pending damage there would only pile up.
  					_currentStrikePendingDamage = PushPendingDamage(this);

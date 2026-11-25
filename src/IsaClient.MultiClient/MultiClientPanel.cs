@@ -97,7 +97,7 @@ public class MultiClientPanel : UIElement
 	public MultiClientPanel()
 	{
 		Width.Set(0f, 1f);
-		Height.Set(-50f, 1f);
+		Height.Set(-IsaClient.Menu.CheatPanel.ListTop, 1f);
 		VAlign = 1f;
 	}
 

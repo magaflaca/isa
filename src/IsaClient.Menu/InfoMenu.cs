@@ -17,7 +17,7 @@ public static class InfoMenu
 	{
 		"Show Netplay Text", "Player Vitals", "Show Owner of Dropped Items", "Notify When Server Modifies You",
 		"Notify When Players Connect", "Show IDs", "Extra Item Information", "Extra NPC Information",
-		"Paste/Selection Mode Information", "See Tile Data", "Shift+Click Wiki Lookup", "Player List",
+		"Paste/Selection Mode Information", "See Tile Data", "Wiki Lookup", "Player List",
 		"Inform Other Clients", "Disable All"
 	};
 
@@ -61,10 +61,10 @@ public static class InfoMenu
 			{
 				MenuControls.OnToggleClicked(evt, cheat, ref InfoOverlays.ExtraItemInfo);
 			});
-		case "Shift+Click Wiki Lookup":
-			return MenuControls.MakeToggle(cheat, color, () => Wiki.ShiftWikiLookup, delegate(UIMouseEvent evt)
+		case "Wiki Lookup":
+			return MenuControls.MakeToggle(cheat, color, () => Wiki.Enabled, delegate(UIMouseEvent evt)
 			{
-				MenuControls.OnToggleClicked(evt, cheat, ref Wiki.ShiftWikiLookup);
+				MenuControls.OnToggleClicked(evt, cheat, ref Wiki.Enabled);
 			});
 		case "Extra NPC Information":
 			return MenuControls.MakeToggle(cheat, color, () => InfoOverlays.SeeNpcData, delegate(UIMouseEvent evt)
@@ -159,7 +159,7 @@ public static class InfoMenu
 	{
 		return name switch
 		{
-			"Shift+Click Wiki Lookup" => "With the inventory open, hold Shift over an item: the cursor turns into a W.\nClick to open that item on the Terraria wiki.",
+			"Wiki Lookup" => "With the inventory open, hold Q (the Wiki Lookup key, in Controls) over an item: the cursor turns into a ?.\nClick to open that item on the Terraria wiki.",
 			"Show Netplay Text" => "Display informational text at the top of the screen in an online game.",
 			"Player Vitals" => "Display the HP, Mana, and Defense of a player below them.",
 			"Show Owner of Dropped Items" => "Display the owner of a dropped item when it is moused over.",

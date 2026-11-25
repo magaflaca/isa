@@ -28,7 +28,7 @@
  		proj = Main.projectile[keyToIndex[key.Spawner, key.Index]];
  		if ((int)proj.key == (int)key)
  		{
-@@ -698,6 +707,7 @@
+@@ -710,6 +719,7 @@
  
  	public void SetDefaults(int Type)
  	{
@@ -36,9 +36,9 @@
  		ownerHitCheckDistance = 1000f;
  		counterweight = false;
  		sentry = false;
-@@ -10863,6 +10873,11 @@
+@@ -10927,6 +10937,11 @@
  
- 	public static int NewProjectile(IEntitySource spawnSource, float X, float Y, float SpeedX, float SpeedY, int Type, int Damage, float KnockBack, int Owner = -1, float ai0 = 0f, float ai1 = 0f, float ai2 = 0f, NewProjectileModifier modifer = null)
+ 	public static int NewProjectile(IEntitySource spawnSource, float X, float Y, float SpeedX, float SpeedY, int Type, int Damage, float KnockBack, int Owner = -1, float ai0 = 0f, float ai1 = 0f, float ai2 = 0f, NewProjectileModifier modifier = null)
  	{
 +		if (IsaClient.Movement.NpcBrain.SuppressingShots)
 +		{
@@ -47,8 +47,8 @@
 +		}
  		if (Owner == -1)
  		{
- 			Owner = 255;
-@@ -10875,6 +10890,7 @@
+ 			Owner = Main.myPlayer;
+@@ -10939,6 +10954,7 @@
  		}
  		Projectile projectile = NewProjectileSetup();
  		projectile.SetDefaults(Type);
@@ -56,19 +56,19 @@
  		projectile.position.X = X - (float)projectile.width * 0.5f;
  		projectile.position.Y = Y - (float)projectile.height * 0.5f;
  		projectile.owner = Owner;
-@@ -11099,6 +11115,11 @@
- 		if (Owner == Main.myPlayer)
- 		{
- 			Main.player[Owner].TryUpdateChannel(projectile);
-+		}
+@@ -11031,6 +11047,11 @@
+ 		modifier?.Invoke(projectile);
+ 		NetMessage.SendData(27, -1, -1, null, projectile.whoAmI);
+ 		Main.player[Owner].TryUpdateChannel(projectile);
 +		if (IsaClient.Items.ShotPreview.Busy)
 +		{
 +			// IsaClient Item Editor preview: this projectile is taken out of the game for the preview.
 +			IsaClient.Items.ShotPreview.Made(projectile.whoAmI);
- 		}
++		}
  		return projectile.whoAmI;
  	}
-@@ -12020,7 +12041,7 @@
+ 
+@@ -11950,7 +11971,7 @@
  
  	public void ghostHurt(int dmg, Vector2 Position, Entity victim)
  	{
@@ -77,7 +77,7 @@
  		{
  			return;
  		}
-@@ -12088,7 +12109,7 @@
+@@ -12018,7 +12039,7 @@
  			return;
  		}
  		Main.player[Main.myPlayer].lifeSteal -= num2;
@@ -86,7 +86,7 @@
  		{
  			return;
  		}
-@@ -12501,6 +12522,10 @@
+@@ -12431,6 +12452,10 @@
  
  	public void Damage()
  	{
@@ -97,7 +97,7 @@
  		if (DebugOptions.DrawHitboxes)
  		{
  			Projectile clone = DeepCloning.Clone(this);
-@@ -12590,14 +12615,14 @@
+@@ -12520,14 +12545,14 @@
  		for (int i = 0; i < Main.maxNPCs && keepIterating; i++)
  		{
  			NPC nPC = Main.npc[i];
@@ -114,7 +114,7 @@
  				{
  					Damage_StartIteratingNPC(nPC);
  					Damage_PVE_Inner(i, nPC, projRectangle, projectileSpecificDamageMultiplier, array, ref keepIterating);
-@@ -12683,7 +12708,7 @@
+@@ -12613,7 +12638,7 @@
  			{
  				Main.player[owner].TakeDamageFromJellyfish(victimIndex);
  			}
@@ -123,16 +123,16 @@
  			{
  				return;
  			}
-@@ -13883,7 +13908,7 @@
+@@ -13809,7 +13834,7 @@
  					{
- 						ghostHurt(num41, new Vector2(targetNPC.Center.X, targetNPC.Center.Y), targetNPC);
+ 						ghostHurt(num38, new Vector2(targetNPC.Center.X, targetNPC.Center.Y), targetNPC);
  					}
 -					if (magic && Main.player[owner].setNebula && Main.player[owner].nebulaCD == 0 && Main.rand.Next(3) == 0)
 +					if (((magic && Main.player[owner].setNebula) || (owner == Main.myPlayer && PlayerCheats.AlwaysNebulaSet)) && Main.player[owner].nebulaCD == 0 && Main.rand.Next(3) == 0)
  					{
  						Main.player[owner].nebulaCD = 30;
- 						int num59 = Utils.SelectRandom<int>(Main.rand, 3453, 3454, 3455);
-@@ -14870,7 +14895,7 @@
+ 						int num56 = Utils.SelectRandom<int>(Main.rand, 3453, 3454, 3455);
+@@ -14797,7 +14822,7 @@
  			break;
  		}
  		int myPlayer = Main.myPlayer;
@@ -141,7 +141,7 @@
  		if (flag && type == 281)
  		{
  			flag = ai[1] - 1f == (float)myPlayer;
-@@ -15276,6 +15301,10 @@
+@@ -15203,6 +15228,10 @@
  
  	private void CutTiles()
  	{
@@ -152,7 +152,7 @@
  		if (!CanCutTiles())
  		{
  			return;
-@@ -15420,6 +15449,7 @@
+@@ -15347,6 +15376,7 @@
  
  	public bool Colliding(Rectangle myRect, Rectangle targetRect)
  	{
@@ -160,7 +160,7 @@
  		if (aiStyle == 15)
  		{
  			if (ai[0] == 0f)
-@@ -16246,7 +16276,7 @@
+@@ -16173,7 +16203,7 @@
  
  	public void ProjLight()
  	{
@@ -169,17 +169,17 @@
  		{
  			return;
  		}
-@@ -26015,12 +26045,21 @@
+@@ -25952,12 +25982,21 @@
  				}
- 				int num176 = (int)base.position.X / 16;
- 				int num177 = (int)base.position.Y / 16;
--				if (Main.tile[num176, num177] == null || !Main.tile[num176, num177].active())
-+				if (Main.tile[num176, num177] == null || (!Main.tile[num176, num177].active() && !ItemTools.UnlimitedIce))
+ 				int num175 = (int)base.position.X / 16;
+ 				int num176 = (int)base.position.Y / 16;
+-				if (Main.tile[num175, num176] == null || !Main.tile[num175, num176].active())
++				if (Main.tile[num175, num176] == null || (!Main.tile[num175, num176].active() && !ItemTools.UnlimitedIce))
  				{
  					Kill();
  				}
  				this.ai[0] -= 1f;
--				if (this.ai[0] <= -900f && (Main.myPlayer == owner || Main.netMode == 2) && Main.tile[num176, num177].active() && Main.tile[num176, num177].type == 127)
+-				if (this.ai[0] <= -900f && (Main.myPlayer == owner || Main.netMode == 2) && Main.tile[num175, num176].active() && Main.tile[num175, num176].type == 127)
 +				if (this.ai[0] <= -15f && Main.myPlayer == owner && ItemTools.UnlimitedIce)
 +				{
 +					base.position = new Vector2(16f, 16f);
@@ -189,11 +189,11 @@
 +				{
 +					Kill();
 +				}
-+				else if (this.ai[0] <= -900f && (Main.myPlayer == owner || Main.netMode == 2) && Main.tile[num176, num177].active() && Main.tile[num176, num177].type == 127)
++				else if (this.ai[0] <= -900f && (Main.myPlayer == owner || Main.netMode == 2) && Main.tile[num175, num176].active() && Main.tile[num175, num176].type == 127)
  				{
- 					WorldGen.KillTile(num176, num177);
+ 					WorldGen.KillTile(num175, num176);
  					if (Main.netMode == 1)
-@@ -31201,7 +31240,7 @@
+@@ -31140,7 +31179,7 @@
  					activeSound.Stop();
  					float[] array2 = localAI;
  					invalid = SlotId.Invalid;
@@ -202,7 +202,7 @@
  				}
  				activeSound.Volume = Math.Max(0f, activeSound.Volume - 0.05f);
  			}
-@@ -31209,7 +31248,7 @@
+@@ -31148,7 +31187,7 @@
  			{
  				float[] array3 = localAI;
  				invalid = SlotId.Invalid;
@@ -211,7 +211,7 @@
  			}
  			if (this.ai[1] == 1f)
  			{
-@@ -38959,7 +38998,7 @@
+@@ -38904,7 +38943,7 @@
  			{
  				float[] array = localAI;
  				val = SoundEngine.PlayTrackedLoopedSound(SoundID.RCCar, base.Center, new ProjectileAudioTracker(this).IsActiveAndInGame);
@@ -220,7 +220,7 @@
  				activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[2]));
  			}
  			if (activeSound != null)
-@@ -38993,7 +39032,7 @@
+@@ -38938,7 +38977,7 @@
  			{
  				float[] array2 = localAI;
  				val = SoundEngine.PlayTrackedLoopedSound(SoundID.RCCar, base.Center, new ProjectileAudioTracker(this).IsActiveAndInGame);
@@ -229,7 +229,7 @@
  				activeSound2 = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[2]));
  			}
  			if (activeSound2 != null)
-@@ -41722,7 +41761,7 @@
+@@ -41668,7 +41707,7 @@
  		{
  			float[] array = localAI;
  			SlotId val = SoundEngine.PlayTrackedLoopedSound(SoundID.JimsDrone, base.Center, new ProjectileAudioTracker(this).IsActiveAndInGame);
@@ -238,7 +238,7 @@
  			activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[2]));
  		}
  		if (activeSound != null)
-@@ -43285,14 +43324,14 @@
+@@ -43231,14 +43270,14 @@
  		{
  			float[] array = localAI;
  			val = SoundEngine.PlayTrackedSound(SoundID.DD2_GhastlyGlaiveImpactGhost, base.Center);
@@ -255,7 +255,7 @@
  		}
  		else
  		{
-@@ -45962,7 +46001,7 @@
+@@ -45929,7 +45968,7 @@
  				soundDelay = -1;
  				float[] array = localAI;
  				val = SoundEngine.PlayTrackedSound(SoundID.DD2_BookStaffTwisterLoop, base.Center);
@@ -264,7 +264,7 @@
  			}
  			ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[1]));
  			if (activeSound != null)
-@@ -45974,7 +46013,7 @@
+@@ -45941,7 +45980,7 @@
  			{
  				float[] array2 = localAI;
  				val = SlotId.Invalid;
@@ -273,7 +273,7 @@
  			}
  			ai[1] += 1f;
  			if (ai[1] > 560f)
-@@ -45990,7 +46029,10 @@
+@@ -45957,7 +45996,10 @@
  			{
  				if (i != whoAmI && Main.projectile[i].active && Main.projectile[i].owner == owner && Main.projectile[i].type == type && timeLeft > Main.projectile[i].timeLeft && Main.projectile[i].ai[1] < num)
  				{
@@ -285,7 +285,7 @@
  					Main.projectile[i].netUpdate = true;
  				}
  			}
-@@ -47782,7 +47824,7 @@
+@@ -47749,7 +47791,7 @@
  		{
  			float[] array = localAI;
  			SlotId val = SoundEngine.PlayTrackedLoopedSound(SoundID.BombFuse, base.Center, new ProjectileAudioTracker(this).IsActiveAndInGame);
@@ -294,7 +294,7 @@
  			SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[2]));
  		}
  		if (type == 102)
-@@ -52866,6 +52908,14 @@
+@@ -52834,6 +52876,14 @@
  		}
  		int num2 = 100;
  		int num3 = 1800;
@@ -309,7 +309,7 @@
  		if (ai[1] == 0f)
  		{
  			spriteDirection = ((!(Main.player[owner].Center.X > base.Center.X)) ? 1 : (-1));
-@@ -52933,7 +52983,7 @@
+@@ -52901,7 +52951,7 @@
  				{
  					for (int num7 = point4.Y; num7 >= point3.Y; num7--)
  					{
@@ -318,7 +318,7 @@
  						{
  							flag2 = true;
  							break;
-@@ -53012,7 +53062,7 @@
+@@ -52980,7 +53030,7 @@
  				}
  			}
  		}
@@ -327,7 +327,7 @@
  		{
  			return;
  		}
-@@ -56749,7 +56799,7 @@
+@@ -56717,7 +56767,7 @@
  			{
  				float[] array = localAI;
  				val = SoundEngine.PlayTrackedSound(SoundID.DD2_PhantomPhoenixShot, base.Center);
@@ -336,7 +336,7 @@
  				localAI[1] += 1f;
  				for (int num123 = 0; num123 < 15; num123++)
  				{
-@@ -56772,7 +56822,7 @@
+@@ -56740,7 +56790,7 @@
  			{
  				float[] array2 = localAI;
  				val = SlotId.Invalid;
@@ -345,7 +345,7 @@
  			}
  			if (alpha <= 0)
  			{
-@@ -69527,14 +69577,14 @@
+@@ -69495,14 +69545,14 @@
  			localAI[0] = 1f;
  			float[] array = localAI;
  			val = SoundEngine.PlayTrackedSound(SoundID.DD2_FlameburstTowerShot, base.Center);
@@ -362,7 +362,7 @@
  		}
  		else
  		{
-@@ -71064,14 +71114,14 @@
+@@ -71030,14 +71080,14 @@
  		{
  			float[] array = localAI;
  			val = SoundEngine.PlayTrackedSound(SoundID.DD2_GhastlyGlaiveImpactGhost, base.Center);
@@ -379,7 +379,7 @@
  		}
  		else
  		{
-@@ -71432,7 +71482,7 @@
+@@ -71398,7 +71448,7 @@
  			soundDelay = -1;
  			float[] array = localAI;
  			val = SoundEngine.PlayTrackedSound(SoundID.DD2_BookStaffTwisterLoop, base.Center);
@@ -388,7 +388,7 @@
  		}
  		ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(localAI[1]));
  		if (activeSound != null)
-@@ -71444,7 +71494,7 @@
+@@ -71410,7 +71460,7 @@
  		{
  			float[] array2 = localAI;
  			val = SlotId.Invalid;
@@ -397,7 +397,7 @@
  		}
  		if (localAI[0] >= 16f && ai[0] < num - 15f)
  		{
-@@ -71752,6 +71802,15 @@
+@@ -71743,6 +71793,15 @@
  
  	public void Kill()
  	{
@@ -410,10 +410,10 @@
 +			}
 +			return;
 +		}
- 		//IL_011a: Unknown result type (might be due to invalid IL or missing references)
- 		//IL_0873: Unknown result type (might be due to invalid IL or missing references)
- 		//IL_407b: Unknown result type (might be due to invalid IL or missing references)
-@@ -74764,7 +74823,7 @@
+ 		if (!active)
+ 		{
+ 			return;
+@@ -74765,7 +74824,7 @@
  				projectile2.timeLeft = 30 * Main.rand.Next(2, 6);
  				float[] array2 = projectile2.localAI;
  				SlotId val = SoundEngine.PlayTrackedSound(SoundID.DD2_SkyDragonsFuryCircle, base.Center);
@@ -422,7 +422,7 @@
  			}
  		}
  		if (owner != Main.myPlayer && type == 453 && Main.player[owner].mount.AbilityActive)
-@@ -77120,7 +77179,7 @@
+@@ -77121,7 +77180,7 @@
  				{
  					Main.tile[num726, num727] = new Tile();
  				}

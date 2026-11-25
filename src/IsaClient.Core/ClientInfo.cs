@@ -8,7 +8,7 @@ public static class ClientInfo
 	public const string Name = "IsaClient";
 
 	/// <summary>Version compared against the update server; bump it on every release (and reset <see cref="Hotfix"/> to 0).</summary>
-	public const string Version = "1.5.4";
+	public const string Version = "1.6.0";
 
 	/// <summary>Bug-fix builds of the same version: 1 publishes "1.3.9+hotfix.1". 0 = the release itself.</summary>
 	public const int Hotfix = 0;

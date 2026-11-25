@@ -1,0 +1,46 @@
+--- a/ServerAutoFinder.cs
++++ b/ServerAutoFinder.cs
+@@ -247,7 +247,7 @@
+ 			int mediumFriendAvatar = SteamFriends.GetMediumFriendAvatar(friendId);
+ 			uint num = default(uint);
+ 			uint num2 = default(uint);
+-			if (SteamUtils.GetImageSize(mediumFriendAvatar, ref num, ref num2))
++			if (SteamUtils.GetImageSize(mediumFriendAvatar, out num, out num2))
+ 			{
+ 				byte[] array = new byte[num * num2 * 4];
+ 				if (SteamUtils.GetImageRGBA(mediumFriendAvatar, array, (int)(num * num2 * 4)))
+@@ -312,13 +312,12 @@
+ 			sessionPending.Clear();
+ 			opCompleteEvent.Reset();
+ 			Interlocked.Exchange(ref sessionsRemaining, users.Length);
+-			CGameID val = default(CGameID);
+-			((CGameID)(ref val))._002Ector((AppId_t)105600u);
++			CGameID val = new CGameID((AppId_t)105600u);
+ 			FriendGameInfo_t val3 = default(FriendGameInfo_t);
+ 			foreach (CSteamID val2 in users)
+ 			{
+ 				bool flag = false;
+-				if (SteamFriends.GetFriendGamePlayed(val2, ref val3) && val3.m_gameID == val && ((CSteamID)(ref val3.m_steamIDLobby)).IsValid())
++				if (SteamFriends.GetFriendGamePlayed(val2, out val3) && val3.m_gameID == val && val3.m_steamIDLobby.IsValid())
+ 				{
+ 					if (sessions.TryGetValue(val3.m_steamIDLobby.m_SteamID, out var value))
+ 					{
+@@ -385,8 +384,7 @@
+ 		}
+ 		if (lobbyData.m_bSuccess != 0)
+ 		{
+-			CSteamID val = default(CSteamID);
+-			((CSteamID)(ref val))._002Ector(lobbyData.m_ulSteamIDLobby);
++			CSteamID val = new CSteamID(lobbyData.m_ulSteamIDLobby);
+ 			bool.TryParse(SteamMatchmaking.GetLobbyData(val, "InviteOnly"), out var result);
+ 			if (!result)
+ 			{
+@@ -440,7 +438,7 @@
+ 	{
+ 		if (m_LobbyDataUpdate == null)
+ 		{
+-			m_LobbyDataUpdate = Callback<LobbyDataUpdate_t>.Create((DispatchDelegate<LobbyDataUpdate_t>)OnLobbyDataUpdate);
++			m_LobbyDataUpdate = Callback<LobbyDataUpdate_t>.Create((Callback<LobbyDataUpdate_t>.DispatchDelegate)OnLobbyDataUpdate);
+ 		}
+ 		if (broadcastThread != null)
+ 		{

@@ -14,6 +14,7 @@ namespace IsaClient.Rendering;
 /// thunder); sent as nobody's it's the weather's (falls 1000 px, stops at blocks, shakes the screen and flashes the sky).
 /// <list type="bullet">
 /// <item>.thor starts and stops it; .thor &lt;bolts per second&gt; sets how many (no limit).</item>
+/// <item>.thor flash (or Flash Thor in the panel's footer): one quick burst of bright bolts around you.</item>
 /// <item>The panel (Experimental) has the rest: colors, where they fall, how wide, which kind.</item>
 /// </list>
 /// </summary>
@@ -55,6 +56,12 @@ public static class Thor
 
 	private static float _due;
 
+	private const int FlashBolts = 18;
+
+	private const int FlashPerTick = 6;
+
+	private static int _flashLeft;
+
 	/// <summary>Bright colors, like the picture of it: white, magenta, pink, cyan, red, purple, yellow, green, orange.</summary>
 	private static readonly Color[] Mixed =
 	{
@@ -71,6 +78,11 @@ public static class Thor
 	public static void ThorCommand(CommandContext command)
 	{
 		string arg = (command.Parts.Length > 1) ? command.Parts[1] : "";
+		if (arg.Equals("flash", StringComparison.OrdinalIgnoreCase))
+		{
+			Flash();
+			return;
+		}
 		if (int.TryParse(arg, out int rate))
 		{
 			Rate = Math.Max(1, rate);
@@ -84,15 +96,33 @@ public static class Thor
 		ClientChat.Info(On ? "Thor on: lightning all around. .thor again stops it." : "Thor off.");
 	}
 
+	public static void Flash()
+	{
+		if (Main.gameMenu)
+		{
+			return;
+		}
+		_flashLeft = FlashBolts;
+	}
+
 	/// <summary>Every tick in a world.</summary>
 	public static void Update()
 	{
-		if (!On || Main.gameMenu || Main.netMode == 2)
+		if (Main.gameMenu || Main.netMode == 2)
 		{
+			_flashLeft = 0;
 			return;
 		}
 		Player me = Main.LocalPlayer;
 		if (me == null || !me.active || me.dead)
+		{
+			return;
+		}
+		for (int i = 0; i < FlashPerTick && _flashLeft > 0; i++, _flashLeft--)
+		{
+			FlashBolt(me);
+		}
+		if (!On)
 		{
 			return;
 		}
@@ -110,13 +140,24 @@ public static class Thor
 		float x = center.X + Main.rand.NextFloatDirection() * spread;
 		// Right at the mouse: the bolt ends on the cursor itself (in the air too), so it follows it.
 		Vector2 point = (Where == 4) ? (Main.MouseWorld + Main.rand.NextVector2Circular(12f, 12f)) : new Vector2(x, Ground(x, center.Y));
+		Spawn(point, NextColor(), Storm);
+	}
+
+	private static void FlashBolt(Player me)
+	{
+		float x = me.Center.X + Main.rand.NextFloatDirection() * 420f;
+		Spawn(new Vector2(x, Ground(x, me.Center.Y)), Mixed[Main.rand.Next(Mixed.Length)], storm: false);
+	}
+
+	private static void Spawn(Vector2 point, Color color, bool storm)
+	{
 		ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.StormLightning, new ParticleOrchestraSettings
 		{
 			PositionInWorld = point,
 			// The bolt's shape comes from this seed (whole numbers a float holds exactly).
 			MovementVector = new Vector2(Main.rand.Next(1, 1 << 23), 0f),
-			UniqueInfoPiece = (int)NextColor().PackedValue
-		}, Storm ? 255 : (int?)null);
+			UniqueInfoPiece = (int)color.PackedValue
+		}, storm ? 255 : (int?)null);
 	}
 
 	/// <summary>Where this bolt falls around (and how wide).</summary>

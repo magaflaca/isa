@@ -7,7 +7,7 @@ using Terraria;
 namespace IsaClient.Gameplay;
 
 /// <summary>
-/// Client-only items, added after the last 1.4.5.8 item: the Flinxinator Staff, the pre-1.4 Legacy True Excalibur,
+/// Client-only items, added after the last vanilla item: the Flinxinator Staff, the pre-1.4 Legacy True Excalibur,
 /// Legacy True Night's Edge and Legacy Terra Blade (their old beams, no 1.4 swing effects) and the Rubblemaker (Pots).
 /// They use the textures of the items they come from, carry a small wire mark on their icon, and are sent to servers
 /// as that vanilla item (a server would reject an id it does not know): dropped or stored in a server chest they turn
@@ -41,7 +41,7 @@ public static class LegacyItems
 		{
 			return VanillaTwin(type);
 		}
-		return ProtocolCompat.ItemNetId(type);
+		return Compat1456.ItemNetId(type);
 	}
 
 	public static void SetDefaults(Item item)
@@ -54,8 +54,6 @@ public static class LegacyItems
 			item.useStyle = 1;
 			item.shootSpeed = 10f;
 			item.shoot = 953;
-			item.width = 26;
-			item.height = 28;
 			item.UseSound = SoundID.Item44;
 			item.useAnimation = 3;
 			item.useTime = 3;
@@ -75,8 +73,6 @@ public static class LegacyItems
 			item.shoot = 156;
 			item.shootSpeed = 11f;
 			item.knockBack = 4.5f;
-			item.width = 40;
-			item.height = 40;
 			item.damage = 70;
 			item.scale = 1.05f;
 			item.UseSound = SoundID.Item1;
@@ -91,8 +87,6 @@ public static class LegacyItems
 			item.shoot = 157;
 			item.shootSpeed = 10f;
 			item.knockBack = 4.75f;
-			item.width = 40;
-			item.height = 40;
 			item.damage = 105;
 			item.scale = 1.15f;
 			item.UseSound = SoundID.Item1;
@@ -107,8 +101,6 @@ public static class LegacyItems
 			item.damage = 115;
 			item.useAnimation = 14;
 			item.useTime = 14;
-			item.width = 30;
-			item.height = 30;
 			item.shoot = 132;
 			item.scale = 1.1f;
 			item.shootSpeed = 12f;

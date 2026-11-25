@@ -1,6 +1,6 @@
 --- a/Terraria.IO/WorldFile.cs
 +++ b/Terraria.IO/WorldFile.cs
-@@ -15,10 +15,11 @@
+@@ -16,10 +16,11 @@
  using Terraria.UI;
  using Terraria.Utilities;
  using Terraria.WorldBuilding;
@@ -13,7 +13,7 @@
  {
  	public static class TilePacker
  	{
-@@ -1443,7 +1444,7 @@
+@@ -1445,7 +1446,7 @@
  			int num2;
  			for (num2 = 0; num2 < Main.maxTilesY; num2++)
  			{
@@ -22,7 +22,7 @@
  				int num3 = 4;
  				byte b3;
  				byte b4;
-@@ -1579,7 +1580,7 @@
+@@ -1581,7 +1582,7 @@
  				short num6 = 0;
  				int num7 = num2 + 1;
  				int num8 = Main.maxTilesY - num2 - 1;
@@ -31,7 +31,7 @@
  				{
  					num6++;
  					num8--;
-@@ -1628,7 +1629,7 @@
+@@ -1630,7 +1631,7 @@
  						flag = true;
  						break;
  					}
@@ -40,7 +40,7 @@
  					if (!tile.active() || !Main.tileContainer[tile.type])
  					{
  						flag = true;
-@@ -1645,6 +1646,9 @@
+@@ -1647,6 +1648,9 @@
  				num++;
  			}
  		}
@@ -50,7 +50,7 @@
  		writer.Write(num);
  		for (int i = 0; i < 8000; i++)
  		{
-@@ -1676,6 +1680,10 @@
+@@ -1678,6 +1682,10 @@
  					writer.Write(item.prefix);
  				}
  			}
@@ -61,7 +61,7 @@
  		}
  		return (int)writer.BaseStream.Position;
  	}
-@@ -3316,11 +3324,14 @@
+@@ -3346,11 +3354,14 @@
  	{
  		lock (TileEntity.EntityCreationLock)
  		{

@@ -1,6 +1,6 @@
 --- a/Terraria/Program.cs
 +++ b/Terraria/Program.cs
-@@ -15,7 +15,7 @@
+@@ -16,7 +16,7 @@
  
  namespace Terraria;
  
@@ -9,7 +9,7 @@
  {
  	public static bool IsXna = true;
  
-@@ -71,22 +71,38 @@
+@@ -72,22 +72,38 @@
  
  	private static void ForceJITOnAssembly(Assembly assembly)
  	{
@@ -57,7 +57,7 @@
  				}
  			}
  			ThingsLoaded++;
-@@ -95,19 +111,26 @@
+@@ -96,19 +112,26 @@
  
  	private static void ForceStaticInitializers(Assembly assembly)
  	{
@@ -87,7 +87,7 @@
  		ForceJITOnAssembly(assembly);
  		if (initializeStaticMembers)
  		{
-@@ -178,6 +201,10 @@
+@@ -179,6 +202,10 @@
  	public static void LaunchGame(string[] args, bool monoArgs = false)
  	{
  		Thread.CurrentThread.Name = "Main Thread";
@@ -98,7 +98,7 @@
  		if (monoArgs)
  		{
  			args = Utils.ConvertMonoArgsToDotNet(args);
-@@ -185,6 +212,8 @@
+@@ -186,6 +213,8 @@
  		LogFNANativeLibVersions();
  		LaunchParameters = Utils.ParseArguements(args);
  		SavePath = (LaunchParameters.ContainsKey("-savedirectory") ? LaunchParameters["-savedirectory"] : Platform.Get<IPathService>().GetStoragePath("Terraria"));
@@ -107,7 +107,7 @@
  		ThreadPool.SetMinThreads(8, 8);
  		InitializeConsoleOutput();
  		SetupLogging();
-@@ -235,6 +264,10 @@
+@@ -237,6 +266,10 @@
  		}
  		catch (Exception e)
  		{
@@ -118,7 +118,7 @@
  			DisplayException(e);
  		}
  	}
-@@ -268,7 +301,13 @@
+@@ -270,7 +303,13 @@
  			{
  				Console.WriteLine(Language.GetTextValue("Error.ServerCrash"), DateTime.Now, text);
  			}

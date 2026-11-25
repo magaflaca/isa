@@ -5,11 +5,11 @@
  				break;
  			case MessageType.FullSync:
 -				HandleFullSync(slot, reader.Read7BitEncodedInt(), new Point16(reader.ReadInt16(), reader.ReadInt16()), reader);
-+				HandleFullSync(slot, IsaClient.Networking.ProtocolCompat.LeashedTypeFromLegacy(reader.Read7BitEncodedInt()), new Point16(reader.ReadInt16(), reader.ReadInt16()), reader);
++				HandleFullSync(slot, IsaClient.Networking.Compat1456.LeashedTypeFromLegacy(reader.Read7BitEncodedInt()), new Point16(reader.ReadInt16(), reader.ReadInt16()), reader);
  				break;
  			case MessageType.PartialSync:
 -				HandlePartialSync(slot, reader.Read7BitEncodedInt(), reader);
-+				HandlePartialSync(slot, IsaClient.Networking.ProtocolCompat.LeashedTypeFromLegacy(reader.Read7BitEncodedInt()), reader);
++				HandlePartialSync(slot, IsaClient.Networking.Compat1456.LeashedTypeFromLegacy(reader.Read7BitEncodedInt()), reader);
  				break;
  			default:
  				return false;

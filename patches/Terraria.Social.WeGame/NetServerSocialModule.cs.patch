@@ -1,6 +1,6 @@
 --- a/Terraria.Social.WeGame/NetServerSocialModule.cs
 +++ b/Terraria.Social.WeGame/NetServerSocialModule.cs
-@@ -193,7 +193,7 @@
+@@ -197,7 +197,7 @@
  		StringBuilder stringBuilder = new StringBuilder();
  		foreach (RailFriendInfo item in list)
  		{
@@ -9,7 +9,7 @@
  		}
  		return stringBuilder.ToString();
  	}
-@@ -303,7 +303,7 @@
+@@ -307,7 +307,7 @@
  		//IL_004e: Invalid comparison between Unknown and I4
  		//IL_006d: Unknown result type (might be due to invalid IL or missing references)
  		//IL_0077: Expected O, but got Unknown

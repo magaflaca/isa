@@ -21,7 +21,15 @@
  	};
  
  	private static bool _canReleaseRebindingLock = true;
-@@ -2101,6 +2104,7 @@
+@@ -773,6 +776,7 @@
+ 		{
+ 			Main.InputProfiles.Put(profile.Value.Name, profile.Value.Save());
+ 		}
++		IsaClient.Core.ClientKeys.Save();
+ 		return Main.InputProfiles.Save();
+ 	}
+ 
+@@ -2101,6 +2105,7 @@
  				c.KeyStatus["ViewZoomOut"].Add("OemMinus");
  				c.KeyStatus["ViewZoomIn"].Add("OemPlus");
  				c.KeyStatus["ToggleCreativeMenu"].Add("C");
@@ -29,7 +37,7 @@
  				c.KeyStatus["Loadout1"].Add("F1");
  				c.KeyStatus["Loadout2"].Add("F2");
  				c.KeyStatus["Loadout3"].Add("F3");
-@@ -2214,6 +2218,7 @@
+@@ -2214,6 +2219,7 @@
  				c.KeyStatus["ViewZoomOut"].Add("OemMinus");
  				c.KeyStatus["ViewZoomIn"].Add("OemPlus");
  				c.KeyStatus["ToggleCreativeMenu"].Add("C");
@@ -37,7 +45,7 @@
  				c.KeyStatus["Loadout1"].Add("F1");
  				c.KeyStatus["Loadout2"].Add("F2");
  				c.KeyStatus["Loadout3"].Add("F3");
-@@ -2326,6 +2331,7 @@
+@@ -2326,6 +2332,7 @@
  				c.KeyStatus["ViewZoomOut"].Add("OemMinus");
  				c.KeyStatus["ViewZoomIn"].Add("OemPlus");
  				c.KeyStatus["ToggleCreativeMenu"].Add("C");
@@ -45,7 +53,7 @@
  				c.KeyStatus["Loadout1"].Add("F1");
  				c.KeyStatus["Loadout2"].Add("F2");
  				c.KeyStatus["Loadout3"].Add("F3");
-@@ -2438,6 +2444,7 @@
+@@ -2438,6 +2445,7 @@
  				c.KeyStatus["ViewZoomOut"].Add("OemMinus");
  				c.KeyStatus["ViewZoomIn"].Add("OemPlus");
  				c.KeyStatus["ToggleCreativeMenu"].Add("C");

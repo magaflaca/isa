@@ -1,6 +1,14 @@
 --- a/Terraria.GameInput/PlayerInputProfile.cs
 +++ b/Terraria.GameInput/PlayerInputProfile.cs
-@@ -138,6 +138,16 @@
+@@ -111,6 +111,7 @@
+ 		{
+ 			InputModes[InputMode.XBoxGamepadUI].ReadPreferences(JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(((object)(JObject)value).ToString()));
+ 		}
++		IsaClient.Core.ClientKeys.Restore(this, dict);
+ 		if (num < 190)
+ 		{
+ 			InputModes[InputMode.Keyboard].KeyStatus["ViewZoomIn"] = new List<string>();
+@@ -138,6 +139,16 @@
  			foreach (string key in array)
  			{
  				InputModes[InputMode.Keyboard].KeyStatus[key] = new List<string>(PlayerInput.OriginalProfiles["Redigit's Pick"].InputModes[InputMode.Keyboard].KeyStatus[key]);

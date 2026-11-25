@@ -8,9 +8,9 @@
 +		{
 +			return;
 +		}
-+		if (IsaClient.Networking.ProtocolCompat.Active)
++		if (IsaClient.Networking.Compat1456.Active)
 +		{
-+			int num2 = IsaClient.Networking.ProtocolCompat.ModuleFromLegacy(num);
++			int num2 = IsaClient.Networking.Compat1456.ModuleFromLegacy(num);
 +			if (num2 < 0)
 +			{
 +				return;
@@ -24,7 +24,7 @@
  	public void SendToServer(NetPacket packet)
  	{
  		Invariant.Assert(!Main.dedServ, "Packets can only be sent to the server from a client.");
-+		if (!IsaClient.Networking.ProtocolCompat.PrepareModulePacket(packet.Buffer.Data))
++		if (!IsaClient.Networking.Compat1456.PrepareModulePacket(packet.Buffer.Data))
 +		{
 +			packet.Recycle();
 +			return;

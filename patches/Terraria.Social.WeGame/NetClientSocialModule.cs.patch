@@ -9,7 +9,7 @@
  		ProcessStartInfo startInfo2 = process.StartInfo;
  		startInfo2.Arguments = startInfo2.Arguments + " " + text;
  		WeGameHelper.WriteDebugString("LaunchLocalServer,cmd_line:" + process.StartInfo.Arguments);
-@@ -364,7 +364,7 @@
+@@ -368,7 +368,7 @@
  		//IL_00a9: Expected O, but got Unknown
  		//IL_00d3: Unknown result type (might be due to invalid IL or missing references)
  		//IL_00dd: Expected O, but got Unknown
@@ -18,7 +18,7 @@
  		if ((int)id <= 12010)
  		{
  			if ((int)id != 12002)
-@@ -583,7 +583,7 @@
+@@ -587,7 +587,7 @@
  
  	private void OnRailSetMetaData(RailFriendsSetMetadataResult data)
  	{

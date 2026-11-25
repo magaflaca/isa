@@ -24,17 +24,21 @@ public enum ClientSessionState
 }
 
 /// <summary>
-/// A single lightweight headless Terraria client session (MultiClient). It performs the vanilla 1.4.5.8 (release 326) handshake on
-/// its own background connection (or the 1.4.5.6 one, release 319, when the network version is 1.4.5.6: <see cref="ProtocolCompat"/>), appears in the server as a normal player, and can chat and move. It can look like one of
+/// A single lightweight headless Terraria client session (MultiClient). It joins with the network version chosen in the main
+/// menu (<see cref="NetworkVersion"/>: 1.4.6.1, 1.4.5.8 or 1.4.5.6) on its own background connection, appears in the server as a normal player, and can chat and move. It can look like one of
 /// your .plr characters (appearance, equipment, inventory) or a generated one. Its connection can be handed to the game and
 /// back without reconnecting (see <see cref="Possession"/>). Protocol ported from TerrariaHeadless.Core.
 /// </summary>
 public sealed class ClientSession
 {
-	/// <summary>1.4.5.6 protocol, fixed when the session is created (the network version can change while bots stay online).</summary>
-	private readonly bool _legacy = ProtocolCompat.Legacy;
+	/// <summary>Network version, fixed when the session is created (it can change while bots stay online).</summary>
+	private readonly NetworkVersion.Protocol _protocol = NetworkVersion.Current;
 
-	private string VersionString => "Terraria" + (_legacy ? ProtocolCompat.LegacyRelease : ProtocolCompat.ModernRelease);
+	private bool Is1456 => _protocol == NetworkVersion.Protocol.V1456;
+
+	private bool IsLatest => _protocol == NetworkVersion.Protocol.V1461;
+
+	private string VersionString => "Terraria" + NetworkVersion.ReleaseOf(_protocol);
 
 	public const int PlayerWidth = 20;
 
@@ -600,7 +604,7 @@ public sealed class ClientSession
 			reason.WriteSelfTo(w);
 			w.Write((short)damage);
 			w.Write((byte)(direction + 1));
-			w.Write((byte)2); // pvp
+			w.Write((byte)(IsLatest ? 6 : 2)); // pvp, dodgeable (1.4.6)
 			w.Write((sbyte)-1);
 		}));
 		_pvpCooldown = 20;
@@ -696,7 +700,7 @@ public sealed class ClientSession
 			reason.WriteSelfTo(w);
 			w.Write((short)damage);
 			w.Write((byte)(direction + 1));
-			w.Write((byte)0);
+			w.Write((byte)(IsLatest ? 4 : 0));
 			w.Write((sbyte)-1);
 		});
 	}
@@ -1602,7 +1606,7 @@ public sealed class ClientSession
 		}
 		Item weapon = Sample(_slotType[PlayerItemSlotID.Inventory0 + slot]);
 		bool whip = weapon.shoot > 0 && weapon.shoot < ProjectileID.Sets.IsAWhip.Length && ProjectileID.Sets.IsAWhip[weapon.shoot];
-		float range = whip ? (16f * 12f) : ((weapon.melee && !weapon.noMelee && weapon.shoot <= 0) ? (16f * 3f + weapon.width * weapon.scale) : (16f * 26f));
+		float range = whip ? (16f * 12f) : ((weapon.melee && !weapon.noMelee && weapon.shoot <= 0) ? (16f * 3f + Item.GetDrawHitbox(weapon.type, null).Width * weapon.scale) : (16f * 26f));
 		Vector2 center = Position + new Vector2(PlayerWidth / 2f, PlayerHeight / 2f);
 		NPC best = null;
 		float bestDist = range;
@@ -1823,7 +1827,7 @@ public sealed class ClientSession
 		return Frame(27, delegate(BinaryWriter w)
 		{
 			ProjectileKey projectileKey = (ProjectileKey)key;
-			if (_legacy)
+			if (Is1456)
 			{
 				w.Write((short)projectileKey.Index); // 1.4.5.6: identity ... owner
 			}
@@ -1835,7 +1839,7 @@ public sealed class ClientSession
 			w.Write(position.Y);
 			w.Write(velocity.X);
 			w.Write(velocity.Y);
-			if (_legacy)
+			if (Is1456)
 			{
 				w.Write((byte)projectileKey.Spawner);
 			}
@@ -1848,7 +1852,7 @@ public sealed class ClientSession
 	{
 		return Frame(29, delegate(BinaryWriter w)
 		{
-			if (_legacy)
+			if (Is1456)
 			{
 				ProjectileKey projectileKey = (ProjectileKey)key;
 				w.Write((short)projectileKey.Index);
@@ -1868,6 +1872,10 @@ public sealed class ClientSession
 			w.Write((byte)MyIndex);
 			w.Write(_itemRotation);
 			w.Write((short)_useAnimMax);
+			if (IsLatest)
+			{
+				w.Write((short)_useAnimMax);
+			}
 		});
 	}
 
@@ -1875,7 +1883,7 @@ public sealed class ClientSession
 	{
 		return Frame(28, delegate(BinaryWriter w)
 		{
-			if (_legacy)
+			if (Is1456)
 			{
 				w.Write((short)npc);
 			}
@@ -2007,6 +2015,17 @@ public sealed class ClientSession
 				w.Write((ushort)work); // Multi Paste's buff while it builds
 			}
 			w.Write((ushort)0);
+		});
+	}
+
+	private byte[] PktPlatform()
+	{
+		return Frame(164, delegate(BinaryWriter w)
+		{
+			w.Write((byte)MyIndex);
+			w.Write((byte)0);
+			w.Write(string.Empty);
+			w.Write(false);
 		});
 	}
 
@@ -2387,6 +2406,10 @@ public sealed class ClientSession
 		Send(PktMana());
 		Send(PktBuffs());
 		Send(PktLoadout());
+		if (IsLatest)
+		{
+			Send(PktPlatform());
+		}
 		// Every equipment bank at its PlayerItemSlotID start (banks hold 40 items each), matching the verified handshake so
 		// TShock fully registers the join. With a character file these carry its real items.
 		SendSlots(PlayerItemSlotID.Inventory0, 59);

@@ -123,6 +123,7 @@ internal static class HubPrefs
 				WindowX = WindowY = WindowW = WindowH = float.NaN;
 			}
 			Favorites = _store.Get("Favorites", Favorites) ?? new List<string>();
+			Favorites = Favorites.ConvertAll((string id) => (id == "row:Shift+Click Wiki Lookup") ? "row:Wiki Lookup" : id);
 			Recent = _store.Get("Recent", Recent) ?? new List<string>();
 			HiddenSections = _store.Get("HiddenSections", HiddenSections) ?? new List<string>();
 			Actions = _store.Get("CustomActions", Actions) ?? new List<CustomAction>();

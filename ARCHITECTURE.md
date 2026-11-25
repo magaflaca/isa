@@ -1,6 +1,6 @@
 # Architecture
 
-IsaClient is Terraria 1.4.5.8 rebuilt from its decompiled source with the client's code added on top.
+IsaClient is Terraria 1.4.6.1 rebuilt from its decompiled source with the client's code added on top.
 The game stays in its `Terraria.*` namespaces. Everything IsaClient adds lives in `src/IsaClient.*`, folder = namespace.
 
 `MODULES.md` lists every class with one line about what it does.
@@ -15,7 +15,7 @@ The game stays in its `Terraria.*` namespaces. Everything IsaClient adds lives i
 | `IsaClient.Rendering` | Fullbright, zoom, hitboxes, shaders, cosmetics, overlays |
 | `IsaClient.WorldTools` | World info, bosses, invasions, map, chests |
 | `IsaClient.Building` | World edit: selection, brushes, paste, schematics, pixel art |
-| `IsaClient.Networking` | Server detection, packet pacing, rejoin, proxy, server modes |
+| `IsaClient.Networking` | Server detection, packet pacing, rejoin, proxy, server modes, network versions, crossplay |
 | `IsaClient.Net.Pipe` | Client to client data channel |
 | `IsaClient.Community` | Player list, spectating, chat tools |
 | `IsaClient.ChatImages` | Pictures and GIFs in chat |
@@ -54,6 +54,38 @@ Two things stay in the game file:
 - Additions to `ItemID.Sets` / `BuffID.Sets`. They depend on the `Factory` field and initializer order across partial
   files is not defined. For the same reason, never move a static field whose initializer reads another static of the
   same class into a partial file.
+
+## Game versions
+
+The game is the decompile of Terraria 1.4.6.1 (Steam, `ilspycmd 10.1.1.8388 -p`), kept clean on the branch `vanilla`.
+
+**Joining older servers.** [F5] in the main menu picks the protocol (`NetworkVersion`): 1.4.6.1, 1.4.5.8 or 1.4.5.6.
+Each older one translates only what changed after it, in layers:
+
+| Module | Used on | Translates |
+|---|---|---|
+| `Compat1458` | 1.4.5.8 and 1.4.5.6 | What 1.4.6 changed: packets 41, 88, 91, 117, no 163-165, no trap bomb |
+| `Compat1456` | 1.4.5.6 | What 1.4.5.7 changed: projectile keys, NPC slots, item packets, NetModule ids, newer content |
+
+Bots join with the version picked when they were created. `Crossplay` decides if the game may also try UDP (GNS):
+only on 1.4.6.1, without proxy, and with `GNS_Wrapper.dll` in the game folder.
+
+**Older game folders.** The exe also runs from a folder older than the client. `GameFolder` skips native libraries that
+aren't there, `GameFolderContent` gives a stand-in for textures that aren't there (lowest priority, a complete folder
+never reaches it), and OpenNAT is embedded (`lib/opennat`, MIT). `ClientKeys` keeps the client's key bindings in
+`IsaKeys.json`, because vanilla rewrites `input profiles.json` without them.
+
+**Updating to a new game version.**
+
+1. Decompile the new `Terraria.exe` with the same ilspycmd and options, and commit it on top of `vanilla`.
+2. Merge each changed file three ways: base = the previous `vanilla`, ours = `src/`, theirs = the new decompile
+   (`git merge-file`). New files are copied, unchanged ones taken as they are.
+3. Many conflicts are only the decompiler numbering locals differently (`num12` becomes `num15`). Resolve them by mapping
+   the names, then check our added lines for locals that now mean something else: they still compile.
+4. Some game files are stored with LF and the decompile has CRLF: normalize before merging or every line conflicts.
+5. Diff the packets (`MessageBuffer.GetData`, `NetMessage.SendData`) between both versions and add what changed to a new
+   compat layer under `NetworkVersion`.
+6. Update `tools/mirror/config.py` (`GAME`, `EXE_SHA256`) and push `vanilla` with the merge.
 
 ## Rules
 

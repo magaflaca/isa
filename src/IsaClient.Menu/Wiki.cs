@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,21 +9,31 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Localization;
 using IsaClient.Core;
+using Terraria.GameInput;
 
 namespace IsaClient.Menu;
 
-/// <summary>Shift+click wiki lookup of items, NPCs and tiles.</summary>
+/// <summary>
+/// Wiki lookup: with the inventory open, hold the Wiki Lookup key (Q by default, in Controls) over an item and click it to
+/// open it on the Terraria wiki. It was Shift, which vanilla uses to move items to a chest or the trash: profiles still on
+/// Shift move to Q once.
+/// </summary>
 public static class Wiki
 {
 	public const int WikiCursorId = 1000;
 
-	[Setting("ShiftWikiLookup")]
-	public static bool ShiftWikiLookup = true;
+	public const string DefaultKey = "Q";
 
-	/// <summary>Hooked in ItemSlot.OverrideHover: holding Shift over an item shows the wiki cursor.</summary>
+	[Setting("ShiftWikiLookup")]
+	public static bool Enabled = true;
+
+	[Setting("WikiKeyMoved")]
+	public static bool KeyMoved;
+
+	/// <summary>Hooked in ItemSlot.OverrideHover: holding the Wiki Lookup key over an item shows the wiki cursor.</summary>
 	public static bool TryWikiHover(Item item)
 	{
-		if (!ShiftWikiLookup || item == null || item.IsAir || !Main.playerInventory || Main.drawingPlayerChat || InputState.PlayerInputWritingText())
+		if (!Enabled || item == null || item.IsAir || !Main.playerInventory || Main.drawingPlayerChat || InputState.PlayerInputWritingText())
 		{
 			return false;
 		}
@@ -32,6 +43,28 @@ public static class Wiki
 		}
 		Main.cursorOverride = WikiCursorId;
 		return true;
+	}
+
+	public static void MoveOldKey()
+	{
+		if (KeyMoved)
+		{
+			return;
+		}
+		KeyMoved = true;
+		bool moved = false;
+		foreach (PlayerInputProfile profile in PlayerInput.Profiles.Values)
+		{
+			if (profile.InputModes[InputMode.Keyboard].KeyStatus.TryGetValue("Wiki Lookup", out List<string> keys) && keys.Count == 1 && keys[0] == "LeftShift")
+			{
+				keys[0] = DefaultKey;
+				moved = true;
+			}
+		}
+		if (moved)
+		{
+			PlayerInput.Save();
+		}
 	}
 
 	/// <summary>Hooked in ItemSlot.OverrideLeftClick.</summary>

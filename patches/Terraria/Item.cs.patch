@@ -1,7 +1,7 @@
 --- a/Terraria/Item.cs
 +++ b/Terraria/Item.cs
-@@ -12,10 +12,12 @@
- using Terraria.ID;
+@@ -13,10 +13,12 @@
+ using Terraria.Testing;
  using Terraria.UI;
  using Terraria.Utilities;
 +using IsaClient.Gameplay;
@@ -14,7 +14,7 @@
  {
  	private class DefaultAssignNewItemsToPlayer_OverrideHandle : IDisposable
  	{
-@@ -335,7 +337,7 @@
+@@ -328,7 +330,7 @@
  
  	public static readonly int SlotsRemainingBeforeEmergencyStackingInMultiplayer = 40;
  
@@ -23,7 +23,7 @@
  
  	public string HoverName
  	{
-@@ -1198,7 +1200,7 @@
+@@ -1192,7 +1194,7 @@
  		{
  			return Name;
  		}
@@ -32,7 +32,7 @@
  	}
  
  	public void RebuildTooltip()
-@@ -48709,6 +48711,10 @@
+@@ -40889,6 +40891,10 @@
  		{
  			SetDefaults4(type);
  		}
@@ -43,7 +43,7 @@
  		else
  		{
  			SetDefaults5(type);
-@@ -48922,7 +48928,7 @@
+@@ -41102,7 +41108,7 @@
  			SetDefaults(1533 + type - 1803);
  		}
  		RebuildTooltip();
@@ -52,7 +52,7 @@
  		{
  			TurnToAir();
  		}
-@@ -49051,6 +49057,13 @@
+@@ -41231,6 +41237,13 @@
  		shootsEveryUse = false;
  		Variant = null;
  		type = Type;
@@ -66,7 +66,7 @@
  	}
  
  	public static Color GetPhaseColor(int projectileType, bool drawColor = false)
-@@ -49513,7 +49526,8 @@
+@@ -41693,7 +41706,8 @@
  		{
  			5324 => FlexibleTileWand.RubblePlacementSmall, 
  			5329 => FlexibleTileWand.RubblePlacementMedium, 

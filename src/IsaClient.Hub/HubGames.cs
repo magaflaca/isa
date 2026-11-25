@@ -71,6 +71,7 @@ internal static class HubGames
 			case GamePlays.Gba:
 				y = DrawPokemonCard(sb, x, y, width) + 10;
 				y = DrawPspCard(sb, x, y, width) + 10;
+				y = DrawGtaCard(sb, x, y, width) + 10;
 				break;
 			case GamePlays.Tetris:
 				y = DrawTetrisCard(sb, x, y, width) + 10;
@@ -558,6 +559,57 @@ internal static class HubGames
 		if (HubKit.Button(sb, "games:pspgames", new Rectangle(textX + bw + 8, ly, bw, 32), "Games...", Theme.Slot, "Your PSP games: switch or add more", !Main.gameMenu, HubIcon.Item(I.FamiliarWig)))
 		{
 			IsaClient.Psp.PspWindow.OpenGames();
+		}
+		return Math.Max(r.Bottom, ly + 42);
+	}
+
+	private static void SmoothPicture(SpriteBatch sb, Texture2D picture, Rectangle area)
+	{
+		sb.End();
+		sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, HubInput.Clipping ? new RasterizerState
+		{
+			CullMode = CullMode.None,
+			ScissorTestEnable = true
+		} : RasterizerState.CullCounterClockwise, null, HubInput.Matrix);
+		sb.Draw(picture, area, Color.White);
+		HubInput.Restart(sb, HubInput.Clipping);
+	}
+
+	private static int DrawGtaCard(SpriteBatch sb, int x, int y, int width)
+	{
+		const int preview = 128;
+		Rectangle r = new Rectangle(x, y, width, 196);
+		HubKit.Box(sb, r, Theme.Card * HubPrefs.Opacity);
+		Rectangle art = new Rectangle(r.X + 10, r.Y + 30, preview, 136);
+		HubKit.Box(sb, new Rectangle(art.X - 4, art.Y - 4, art.Width + 8, art.Height + 8), Color.Black * 0.35f);
+		Texture2D card = IsaClient.Gta.GtaArt.Card;
+		if (card != null)
+		{
+			SmoothPicture(sb, card, art);
+		}
+		int textX = x + preview + 24;
+		int textW = width - preview - 36;
+		Texture2D pad = IsaClient.Gta.GtaArt.Pad;
+		if (pad != null)
+		{
+			sb.Draw(pad, new Rectangle(textX, r.Y + 11, 26, 16), IsaClient.Gta.GtaArt.Pink);
+		}
+		HubKit.Text(sb, "Grand Theft Auto VI", textX + 32, r.Y + 9, Color.White, 0.95f, textW - 32);
+		string[] lines = HubKit.Wrap(IsaClient.Languages.L10n.T("The most awaited game of the decade, running right inside Terraria. Vice City, Leonida and everything in between. Best played with a controller."), textW, 0.66f, 3);
+		int ly = r.Y + 34;
+		foreach (string line in lines)
+		{
+			HubKit.RawText(sb, line, textX, ly, Theme.Muted, 0.66f);
+			ly += 15;
+		}
+		ly += 8;
+		Rectangle chip = HubKit.Chip(sb, IsaClient.Languages.L10n.T("Early access"), textX, ly, Color.Lerp(Theme.Slot, IsaClient.Gta.GtaArt.Pink, 0.35f), Color.White, 0.66f);
+		HubKit.Chip(sb, IsaClient.Gta.GtaSix.StatusText, chip.Right + 6, ly, Theme.Slot, Theme.Muted, 0.66f);
+		ly += 30;
+		int bw = Math.Min(190, (textW - 8) / 2);
+		if (HubKit.Button(sb, "games:gta", new Rectangle(textX, ly, bw, 32), "Play", Green, "Starts Grand Theft Auto VI", !Main.gameMenu, HubIcon.Item(I.GoodieBag)))
+		{
+			IsaClient.Gta.GtaSix.Open();
 		}
 		return Math.Max(r.Bottom, ly + 42);
 	}

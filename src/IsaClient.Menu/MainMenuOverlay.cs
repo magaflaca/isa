@@ -19,7 +19,7 @@ namespace IsaClient.Menu;
 
 /// <summary>
 /// Main menu overlay in the top-left corner: UUID tweaks ([F1] change, [F2] hide, [F3] random UUID), [F4] logo,
-/// [F5] network version (1.4.5.8 / 1.4.5.6), the proxy line, then the client version, the credits with clickable links and
+/// [F5] network version (1.4.6.1 / 1.4.5.8 / 1.4.5.6), the proxy line, then the client version, the credits with clickable links and
 /// a row of icons (TerraAngel and original client credits, thanks, bots, music note).
 /// </summary>
 public static class MainMenuOverlay
@@ -214,26 +214,26 @@ public static class MainMenuOverlay
 	}
 
 	/// <summary>
-	/// [F5] network version line with a paper airplane (B for 1.4.5.8, A for 1.4.5.6): switches between the two protocols,
-	/// <see cref="ProtocolCompat"/>.
+	/// [F5] network version line with a paper airplane (B for 1.4.6.1, A for the older ones): goes through the three
+	/// protocols, <see cref="NetworkVersion"/>.
 	/// </summary>
 	private static void DrawNetVersionLine(SpriteBatch spriteBatch, DynamicSpriteFont font, Vector2 position, Point mouse)
 	{
-		string text = "[F5] Network version: " + ProtocolCompat.VersionName + "  ";
-		DrawString(spriteBatch, font, text, position, ProtocolCompat.Legacy ? new Color(255, 200, 120) : _textColor, Scale);
-		bool canToggle = ProtocolCompat.CanToggle;
-		int icon = ProtocolCompat.Legacy ? ItemID.PaperAirplaneA : ItemID.PaperAirplaneB;
+		string text = "[F5] Network version: " + NetworkVersion.Name + "  ";
+		DrawString(spriteBatch, font, text, position, NetworkVersion.IsLatest ? _textColor : new Color(255, 200, 120), Scale);
+		bool canToggle = NetworkVersion.CanChange;
+		int icon = NetworkVersion.IsLatest ? ItemID.PaperAirplaneB : ItemID.PaperAirplaneA;
 		bool iconHover = MenuIcon.DrawItem(spriteBatch, icon, LineIconCenter(font, text, position), mouse, canToggle ? Color.White : (Color.White * 0.5f));
 		if (!iconHover)
 		{
 			return;
 		}
 		Main.LocalPlayer.mouseInterface = true;
-		Main.instance.MouseText(IsaClient.Languages.L10n.T(canToggle ? ProtocolCompat.Tooltip : "The network version can only be changed while disconnected."), 0, 0);
+		Main.instance.MouseText(IsaClient.Languages.L10n.T(canToggle ? NetworkVersion.Tooltip : "The network version can only be changed while disconnected."), 0, 0);
 		if (canToggle && Main.mouseLeft && Main.mouseLeftRelease)
 		{
 			Main.mouseLeftRelease = false;
-			ProtocolCompat.Toggle();
+			NetworkVersion.Cycle();
 		}
 	}
 
@@ -317,7 +317,7 @@ public static class MainMenuOverlay
 		}
 		if (JustPressed(Keys.F5))
 		{
-			ProtocolCompat.Toggle();
+			NetworkVersion.Cycle();
 		}
 	}
 

@@ -21,6 +21,7 @@ IsaClient stands on a lot of other people's work. Thank you all.
 - **[Harmony](https://github.com/pardeike/Harmony)**, runtime patching for plugins.
 - **[Roslyn](https://github.com/dotnet/roslyn)** and **[ILSpy](https://github.com/icsharpcode/ILSpy)**, to compile and convert plugins.
 - **[yt-dlp](https://github.com/yt-dlp/yt-dlp)**, behind the music and video players.
+- **[Open.NAT](https://github.com/lontivero/Open.NAT)** (MIT), the port forwarding Terraria 1.4.6 uses when hosting.
 
 ## Services
 

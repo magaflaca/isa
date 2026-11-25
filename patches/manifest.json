@@ -1,6 +1,6 @@
 {
-  "game": "Terraria 1.4.5.8 (Steam, Windows)",
-  "exe_sha256": "960a03bff6050cf7be16dfc1a7b19e10fc2c4f8f835a6a3b135a50dd9e6ba2f3",
+  "game": "Terraria 1.4.6.1 (Steam, Windows)",
+  "exe_sha256": "be4bace6726a31750ab9cd56a6bdb60c7de80306d53ec4107e69c6eccfc9ce05",
   "decompiler": "ilspycmd",
   "decompiler_version": "10.1.1.8388",
   "added": [

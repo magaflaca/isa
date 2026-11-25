@@ -501,7 +501,7 @@ public static class ClientLifecycle
 		IsaClient.Networking.VanishDetection.ResetJoins();
 		if (ShowWelcomeMessage)
 		{
-			string[] welcome = { "IsaClient for Terraria 1.4.5.8", "Press the Open Menu key (default: ~ or F9) to open the panel.", "Type .help for commands." };
+			string[] welcome = { "IsaClient for Terraria 1.4.6.1", "Press the Open Menu key (default: ~ or F9) to open the panel.", "Type .help for commands." };
 			string rule = WelcomeRule(welcome);
 			ClientChat.Info(rule);
 			foreach (string line in welcome)

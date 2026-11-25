@@ -13,16 +13,16 @@
  		Main.OnEngineLoad += CheckParameters;
  	}
  
-@@ -52,7 +52,7 @@
- 		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
+@@ -53,7 +53,7 @@
  		//IL_0014: Unknown result type (might be due to invalid IL or missing references)
+ 		//IL_005b: Unknown result type (might be due to invalid IL or missing references)
  		CSteamID lobbySteamId = new CSteamID(lobbyId);
--		if (((CSteamID)(ref lobbySteamId)).IsValid())
-+		if (lobbySteamId.IsValid())
+-		if (!((CSteamID)(ref lobbySteamId)).IsValid())
++		if (!lobbySteamId.IsValid())
  		{
- 			Main.OpenPlayerSelectFromNet(delegate
- 			{
-@@ -197,7 +197,7 @@
+ 			return;
+ 		}
+@@ -218,7 +218,7 @@
  		SendAuthTicket(_lobby.Owner);
  		int num = 0;
  		P2PSessionState_t val = default(P2PSessionState_t);
@@ -31,7 +31,7 @@
  		{
  			switch (val.m_eP2PSessionError)
  			{
-@@ -247,8 +247,8 @@
+@@ -268,8 +268,8 @@
  		if (_authTicket == HAuthTicket.Invalid)
  		{
  			SteamNetworkingIdentity val = default(SteamNetworkingIdentity);

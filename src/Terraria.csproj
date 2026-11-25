@@ -134,6 +134,12 @@
     <EmbeddedResource Include="IsaClient.Assets\Casino.png" LogicalName="IsaClient.Assets.Casino.png" WithCulture="false" />
     <EmbeddedResource Include="IsaClient.Assets\CasinoBets.png" LogicalName="IsaClient.Assets.CasinoBets.png" WithCulture="false" />
     <EmbeddedResource Include="IsaClient.Assets\Games.png" LogicalName="IsaClient.Assets.Games.png" WithCulture="false" />
+    <EmbeddedResource Include="IsaClient.Assets\Gta\GtaSix.png" LogicalName="IsaClient.Assets.GtaSix.png" WithCulture="false" />
+    <EmbeddedResource Include="IsaClient.Assets\Gta\GtaCard.png" LogicalName="IsaClient.Assets.GtaCard.png" WithCulture="false" />
+    <EmbeddedResource Include="IsaClient.Assets\Gta\GtaPad.png" LogicalName="IsaClient.Assets.GtaPad.png" WithCulture="false" />
+    <EmbeddedResource Include="IsaClient.Assets\Gta\GtaKeys.png" LogicalName="IsaClient.Assets.GtaKeys.png" WithCulture="false" />
+    <EmbeddedResource Include="IsaClient.Assets\Gta\GtaLogo.png" LogicalName="IsaClient.Assets.GtaLogo.png" WithCulture="false" />
+    <EmbeddedResource Include="IsaClient.Assets\Gta\GtaKeyArt.jpg" LogicalName="IsaClient.Assets.GtaKeyArt.jpg" WithCulture="false" />
     <!-- GBA player (IsaClient.Gba): the baked Pokemon heads of every hairstyle (tools/gba/make_heads.py) and the mGBA
          libretro core, x86, gzipped (MPL 2.0, source at https://github.com/mgba-emu/mgba; see tools/gba/README.md). -->
     <EmbeddedResource Include="IsaClient.Assets\PokemonHeads.bin" LogicalName="IsaClient.Assets.PokemonHeads.bin" WithCulture="false" />
@@ -142,6 +148,7 @@
     <EmbeddedResource Include="Terraria.GameContent.Creative.Content.Sacrifices.tsv" LogicalName="Terraria.GameContent.Creative.Content.Sacrifices.tsv" WithCulture="false" />
     <EmbeddedResource Include="Terraria.IO.Data.ResourcePacksDefaultInfo.tsv" LogicalName="Terraria.IO.Data.ResourcePacksDefaultInfo.tsv" WithCulture="false" />
     <EmbeddedResource Include="Terraria.Libraries.ReLogic.ReLogic.dll" LogicalName="Terraria.Libraries.ReLogic.ReLogic.dll" WithCulture="false" />
+    <EmbeddedResource Include="../lib/opennat/OpenNAT.dll" LogicalName="Terraria.Libraries.OpenNAT.OpenNAT.dll" WithCulture="false" />
     <EmbeddedResource Include="Terraria.Libraries.DotNetZip.Ionic.Zip.CF.dll" LogicalName="Terraria.Libraries.DotNetZip.Ionic.Zip.CF.dll" WithCulture="false" />
     <EmbeddedResource Include="Terraria.Libraries.JSON.NET.Newtonsoft.Json.dll" LogicalName="Terraria.Libraries.JSON.NET.Newtonsoft.Json.dll" WithCulture="false" />
     <EmbeddedResource Include="Terraria.Libraries.CsvHelper.CsvHelper.dll" LogicalName="Terraria.Libraries.CsvHelper.CsvHelper.dll" WithCulture="false" />
@@ -249,6 +256,7 @@
     <Reference Include="Microsoft.Xna.Framework"><HintPath>../lib/xna/Microsoft.Xna.Framework.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="Microsoft.Xna.Framework.Graphics"><HintPath>../lib/xna/Microsoft.Xna.Framework.Graphics.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="ReLogic"><HintPath>Terraria.Libraries.ReLogic.ReLogic.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="OpenNAT"><HintPath>../lib/opennat/OpenNAT.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="Microsoft.Xna.Framework.Game"><HintPath>../lib/xna/Microsoft.Xna.Framework.Game.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="Ionic.Zip.CF"><HintPath>Terraria.Libraries.DotNetZip.Ionic.Zip.CF.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="Newtonsoft.Json"><HintPath>Terraria.Libraries.JSON.NET.Newtonsoft.Json.dll</HintPath><Private>false</Private></Reference>

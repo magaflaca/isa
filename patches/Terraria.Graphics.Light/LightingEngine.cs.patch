@@ -8,10 +8,10 @@
 +		{
 +			return;
 +		}
- 		_perFrameLights.Add(new PerFrameLight(new Point(x, y), color));
- 	}
- 
-@@ -64,6 +68,10 @@
+ 		if (Main.GameUpdateCount - _perFrameLightSwapUpdateCount <= 8)
+ 		{
+ 			_perFrameLights.Add(new PerFrameLight(new Point(x, y), color));
+@@ -67,6 +71,10 @@
  
  	public Vector3 GetColor(int x, int y)
  	{
@@ -22,7 +22,7 @@
  		if (!_activeProcessedArea.Contains(x, y))
  		{
  			return Vector3.Zero;
-@@ -253,7 +261,7 @@
+@@ -256,7 +264,7 @@
  		}
  		Rectangle area = new Rectangle(_activeProcessedArea.X + 28, _activeProcessedArea.Y + 28, _activeProcessedArea.Width - 56, _activeProcessedArea.Height - 56);
  		Rectangle value = new Rectangle(0, 0, Main.maxTilesX, Main.maxTilesY);

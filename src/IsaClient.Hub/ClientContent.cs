@@ -265,7 +265,7 @@ internal static class ClientContent
 		b.Row("See Tile Data", "Block Details", "Shows the data of the block under the cursor.", I.Ruler, "tile data", ".tiledata");
 		b.Row("Paste/Selection Mode Information", "Selection & Paste Details", "Extra numbers while selecting and pasting.", I.Ruler, "selection info");
 		b.Row("Show Owner of Dropped Items", "Who Dropped It", "Shows the owner of a dropped item under the mouse.", I.Sign, "owner item");
-		b.Row("Shift+Click Wiki Lookup", "Wiki Lookup", "Shift + click an item in your inventory to open it on the Terraria wiki.", I.Book, "wiki shift click");
+		b.Row("Wiki Lookup", "Wiki Lookup", "Hold Q (the Wiki Lookup key) and click an item in your inventory to open it on the Terraria wiki.", I.Book, "wiki lookup q click");
 	}
 
 	private static void Style(CatalogBuilder b)

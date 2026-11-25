@@ -1,16 +1,12 @@
 ﻿using System.IO;
-using Terraria.Audio;
 using Terraria.DataStructures;
-using IsaClient.Core;
 using Terraria;
 
 namespace IsaClient.Networking;
 
 /// <summary>
-/// Network version switch ([F5] / hammer in the main menu): lets this 1.4.5.8 client join 1.4.5.6 servers (release 319).
-/// 1.4.5.7 reworked several packets, so with <see cref="Legacy"/> on every packet that changed is written and read in the
-/// 1.4.5.6 layout:
-/// - Handshake "Terraria319".
+/// Network version 1.4.5.6 (release 319), on top of <see cref="Compat1458"/>. 1.4.5.7 reworked several packets, so every
+/// packet that changed is written and read in the 1.4.5.6 layout:
 /// - Projectiles (27/29): 1.4.5.8 identifies them by a packed key (spawner, slot, generation); 1.4.5.6 by (identity, owner)
 ///   plus a UUID for the Stardust Dragon. Keys are rebuilt from (owner, identity), and ai fields that point at another
 ///   projectile (Last Prism, Lunar Portal, Stardust Dragon, ...) are converted between keys and identities.
@@ -24,12 +20,8 @@ namespace IsaClient.Networking;
 /// - Content added after 1.4.5.6 (items, projectiles, buffs, tiles, mounts, particles) is never sent: a 1.4.5.6 server
 ///   would index out of its arrays and drop or kick.
 /// </summary>
-public static class ProtocolCompat
+public static class Compat1456
 {
-	public const int ModernRelease = 326;
-
-	public const int LegacyRelease = 319;
-
 	public const int LegacyItemCount = 6148;
 
 	public const int LegacyProjectileCount = 1111;
@@ -46,69 +38,15 @@ public static class ProtocolCompat
 
 	public const int LegacyParticleCount = 69;
 
-	/// <summary>1.4.5.6 protocol (release 319) instead of 1.4.5.8 (326). Saved; only changed from the main menu.</summary>
-	public static bool Legacy;
-
-	/// <summary>Legacy protocol on a multiplayer connection: the only case where packets are rewritten.</summary>
 	public static bool Active
 	{
 		get
 		{
-			if (Legacy)
+			if (NetworkVersion.Current == NetworkVersion.Protocol.V1456)
 			{
 				return Main.netMode == 1;
 			}
 			return false;
-		}
-	}
-
-	public static int Release
-	{
-		get
-		{
-			if (!Legacy)
-			{
-				return ModernRelease;
-			}
-			return LegacyRelease;
-		}
-	}
-
-	public static string VersionName
-	{
-		get
-		{
-			if (!Legacy)
-			{
-				return "1.4.5.8";
-			}
-			return "1.4.5.6";
-		}
-	}
-
-	/// <summary>The protocol can only change while disconnected: a live connection keeps the one it joined with.</summary>
-	public static bool CanToggle => Main.netMode == 0;
-
-	public static void Toggle()
-	{
-		if (!CanToggle)
-		{
-			return;
-		}
-		Legacy = !Legacy;
-		SoundEngine.PlaySound(12);
-		ClientSettings.Save();
-	}
-
-	public static string Tooltip
-	{
-		get
-		{
-			if (!Legacy)
-			{
-				return "Network version used to join servers: 1.4.5.8 (current).\nClick (or [F5]) to join 1.4.5.6 servers instead.";
-			}
-			return "Network version used to join servers: 1.4.5.6 (older servers).\nPackets that changed in 1.4.5.7 are translated; content added after 1.4.5.6 is not sent.\nClick (or [F5]) to go back to 1.4.5.8.";
 		}
 	}
 

@@ -162,7 +162,7 @@ public static class Possession
 		}
 		if (!(Netplay.Connection.Socket is TcpSocket))
 		{
-			error = "Only direct IP connections can switch sessions (not Steam friend joins).";
+			error = "Only direct TCP connections can switch sessions (not Steam friend joins or crossplay over UDP).";
 			return false;
 		}
 		if (Main.mouseItem != null && !Main.mouseItem.IsAir)

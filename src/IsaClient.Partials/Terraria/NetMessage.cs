@@ -23,7 +23,7 @@ public partial class NetMessage
 		{
 			return true;
 		}
-		if (!IsaClient.Networking.ProtocolCompat.AllowSend(msgType, number, number2, number3, number4))
+		if (!IsaClient.Networking.NetworkVersion.AllowSend(msgType, number, number2, number3, number4))
 		{
 			return true;
 		}

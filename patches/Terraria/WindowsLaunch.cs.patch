@@ -1,6 +1,6 @@
 --- a/Terraria/WindowsLaunch.cs
 +++ b/Terraria/WindowsLaunch.cs
-@@ -53,18 +53,48 @@
+@@ -57,18 +57,48 @@
  	[STAThread]
  	private static void Main(string[] args)
  	{
@@ -55,5 +55,16 @@
 +				return assembly;
 +			}
  		};
- 		Program.LaunchGame(args);
- 	}
+ 		Preload("msvcr100.dll");
+ 		Preload("msvcp100.dll");
+@@ -82,6 +112,10 @@
+ 
+ 	private static void Preload(string nativeLibName)
+ 	{
++		if (!IsaClient.Core.GameFolder.HasFile(nativeLibName))
++		{
++			return;
++		}
+ 		if (!(LoadLibraryEx(nativeLibName, IntPtr.Zero, 8u) != IntPtr.Zero))
+ 		{
+ 			int lastWin32Error = Marshal.GetLastWin32Error();
